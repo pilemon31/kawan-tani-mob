@@ -61,13 +61,78 @@ class _ProfileUploadState extends State<ProfileUpload> {
                   Text("Lengkapi daftar diri anda",
                       style: GoogleFonts.poppins(fontSize: 14)),
 
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 30),
 
-                  Text("Jenis Kelamin",
-                      style: GoogleFonts.poppins(fontWeight: FontWeight.w500)),
-                  const SizedBox(height: 5),
+                  Center(
+                    child: Column(
+                      children: [
+                        Text(
+                          "Foto Profil",
+                          style: GoogleFonts.poppins(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Container(
+                          width: 200,
+                          height: 200,
+                          decoration: const BoxDecoration(
+                              image: DecorationImage(
+                            image: AssetImage(
+                              'assets/upload_profil.png',
+                            ),
+                          )),
+                        ),
+                      ],
+                    ),
+                  ),
 
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 40),
+
+                  // Tombol di bagian tengah
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Column(
+                      children: [
+                        OutlinedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(color: Color(0xFF78D14D)),
+                            minimumSize: const Size(double.infinity, 50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: Text("Upload Dari Galeri",
+                              style: GoogleFonts.poppins(
+                                  color: const Color(0xFF78D14D),
+                                  fontSize: 16)),
+                        ),
+                        const SizedBox(height: 10),
+                        OutlinedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(color: Color(0xFF78D14D)),
+                            minimumSize: const Size(double.infinity, 50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: Text("Ambil Foto",
+                              style: GoogleFonts.poppins(
+                                  color: const Color(0xFF78D14D),
+                                  fontSize: 16)),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 40),
 
                   // Tombol di bagian bawah
                   Align(
@@ -95,7 +160,7 @@ class _ProfileUploadState extends State<ProfileUpload> {
                         const SizedBox(height: 10),
                         OutlinedButton(
                           onPressed: () {
-                            Navigator.pop(context);
+                            Navigator.pop(context, MaterialPageRoute(builder: (context) => LoginScreen()));
                           },
                           style: OutlinedButton.styleFrom(
                             side: const BorderSide(color: Color(0xFF78D14D)),
