@@ -17,8 +17,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   String? selectedGender;
 
-  Widget buildTextField(String label, IconData icon, String hint,
-      TextEditingController controller) {
+  Widget buildTextField(String label, IconData icon, String hint, TextEditingController controller) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
