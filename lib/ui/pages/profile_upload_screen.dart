@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kawan_tani/ui/pages/login_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ProfileUpload extends StatefulWidget {
@@ -12,35 +13,34 @@ class _ProfileUploadState extends State<ProfileUpload> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: const Color(0xFF78D14D),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.only(top: 60, bottom: 30),
-                child: Column(
-                  children: [
-                    Text(
-                      "Kawan Tani",
-                      style: GoogleFonts.poppins(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      "Teman Bertani Anda",
-                      style: GoogleFonts.poppins(
-                          fontSize: 16, color: Colors.white),
-                    ),
-                  ],
+      backgroundColor: const Color(0xFF78D14D),
+      resizeToAvoidBottomInset: false,
+      body: Column(
+        children: [
+          // Header
+          Container(
+            padding: const EdgeInsets.only(top: 70, bottom: 30),
+            child: Column(
+              children: [
+                Text(
+                  "Kawan Tani",
+                  style: GoogleFonts.poppins(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
                 ),
-              ),
+                const SizedBox(height: 5),
+                Text(
+                  "Teman Bertani Anda",
+                  style: GoogleFonts.poppins(fontSize: 16, color: Colors.white),
+                ),
+              ],
+            ),
+          ),
 
-                          const SizedBox(height: 20),
-
-            // Form
-            Container(
+          // Form dalam Expanded agar tombol tetap di bawah
+          Expanded(
+            child: Container(
               padding: const EdgeInsets.all(30),
               decoration: const BoxDecoration(
                 color: Colors.white,
@@ -63,53 +63,61 @@ class _ProfileUploadState extends State<ProfileUpload> {
 
                   const SizedBox(height: 20),
 
-
-
                   Text("Jenis Kelamin",
                       style: GoogleFonts.poppins(fontWeight: FontWeight.w500)),
                   const SizedBox(height: 5),
 
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 20),
 
-                  // Buttons
-                  Column(
-                    children: [
-                      ElevatedButton(
-                        onPressed: null,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF78D14D),
-                          minimumSize: const Size(double.infinity, 50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                  // Tombol di bagian bawah
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Column(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => LoginScreen()));
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF78D14D),
+                            minimumSize: const Size(double.infinity, 50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                           ),
+                          child: Text("Lanjutkan",
+                              style: GoogleFonts.poppins(
+                                  color: Colors.white, fontSize: 16)),
                         ),
-                        child: Text("Lanjutkan",
-                            style: GoogleFonts.poppins(
-                                color: Colors.white, fontSize: 16)),
-                      ),
-                      const SizedBox(height: 10),
-                      OutlinedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: Color(0xFF78D14D)),
-                          minimumSize: const Size(double.infinity, 50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                        const SizedBox(height: 10),
+                        OutlinedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(color: Color(0xFF78D14D)),
+                            minimumSize: const Size(double.infinity, 50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                           ),
+                          child: Text("Kembali",
+                              style: GoogleFonts.poppins(
+                                  color: const Color(0xFF78D14D),
+                                  fontSize: 16)),
                         ),
-                        child: Text("Kembali",
-                            style: GoogleFonts.poppins(
-                                color: const Color(0xFF78D14D), fontSize: 16)),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
-            ],
           ),
-        ));
+        ],
+      ),
+    );
   }
 }
