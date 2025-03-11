@@ -1,40 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kawan_tani/ui/pages/verification_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class VerificationScreen extends StatefulWidget {
+  const VerificationScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<VerificationScreen> createState() => _VerificationScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController passswordConfirmationController = TextEditingController();
+class _VerificationScreenState extends State<VerificationScreen> {
+  List<TextEditingController> controllers =
+      List.generate(4, (index) => TextEditingController());
+  List<FocusNode> focusNodes = List.generate(4, (index) => FocusNode());
 
-  Widget buildTextField(String label, IconData icon, String hint, TextEditingController controller) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label, style: GoogleFonts.poppins(fontWeight: FontWeight.w500)),
-        const SizedBox(height: 5),
-        TextField(
-          controller: controller,
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: Colors.grey[200],
-            prefixIcon: Icon(icon, color: Colors.grey),
-            hintText: hint,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide.none,
-            ),
-          ),
-        ),
-        const SizedBox(height: 15),
-      ],
-    );
+  void handleChange(String value, int index) {
+    if (value.isNotEmpty && index < 3) {
+      FocusScope.of(context).requestFocus(focusNodes[index + 1]);
+    }
+    if (value.isEmpty && index > 0) {
+      FocusScope.of(context).requestFocus(focusNodes[index - 1]);
+    }
   }
 
   @override
@@ -80,23 +65,82 @@ class _LoginScreenState extends State<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Daftar Akun",
+                    "Masuk Kode",
                     style: GoogleFonts.poppins(
                         fontSize: 22, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 5),
-                  Text("Lengkapi daftar diri anda",
+                  Text(
+                      "Cek kotak masuk ke email anda untuk menerima kode verifikasi",
                       style: GoogleFonts.poppins(fontSize: 14)),
+
+                  const SizedBox(height: 50),
+
+                  RichText(
+                    text: TextSpan(
+                      style: GoogleFonts.poppins(
+                          fontSize: 14, color: Colors.black), // Warna teks umum
+                      children: <TextSpan>[
+                        TextSpan(
+                            text:
+                                "Kode verifikasi anda kami kirimkan ke\nalamat"),
+                        TextSpan(
+                          text: "\tjohndoe@examplemail.com",
+                          style: TextStyle(
+                              color: Colors
+                                  .blue), // Ganti warna sesuai yang diinginkan
+                        ),
+                      ],
+                    ),
+                  ),
 
                   const SizedBox(height: 20),
 
-                  buildTextField("Password", Icons.key_sharp, "John Doe",
-                      passwordController),
-                  buildTextField("Konfirmasi Password", Icons.key_sharp, "John Doe",
-                      passswordConfirmationController),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(4, (index) {
+                      return Container(
+                        margin: EdgeInsets.symmetric(horizontal: 8),
+                        width: 50,
+                        height: 50,
+                        child: TextField(
+                          controller: controllers[index],
+                          focusNode: focusNodes[index],
+                          keyboardType: TextInputType.number,
+                          textAlign: TextAlign.center,
+                          maxLength: 1,
+                          style: TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.bold),
+                          decoration: InputDecoration(
+                            counterText: "",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          onChanged: (value) => handleChange(value, index),
+                        ),
+                      );
+                    }),
+                  ),
 
-                  const SizedBox(height: 300),
+                  
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Tidak menerima kode?",
+                          style: GoogleFonts.poppins(fontSize: 14),
+                        ),
+                        Text(
+                          "Kirim ulang",
+                          style: GoogleFonts.poppins(fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
 
+                  const SizedBox(height: 20),
                   // Tombol di bagian bawah
                   Align(
                     alignment: Alignment.bottomCenter,
@@ -104,7 +148,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         ElevatedButton(
                           onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => VerificationScreen()));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        VerificationScreen()));
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF78D14D),
