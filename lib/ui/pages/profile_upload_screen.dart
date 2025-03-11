@@ -132,7 +132,7 @@ class _ProfileUploadState extends State<ProfileUpload> {
                     ),
                   ),
 
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 80),
 
                   // Tombol di bagian bawah
                   Align(
