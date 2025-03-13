@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kawan_tani/ui/pages/verification_successful.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class VerificationScreen extends StatefulWidget {
@@ -74,115 +75,92 @@ class _VerificationScreenState extends State<VerificationScreen> {
                       "Cek kotak masuk ke email anda untuk menerima kode verifikasi",
                       style: GoogleFonts.poppins(fontSize: 14)),
 
-                  const SizedBox(height: 50),
+                  const SizedBox(height: 120),
 
-                  RichText(
-                    text: TextSpan(
-                      style: GoogleFonts.poppins(
-                          fontSize: 14, color: Colors.black), // Warna teks umum
-                      children: <TextSpan>[
-                        TextSpan(
-                            text:
-                                "Kode verifikasi anda kami kirimkan ke\nalamat"),
-                        TextSpan(
-                          text: "\tjohndoe@examplemail.com",
-                          style: TextStyle(
-                              color: Colors
-                                  .blue), // Ganti warna sesuai yang diinginkan
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(4, (index) {
-                      return Container(
-                        margin: EdgeInsets.symmetric(horizontal: 8),
-                        width: 50,
-                        height: 50,
-                        child: TextField(
-                          controller: controllers[index],
-                          focusNode: focusNodes[index],
-                          keyboardType: TextInputType.number,
-                          textAlign: TextAlign.center,
-                          maxLength: 1,
-                          style: TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.bold),
-                          decoration: InputDecoration(
-                            counterText: "",
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
+                  Center(
+                      child: Column(
+                        children: [
+                          RichText(
+                            text: TextSpan(
+                              style: GoogleFonts.poppins(
+                                  fontSize: 14,
+                                  color: Colors.black), // Warna teks umum
+                              children: <TextSpan>[
+                                TextSpan(
+                                    text:
+                                        "Kode verifikasi anda kami kirimkan ke\nalamat"),
+                                TextSpan(
+                                  text: "\tjohndoe@examplemail.com",
+                                  style: TextStyle(color: Colors.blue),
+                                ),
+                              ],
                             ),
                           ),
-                          onChanged: (value) => handleChange(value, index),
-                        ),
-                      );
-                    }),
-                  ),
+                          const SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: List.generate(4, (index) {
+                              return Container(
+                                margin: EdgeInsets.symmetric(horizontal: 8),
+                                width: 50,
+                                height: 50,
+                                child: TextField(
+                                  controller: controllers[index],
+                                  focusNode: focusNodes[index],
+                                  keyboardType: TextInputType.number,
+                                  textAlign: TextAlign.center,
+                                  maxLength: 1,
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold),
+                                  decoration: InputDecoration(
+                                    counterText: "",
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                  onChanged: (value) =>
+                                      handleChange(value, index),
+                                ),
+                              );
+                            }),
+                          ),
 
-                  
-                  Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Tidak menerima kode?",
-                          style: GoogleFonts.poppins(fontSize: 14),
-                        ),
-                        Text(
-                          "Kirim ulang",
-                          style: GoogleFonts.poppins(fontSize: 14),
-                        ),
-                      ],
+                          const SizedBox(height: 20),
+                          Text(
+                            "Tidak menerima kode?",
+                            style: GoogleFonts.poppins(fontSize: 14),
+                          ),
+                          Text(
+                            "Kirim ulang",
+                            style: GoogleFonts.poppins(fontSize: 14),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
 
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 250),
                   // Tombol di bagian bawah
                   Align(
                     alignment: Alignment.bottomCenter,
-                    child: Column(
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        VerificationScreen()));
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF78D14D),
-                            minimumSize: const Size(double.infinity, 50),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          child: Text("Daftar Akun",
-                              style: GoogleFonts.poppins(
-                                  color: Colors.white, fontSize: 16)),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const VerificationSuccessfulScreen()));
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF78D14D),
+                        minimumSize: const Size(double.infinity, 50),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        const SizedBox(height: 10),
-                        OutlinedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: Color(0xFF78D14D)),
-                            minimumSize: const Size(double.infinity, 50),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          child: Text("Kembali",
-                              style: GoogleFonts.poppins(
-                                  color: const Color(0xFF78D14D),
-                                  fontSize: 16)),
-                        ),
-                      ],
+                      ),
+                      child: Text("Verifikasi",
+                          style: GoogleFonts.poppins(
+                              color: Colors.white, fontSize: 16)),
                     ),
                   ),
                 ],

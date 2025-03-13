@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kawan_tani/ui/pages/login_screen.dart';
+import 'package:flutter_kawan_tani/ui/pages/createpassword_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ProfileUpload extends StatefulWidget {
@@ -144,7 +144,8 @@ class _ProfileUploadState extends State<ProfileUpload> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => LoginScreen()));
+                                    builder: (context) =>
+                                        const CreatePasswordScreen()));
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF78D14D),
@@ -160,7 +161,11 @@ class _ProfileUploadState extends State<ProfileUpload> {
                         const SizedBox(height: 10),
                         OutlinedButton(
                           onPressed: () {
-                            Navigator.pop(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+                            Navigator.pop(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        CreatePasswordScreen()));
                           },
                           style: OutlinedButton.styleFrom(
                             side: const BorderSide(color: Color(0xFF78D14D)),

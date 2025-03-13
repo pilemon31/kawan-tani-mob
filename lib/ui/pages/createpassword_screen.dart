@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kawan_tani/ui/pages/login_screen.dart';
-import 'package:flutter_kawan_tani/ui/pages/signup_detail_screen.dart';
+import 'package:flutter_kawan_tani/ui/pages/verification_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+class CreatePasswordScreen extends StatefulWidget {
+  const CreatePasswordScreen({super.key});
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  State<CreatePasswordScreen> createState() => _CreatePasswordScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
-  final TextEditingController firstNameController = TextEditingController();
-  final TextEditingController lastNameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
+class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController passswordConfirmationController =
+      TextEditingController();
 
   Widget buildTextField(String label, IconData icon, String hint,
       TextEditingController controller) {
@@ -37,25 +36,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
         const SizedBox(height: 15),
       ],
-    );
-  }
-
-  void handleNext() {
-    if (firstNameController.text.isEmpty ||
-        lastNameController.text.isEmpty ||
-        emailController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Harap isi semua data sebelum melanjutkan."),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    }
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const SignUpDetailScreen()),
     );
   }
 
@@ -107,50 +87,46 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         fontSize: 22, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 5),
-                  Text("Daftar sekarang dan nikmati berbagai\nfitur menarik!",
+                  Text("Masukkan password akun anda",
                       style: GoogleFonts.poppins(fontSize: 14)),
 
                   const SizedBox(height: 20),
 
-                  buildTextField("Nama Depan", Icons.person, "John Doe",
-                      firstNameController),
-                  buildTextField("Nama Belakang", Icons.person, "John Doe",
-                      lastNameController),
-                  buildTextField("Email", Icons.email,
-                      "johndoe@examplemail.com", emailController),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: handleNext,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF78D14D),
-                      minimumSize: const Size(double.infinity, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: Text("Daftar",
-                        style: GoogleFonts.poppins(
-                            color: Colors.white, fontSize: 16)),
-                  ),
+                  buildTextField("Password", Icons.key_sharp, "John Doe",
+                      passwordController),
+                  buildTextField("Konfirmasi Password", Icons.key_sharp,
+                      "John Doe", passswordConfirmationController),
 
-                  const SizedBox(height: 120),
+                  const SizedBox(height: 300),
 
                   // Tombol di bagian bawah
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: Column(
                       children: [
-                        Text(
-                          "Sudah memiliki akun?",
-                          style: GoogleFonts.poppins(fontSize: 14),
-                        ),
-                        const SizedBox(height: 10),
-                        OutlinedButton(
+                        ElevatedButton(
                           onPressed: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const LogInScreen()));
+                                    builder: (context) =>
+                                        const VerificationScreen()));
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF78D14D),
+                            minimumSize: const Size(double.infinity, 50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: Text("Daftar Akun",
+                              style: GoogleFonts.poppins(
+                                  color: Colors.white, fontSize: 16)),
+                        ),
+                        const SizedBox(height: 10),
+                        OutlinedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
                           },
                           style: OutlinedButton.styleFrom(
                             side: const BorderSide(color: Color(0xFF78D14D)),
@@ -159,7 +135,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          child: Text("Masuk",
+                          child: Text("Kembali",
                               style: GoogleFonts.poppins(
                                   color: const Color(0xFF78D14D),
                                   fontSize: 16)),

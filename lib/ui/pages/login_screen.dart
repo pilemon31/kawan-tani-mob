@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kawan_tani/ui/pages/verification_screen.dart';
+import 'package:flutter_kawan_tani/ui/pages/signup_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class LogInScreen extends StatefulWidget {
+  const LogInScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<LogInScreen> createState() => _LogInScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LogInScreenState extends State<LogInScreen> {
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController passswordConfirmationController = TextEditingController();
 
-  Widget buildTextField(String label, IconData icon, String hint, TextEditingController controller) {
+  Widget buildTextField(
+      IconData icon, String hint, TextEditingController controller) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: GoogleFonts.poppins(fontWeight: FontWeight.w500)),
-        const SizedBox(height: 5),
         TextField(
           controller: controller,
           decoration: InputDecoration(
@@ -34,6 +33,23 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         const SizedBox(height: 15),
       ],
+    );
+  }
+
+  void handleNext() {
+    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Harap isi semua data sebelum melanjutkan."),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SignUpScreen()),
     );
   }
 
@@ -85,42 +101,49 @@ class _LoginScreenState extends State<LoginScreen> {
                         fontSize: 22, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 5),
-                  Text("Lengkapi daftar diri anda",
+                  Text("Daftar sekarang dan nikmati berbagai\nfitur menarik!",
                       style: GoogleFonts.poppins(fontSize: 14)),
 
                   const SizedBox(height: 20),
 
-                  buildTextField("Password", Icons.key_sharp, "John Doe",
-                      passwordController),
-                  buildTextField("Konfirmasi Password", Icons.key_sharp, "John Doe",
-                      passswordConfirmationController),
+                  buildTextField(
+                      Icons.email, "johndoe@examplemail.com", emailController),
+                  buildTextField(
+                      Icons.lock, "****************", passwordController),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: handleNext,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF78D14D),
+                      minimumSize: const Size(double.infinity, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: Text("Masuk",
+                        style: GoogleFonts.poppins(
+                            color: Colors.white, fontSize: 16)),
+                  ),
 
-                  const SizedBox(height: 300),
+                  const SizedBox(height: 250),
 
                   // Tombol di bagian bawah
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: Column(
                       children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => VerificationScreen()));
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF78D14D),
-                            minimumSize: const Size(double.infinity, 50),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          child: Text("Daftar Akun",
-                              style: GoogleFonts.poppins(
-                                  color: Colors.white, fontSize: 16)),
+                        Text(
+                          "Belum memiliki akun?",
+                          style: GoogleFonts.poppins(fontSize: 14),
                         ),
                         const SizedBox(height: 10),
                         OutlinedButton(
                           onPressed: () {
-                            Navigator.pop(context);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const SignUpScreen()));
                           },
                           style: OutlinedButton.styleFrom(
                             side: const BorderSide(color: Color(0xFF78D14D)),
@@ -129,7 +152,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          child: Text("Kembali",
+                          child: Text("Daftar",
                               style: GoogleFonts.poppins(
                                   color: const Color(0xFF78D14D),
                                   fontSize: 16)),

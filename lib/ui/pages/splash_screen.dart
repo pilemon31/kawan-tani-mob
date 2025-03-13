@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_kawan_tani/ui/pages/onboarding_screen.dart';
 
-
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
 
@@ -11,15 +10,17 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-
   @override
   void initState() {
     super.initState();
 
-    Timer(const Duration(seconds: 2), (){
+    Timer(const Duration(seconds: 2), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const OnboardingPage(),),);
+        MaterialPageRoute(
+          builder: (context) => const OnboardingPage(),
+        ),
+      );
     });
   }
 
@@ -34,7 +35,7 @@ class _SplashPageState extends State<SplashPage> {
           decoration: const BoxDecoration(
               image: DecorationImage(
             image: AssetImage(
-            'assets/logo.png',
+              'assets/logo.png',
             ),
           )),
         ),

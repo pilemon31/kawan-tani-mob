@@ -1,4 +1,4 @@
-import 'package:flutter_kawan_tani/ui/pages/signup_screen.dart';
+import 'package:flutter_kawan_tani/ui/pages/login_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:flutter/material.dart';
@@ -57,7 +57,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     } else {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const SignUpScreen()),
+        MaterialPageRoute(builder: (context) => const LogInScreen()),
       );
     }
   }

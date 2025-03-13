@@ -1,27 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kawan_tani/ui/pages/login_screen.dart';
-import 'package:flutter_kawan_tani/ui/pages/signup_detail_screen.dart';
+import 'package:flutter_kawan_tani/ui/pages/verification_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+class ForgetPasswordScreen extends StatefulWidget {
+  const ForgetPasswordScreen({super.key});
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  State<ForgetPasswordScreen> createState() => _ForgetPasswordState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
-  final TextEditingController firstNameController = TextEditingController();
-  final TextEditingController lastNameController = TextEditingController();
+class _ForgetPasswordState extends State<ForgetPasswordScreen> {
   final TextEditingController emailController = TextEditingController();
 
-  Widget buildTextField(String label, IconData icon, String hint,
-      TextEditingController controller) {
+  Widget buildTextField(
+      IconData icon, String hint, TextEditingController controller) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: GoogleFonts.poppins(fontWeight: FontWeight.w500)),
-        const SizedBox(height: 5),
         TextField(
           controller: controller,
           decoration: InputDecoration(
@@ -41,9 +36,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   void handleNext() {
-    if (firstNameController.text.isEmpty ||
-        lastNameController.text.isEmpty ||
-        emailController.text.isEmpty) {
+    if (emailController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Harap isi semua data sebelum melanjutkan."),
@@ -55,7 +48,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const SignUpDetailScreen()),
+      MaterialPageRoute(builder: (context) => const VerificationScreen()),
     );
   }
 
@@ -102,55 +95,43 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Daftar Akun",
+                    "Lupa Password",
                     style: GoogleFonts.poppins(
                         fontSize: 22, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 5),
-                  Text("Daftar sekarang dan nikmati berbagai\nfitur menarik!",
+                  Text(
+                      "Masukkan alamat email untuk\nmenerima kode lupa password",
                       style: GoogleFonts.poppins(fontSize: 14)),
 
                   const SizedBox(height: 20),
 
-                  buildTextField("Nama Depan", Icons.person, "John Doe",
-                      firstNameController),
-                  buildTextField("Nama Belakang", Icons.person, "John Doe",
-                      lastNameController),
-                  buildTextField("Email", Icons.email,
-                      "johndoe@examplemail.com", emailController),
+                  buildTextField(
+                      Icons.email, "johndoe@examplemail.com", emailController),
                   const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: handleNext,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF78D14D),
-                      minimumSize: const Size(double.infinity, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: Text("Daftar",
-                        style: GoogleFonts.poppins(
-                            color: Colors.white, fontSize: 16)),
-                  ),
-
-                  const SizedBox(height: 120),
 
                   // Tombol di bagian bawah
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: Column(
                       children: [
-                        Text(
-                          "Sudah memiliki akun?",
-                          style: GoogleFonts.poppins(fontSize: 14),
+                        ElevatedButton(
+                          onPressed: handleNext,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF78D14D),
+                            minimumSize: const Size(double.infinity, 50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: Text("Lanjutkan",
+                              style: GoogleFonts.poppins(
+                                  color: Colors.white, fontSize: 16)),
                         ),
                         const SizedBox(height: 10),
                         OutlinedButton(
                           onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const LogInScreen()));
+                            Navigator.pop(context);
                           },
                           style: OutlinedButton.styleFrom(
                             side: const BorderSide(color: Color(0xFF78D14D)),
@@ -159,7 +140,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          child: Text("Masuk",
+                          child: Text("Kembali",
                               style: GoogleFonts.poppins(
                                   color: const Color(0xFF78D14D),
                                   fontSize: 16)),
