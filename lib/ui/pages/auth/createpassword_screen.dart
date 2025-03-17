@@ -1,15 +1,44 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kawan_tani/pages/createpassword_screen.dart';
+import "package:flutter_kawan_tani/ui/pages/auth/verification_screen.dart";
 import 'package:google_fonts/google_fonts.dart';
 
-class ProfileUpload extends StatefulWidget {
-  const ProfileUpload({super.key});
+class CreatePasswordScreen extends StatefulWidget {
+  const CreatePasswordScreen({super.key});
 
   @override
-  State<ProfileUpload> createState() => _ProfileUploadState();
+  State<CreatePasswordScreen> createState() => _CreatePasswordScreenState();
 }
 
-class _ProfileUploadState extends State<ProfileUpload> {
+class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController passswordConfirmationController =
+      TextEditingController();
+
+  Widget buildTextField(String label, IconData icon, String hint,
+      TextEditingController controller) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: GoogleFonts.poppins(fontWeight: FontWeight.w500)),
+        const SizedBox(height: 5),
+        TextField(
+          controller: controller,
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.grey[200],
+            prefixIcon: Icon(icon, color: Colors.grey),
+            hintText: hint,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide.none,
+            ),
+          ),
+        ),
+        const SizedBox(height: 15),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,81 +87,17 @@ class _ProfileUploadState extends State<ProfileUpload> {
                         fontSize: 22, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 5),
-                  Text("Lengkapi daftar diri anda",
+                  Text("Masukkan password akun anda",
                       style: GoogleFonts.poppins(fontSize: 14)),
 
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 20),
 
-                  Center(
-                    child: Column(
-                      children: [
-                        Text(
-                          "Foto Profil",
-                          style: GoogleFonts.poppins(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        Container(
-                          width: 200,
-                          height: 200,
-                          decoration: const BoxDecoration(
-                              image: DecorationImage(
-                            image: AssetImage(
-                              'assets/upload_profil.png',
-                            ),
-                          )),
-                        ),
-                      ],
-                    ),
-                  ),
+                  buildTextField("Password", Icons.key_sharp, "John Doe",
+                      passwordController),
+                  buildTextField("Konfirmasi Password", Icons.key_sharp,
+                      "John Doe", passswordConfirmationController),
 
-                  const SizedBox(height: 40),
-
-                  // Tombol di bagian tengah
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Column(
-                      children: [
-                        OutlinedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: Color(0xFF78D14D)),
-                            minimumSize: const Size(double.infinity, 50),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          child: Text("Upload Dari Galeri",
-                              style: GoogleFonts.poppins(
-                                  color: const Color(0xFF78D14D),
-                                  fontSize: 16)),
-                        ),
-                        const SizedBox(height: 10),
-                        OutlinedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: Color(0xFF78D14D)),
-                            minimumSize: const Size(double.infinity, 50),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          child: Text("Ambil Foto",
-                              style: GoogleFonts.poppins(
-                                  color: const Color(0xFF78D14D),
-                                  fontSize: 16)),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 80),
+                  const SizedBox(height: 300),
 
                   // Tombol di bagian bawah
                   Align(
@@ -145,7 +110,7 @@ class _ProfileUploadState extends State<ProfileUpload> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        const CreatePasswordScreen()));
+                                        const VerificationScreen()));
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF78D14D),
@@ -154,18 +119,14 @@ class _ProfileUploadState extends State<ProfileUpload> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          child: Text("Lanjutkan",
+                          child: Text("Daftar Akun",
                               style: GoogleFonts.poppins(
                                   color: Colors.white, fontSize: 16)),
                         ),
                         const SizedBox(height: 10),
                         OutlinedButton(
                           onPressed: () {
-                            Navigator.pop(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        CreatePasswordScreen()));
+                            Navigator.pop(context);
                           },
                           style: OutlinedButton.styleFrom(
                             side: const BorderSide(color: Color(0xFF78D14D)),

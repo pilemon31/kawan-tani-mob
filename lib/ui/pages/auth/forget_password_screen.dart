@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kawan_tani/pages/home_screen.dart';
-import 'package:flutter_kawan_tani/pages/signup_screen.dart';
+import 'package:flutter_kawan_tani/ui/pages/auth/verification_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class LogInScreen extends StatefulWidget {
-  const LogInScreen({super.key});
+class ForgetPasswordScreen extends StatefulWidget {
+  const ForgetPasswordScreen({super.key});
 
   @override
-  State<LogInScreen> createState() => _LogInScreenState();
+  State<ForgetPasswordScreen> createState() => _ForgetPasswordState();
 }
 
-class _LogInScreenState extends State<LogInScreen> {
+class _ForgetPasswordState extends State<ForgetPasswordScreen> {
   final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
 
   Widget buildTextField(
       IconData icon, String hint, TextEditingController controller) {
@@ -38,7 +36,7 @@ class _LogInScreenState extends State<LogInScreen> {
   }
 
   void handleNext() {
-    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+    if (emailController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Harap isi semua data sebelum melanjutkan."),
@@ -50,7 +48,7 @@ class _LogInScreenState extends State<LogInScreen> {
 
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const HomeScreen()),
+      MaterialPageRoute(builder: (context) => const VerificationScreen()),
     );
   }
 
@@ -97,54 +95,43 @@ class _LogInScreenState extends State<LogInScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Daftar Akun",
+                    "Lupa Password",
                     style: GoogleFonts.poppins(
                         fontSize: 22, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 5),
-                  Text("Daftar sekarang dan nikmati berbagai\nfitur menarik!",
+                  Text(
+                      "Masukkan alamat email untuk\nmenerima kode lupa password",
                       style: GoogleFonts.poppins(fontSize: 14)),
 
                   const SizedBox(height: 20),
 
                   buildTextField(
                       Icons.email, "johndoe@examplemail.com", emailController),
-                  buildTextField(
-                      Icons.lock, "****************", passwordController),
                   const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: handleNext,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF78D14D),
-                      minimumSize: const Size(double.infinity, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: Text("Masuk",
-                        style: GoogleFonts.poppins(
-                            color: Colors.white, fontSize: 16)),
-                  ),
-
-                  const SizedBox(height: 250),
 
                   // Tombol di bagian bawah
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: Column(
                       children: [
-                        Text(
-                          "Belum memiliki akun?",
-                          style: GoogleFonts.poppins(fontSize: 14),
+                        ElevatedButton(
+                          onPressed: handleNext,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF78D14D),
+                            minimumSize: const Size(double.infinity, 50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: Text("Lanjutkan",
+                              style: GoogleFonts.poppins(
+                                  color: Colors.white, fontSize: 16)),
                         ),
                         const SizedBox(height: 10),
                         OutlinedButton(
                           onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const SignUpScreen()));
+                            Navigator.pop(context);
                           },
                           style: OutlinedButton.styleFrom(
                             side: const BorderSide(color: Color(0xFF78D14D)),
@@ -153,7 +140,7 @@ class _LogInScreenState extends State<LogInScreen> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          child: Text("Daftar",
+                          child: Text("Kembali",
                               style: GoogleFonts.poppins(
                                   color: const Color(0xFF78D14D),
                                   fontSize: 16)),

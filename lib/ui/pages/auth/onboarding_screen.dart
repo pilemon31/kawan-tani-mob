@@ -1,4 +1,4 @@
-import 'package:flutter_kawan_tani/pages/login_screen.dart';
+import 'package:flutter_kawan_tani/ui/pages/auth/login_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:flutter/material.dart';

@@ -21,49 +21,44 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF78D14D),
-      body: Column(children: [
-        Container(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Text(
-                    "Selamat Pagi"
-                  ),
-                  Icon(
-                    PhosphorIcons.arrowLeft(),
-                    size: 30.0,
-                  )
-                ],
-              ),
-              Text(
-                "Pilemon B."
-              ),
-              Row(
-                children: [
-                  Text(
-                    "Sabtu, 11 Januari 2025"
-                  ),
-                  Icon(
-                    PhosphorIcons.addressBook(),
-                  )
-                ],
-              ),
+      body: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Text("Selamat Pagi"),
+                    Icon(
+                      PhosphorIcons.arrowLeft(),
+                      size: 30.0,
+                    )
+                  ],
+                ),
+                Text("Pilemon B."),
+                Row(
+                  children: [
+                    Text("Sabtu, 11 Januari 2025"),
+                    Icon(
+                      PhosphorIcons.addressBook(),
+                    )
+                  ],
+                ),
 
-              // Expanded(
-              //   child: Container(
-              //     padding: const EdgeInsets.all(30),
-              //     decoration: const BoxDecoration(
-              //       color: Colors.white,
-              //     ),
-              //   )
-              // )
-            ],
-          ),
-        )
-      ],
-    ),
+                // Expanded(
+                //   child: Container(
+                //     padding: const EdgeInsets.all(30),
+                //     decoration: const BoxDecoration(
+                //       color: Colors.white,
+                //     ),
+                //   )
+                // )
+              ],
+            ),
+          )
+        ],
+      ),
       // backgroundColor: Colors.white,
       // body: SafeArea(
       //   child: _currentIndex == 0 ? _buildHomePage() : _pages[_currentIndex],
@@ -191,4 +186,4 @@ class _HomeScreenState extends State<HomeScreen> {
   //       BottomNavigationBarItem(icon: Icon(Icons.article), label: "Artikel"),
   //     ],
   //   );
-  }
+}
