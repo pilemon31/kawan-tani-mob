@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kawan_tani/ui/pages/verification_successful.dart';
+import 'package:flutter_kawan_tani/pages/verification_successful.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class VerificationScreen extends StatefulWidget {
@@ -78,66 +78,64 @@ class _VerificationScreenState extends State<VerificationScreen> {
                   const SizedBox(height: 120),
 
                   Center(
-                      child: Column(
-                        children: [
-                          RichText(
-                            text: TextSpan(
-                              style: GoogleFonts.poppins(
-                                  fontSize: 14,
-                                  color: Colors.black), // Warna teks umum
-                              children: <TextSpan>[
-                                TextSpan(
-                                    text:
-                                        "Kode verifikasi anda kami kirimkan ke\nalamat"),
-                                TextSpan(
-                                  text: "\tjohndoe@examplemail.com",
-                                  style: TextStyle(color: Colors.blue),
-                                ),
-                              ],
-                            ),
+                    child: Column(
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                            style: GoogleFonts.poppins(
+                                fontSize: 14,
+                                color: Colors.black), // Warna teks umum
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text:
+                                      "Kode verifikasi anda kami kirimkan ke\nalamat"),
+                              TextSpan(
+                                text: "\tjohndoe@examplemail.com",
+                                style: TextStyle(color: Colors.blue),
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: List.generate(4, (index) {
-                              return Container(
-                                margin: EdgeInsets.symmetric(horizontal: 8),
-                                width: 50,
-                                height: 50,
-                                child: TextField(
-                                  controller: controllers[index],
-                                  focusNode: focusNodes[index],
-                                  keyboardType: TextInputType.number,
-                                  textAlign: TextAlign.center,
-                                  maxLength: 1,
-                                  style: TextStyle(
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.bold),
-                                  decoration: InputDecoration(
-                                    counterText: "",
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
+                        ),
+                        const SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(4, (index) {
+                            return Container(
+                              margin: EdgeInsets.symmetric(horizontal: 8),
+                              width: 50,
+                              height: 50,
+                              child: TextField(
+                                controller: controllers[index],
+                                focusNode: focusNodes[index],
+                                keyboardType: TextInputType.number,
+                                textAlign: TextAlign.center,
+                                maxLength: 1,
+                                style: TextStyle(
+                                    fontSize: 24, fontWeight: FontWeight.bold),
+                                decoration: InputDecoration(
+                                  counterText: "",
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
                                   ),
-                                  onChanged: (value) =>
-                                      handleChange(value, index),
                                 ),
-                              );
-                            }),
-                          ),
-
-                          const SizedBox(height: 20),
-                          Text(
-                            "Tidak menerima kode?",
-                            style: GoogleFonts.poppins(fontSize: 14),
-                          ),
-                          Text(
-                            "Kirim ulang",
-                            style: GoogleFonts.poppins(fontSize: 14),
-                          ),
-                        ],
-                      ),
+                                onChanged: (value) =>
+                                    handleChange(value, index),
+                              ),
+                            );
+                          }),
+                        ),
+                        const SizedBox(height: 20),
+                        Text(
+                          "Tidak menerima kode?",
+                          style: GoogleFonts.poppins(fontSize: 14),
+                        ),
+                        Text(
+                          "Kirim ulang",
+                          style: GoogleFonts.poppins(fontSize: 14),
+                        ),
+                      ],
                     ),
+                  ),
 
                   const SizedBox(height: 250),
                   // Tombol di bagian bawah

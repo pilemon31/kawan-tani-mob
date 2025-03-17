@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kawan_tani/ui/pages/createpassword_screen.dart';
+import 'package:flutter_kawan_tani/pages/createpassword_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ProfileUpload extends StatefulWidget {
