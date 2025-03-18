@@ -1,3 +1,4 @@
+import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:flutter_kawan_tani/ui/pages/auth/login_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -10,22 +11,24 @@ class OnboardingPage extends StatefulWidget {
   State<OnboardingPage> createState() => _OnboardingPageState();
 }
 
-class BottomEllipseClipper extends CustomClipper<Path> {
+class CurvedBottomClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
-    final path = Path();
-    path.lineTo(0, 0);
+    var path = Path();
+
+    path.lineTo(0, size.height - 60);
+
+    path.quadraticBezierTo(
+        size.width / 2, size.height, size.width, size.height - 60);
+
     path.lineTo(size.width, 0);
-    path.lineTo(size.width, size.height - 50);
-    path.quadraticBezierTo(size.width / 2, size.height, 0, size.height - 50);
     path.close();
+
     return path;
   }
 
   @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) {
-    return false;
-  }
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
 
 class _OnboardingPageState extends State<OnboardingPage> {
@@ -44,9 +47,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
   ];
 
   final List<String> subtitle = [
-    'Dapatkan produk pangan berkualitas\nterbaik yang diproduksi langsung oleh\npetani dan peternak dengan penuh\ncinta',
-    'Aplikasi dengan antarmuka ramah\npengguna, dilengkapi dengan berbagai\nfitur yang  mempermudah kebutuhan\npengguna.',
-    'Seluruh produk pangan dapat\ndidistribusikan ke seluruh Indonesia\ndengan tarif ongkir yang terjangkau\ndan terjamin keamannanya.',
+    'Dapatkan produk pangan berkualitas terbaik yang diproduksi langsung oleh petani dan peternak dengan penuh cinta',
+    'Aplikasi dengan antarmuka ramah pengguna, dilengkapi dengan berbagai fitur yang  mempermudah kebutuhan pengguna.',
+    'Seluruh produk pangan dapat didistribusikan ke seluruh Indonesia dengan tarif ongkir yang terjangkau dan terjamin keamannanya.',
   ];
 
   void _nextPage() {
@@ -72,98 +75,104 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          SizedBox(
-            height: 500,
-            width: 410,
-            child: ClipPath(
-              clipper: BottomEllipseClipper(),
-              child: Image.asset(
-                images[currentIndex],
-                fit: BoxFit.cover,
-              ),
+          ClipPath(
+            clipper: CurvedBottomClipper(),
+            child: Image.asset(
+              images[currentIndex],
+              width: double.infinity,
+              height: mediaQuery.size.height * 0.6,
+              fit: BoxFit.cover,
             ),
           ),
-          const SizedBox(height: 60),
-          Text(
-            title[currentIndex],
-            style: GoogleFonts.poppins(
-              fontSize: 19,
-              fontWeight: FontWeight.w600,
-              color: Colors.black,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            subtitle[currentIndex],
-            style: GoogleFonts.poppins(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: Color(0x59000000),
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 60),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GestureDetector(
-                onTap: currentIndex > 0 ? _prevPage : null,
-                child: Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Color(0xFF78D14D),
-                  ),
-                  padding: const EdgeInsets.all(8.0),
-                  child: Icon(
-                    PhosphorIcons.arrowLeft(),
-                    size: 30.0,
-                    color: Colors.white,
+          Expanded(
+              child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 64.0),
+                  child: Column(
+                    children: [
+                      Text(
+                        title[currentIndex],
+                        style: TextStyle(
+                          fontSize: 19,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        subtitle[currentIndex],
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: greyColor,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-              const SizedBox(width: 20),
-              Row(
-                children: List.generate(images.length, (index) {
-                  return Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 10),
-                    width: 14,
-                    height: 14,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: currentIndex == index
-                          ? Color(0xFF78D14D)
-                          : Colors.grey,
-                    ),
-                  );
-                }),
-              ),
-              const SizedBox(width: 20),
-              GestureDetector(
-                onTap: _nextPage,
-                child: Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Color(0xFF78D14D),
+                Container(
+                  margin:
+                      EdgeInsets.only(bottom: 60.0, right: 60.0, left: 60.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ElevatedButton(
+                        onPressed: _prevPage,
+                        style: ElevatedButton.styleFrom(
+                          shape: CircleBorder(),
+                          padding: EdgeInsets.all(10),
+                          backgroundColor: primaryColor,
+                        ),
+                        child: PhosphorIcon(
+                          PhosphorIconsRegular.arrowLeft,
+                          color: Colors.white,
+                          size: 24.0,
+                          semanticLabel: 'New Note',
+                        ),
+                      ),
+                      Row(children: [
+                        ...List.generate(
+                            3,
+                            (index) => Container(
+                                  margin: EdgeInsets.symmetric(horizontal: 6),
+                                  width: 10,
+                                  height: 10,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(100),
+                                    color: index == currentIndex
+                                        ? primaryColor
+                                        : greyColor,
+                                  ),
+                                )),
+                      ]),
+                      ElevatedButton(
+                        onPressed: _nextPage,
+                        style: ElevatedButton.styleFrom(
+                          shape: CircleBorder(),
+                          padding: EdgeInsets.all(10),
+                          backgroundColor: primaryColor,
+                        ),
+                        child: PhosphorIcon(
+                          PhosphorIconsRegular.arrowRight,
+                          color: Colors.white,
+                          size: 24.0,
+                          semanticLabel: 'New Note',
+                        ),
+                      ),
+                    ],
                   ),
-                  padding: const EdgeInsets.all(8.0),
-                  child: Icon(
-                    PhosphorIcons.arrowRight(),
-                    size: 30.0,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ],
-          ),
+                )
+              ],
+            ),
+          ))
         ],
       ),
     );
