@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kawan_tani/ui/pages/auth/article_screen.dart';
-import 'package:flutter_kawan_tani/ui/pages/auth/profile_screen.dart';
-import 'package:flutter_kawan_tani/ui/pages/auth/start_planting_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/auth/article_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/auth/profile_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/auth/start_planting_screen.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
