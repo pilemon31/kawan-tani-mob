@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_kawan_tani/ui/pages/intro/onboarding_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/intro/onboarding_screen.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});

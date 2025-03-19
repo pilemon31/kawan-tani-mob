@@ -1,22 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kawan_tani/ui/pages/auth/verification_screen.dart';
+import "package:flutter_kawan_tani/presentation/pages/auth/verification_screen.dart";
 import 'package:google_fonts/google_fonts.dart';
 
-class ForgetPasswordScreen extends StatefulWidget {
-  const ForgetPasswordScreen({super.key});
+class CreatePasswordScreen extends StatefulWidget {
+  const CreatePasswordScreen({super.key});
 
   @override
-  State<ForgetPasswordScreen> createState() => _ForgetPasswordState();
+  State<CreatePasswordScreen> createState() => _CreatePasswordScreenState();
 }
 
-class _ForgetPasswordState extends State<ForgetPasswordScreen> {
-  final TextEditingController emailController = TextEditingController();
+class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController passswordConfirmationController =
+      TextEditingController();
 
-  Widget buildTextField(
-      IconData icon, String hint, TextEditingController controller) {
+  Widget buildTextField(String label, IconData icon, String hint,
+      TextEditingController controller) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Text(label, style: GoogleFonts.poppins(fontWeight: FontWeight.w500)),
+        const SizedBox(height: 5),
         TextField(
           controller: controller,
           decoration: InputDecoration(
@@ -32,23 +36,6 @@ class _ForgetPasswordState extends State<ForgetPasswordScreen> {
         ),
         const SizedBox(height: 15),
       ],
-    );
-  }
-
-  void handleNext() {
-    if (emailController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Harap isi semua data sebelum melanjutkan."),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    }
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const VerificationScreen()),
     );
   }
 
@@ -95,20 +82,22 @@ class _ForgetPasswordState extends State<ForgetPasswordScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Lupa Password",
+                    "Daftar Akun",
                     style: GoogleFonts.poppins(
                         fontSize: 22, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 5),
-                  Text(
-                      "Masukkan alamat email untuk\nmenerima kode lupa password",
+                  Text("Masukkan password akun anda",
                       style: GoogleFonts.poppins(fontSize: 14)),
 
                   const SizedBox(height: 20),
 
-                  buildTextField(
-                      Icons.email, "johndoe@examplemail.com", emailController),
-                  const SizedBox(height: 20),
+                  buildTextField("Password", Icons.key_sharp, "John Doe",
+                      passwordController),
+                  buildTextField("Konfirmasi Password", Icons.key_sharp,
+                      "John Doe", passswordConfirmationController),
+
+                  const SizedBox(height: 300),
 
                   // Tombol di bagian bawah
                   Align(
@@ -116,7 +105,13 @@ class _ForgetPasswordState extends State<ForgetPasswordScreen> {
                     child: Column(
                       children: [
                         ElevatedButton(
-                          onPressed: handleNext,
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const VerificationScreen()));
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF78D14D),
                             minimumSize: const Size(double.infinity, 50),
@@ -124,7 +119,7 @@ class _ForgetPasswordState extends State<ForgetPasswordScreen> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          child: Text("Lanjutkan",
+                          child: Text("Daftar Akun",
                               style: GoogleFonts.poppins(
                                   color: Colors.white, fontSize: 16)),
                         ),

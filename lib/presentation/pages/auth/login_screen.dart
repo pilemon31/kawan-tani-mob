@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kawan_tani/ui/pages/auth/home_screen.dart';
-import 'package:flutter_kawan_tani/ui/pages/auth/signup_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/dashboard/home_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/auth/signup_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LogInScreen extends StatefulWidget {
