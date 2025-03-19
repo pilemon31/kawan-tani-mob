@@ -134,7 +134,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                           PhosphorIconsRegular.arrowLeft,
                           color: Colors.white,
                           size: 24.0,
-                          semanticLabel: 'New Note',
+                          semanticLabel: 'Prev Section',
                         ),
                       ),
                       Row(children: [
@@ -163,7 +163,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                           PhosphorIconsRegular.arrowRight,
                           color: Colors.white,
                           size: 24.0,
-                          semanticLabel: 'New Note',
+                          semanticLabel: 'Next Section',
                         ),
                       ),
                     ],

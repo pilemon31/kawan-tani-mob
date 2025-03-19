@@ -17,11 +17,9 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          // Konten Scrollable
           Positioned.fill(
             child: SingleChildScrollView(
-              padding: EdgeInsets.only(
-                  top: 130, bottom: 100), // Supaya tidak ketutup footer
+              padding: EdgeInsets.only(top: 130, bottom: 100),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -33,8 +31,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-
-          // Header tetap di atas
           Positioned(
             top: 0,
             left: 0,
@@ -55,10 +51,8 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
 
-      // Posisi FAB supaya di tengah footer
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
-      // Footer di bagian bawah layar
       bottomNavigationBar: _buildFooter(),
     );
   }
@@ -101,24 +95,23 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildFooter() {
     return Container(
       decoration: const BoxDecoration(
-        color: Color(0xFF78D14D), // Warna latar belakang BottomAppBar
+        color: Color(0xFF78D14D),
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(30),
           topRight: Radius.circular(30),
         ),
       ),
       child: BottomAppBar(
-        color: Colors.transparent, // Agar warna diambil dari Container
+        color: Colors.transparent,
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-              horizontal: 16.0,
-              vertical: 8.0), // Tambah padding agar lebih proporsional
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               IconButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => HomeScreen()));
                 },
                 icon: PhosphorIcon(
                   PhosphorIcons.house(),
@@ -126,10 +119,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   size: 32.0,
                 ),
               ),
-              SizedBox(width:30), 
+              SizedBox(width: 30),
               IconButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => StartPlantingScreen()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => StartPlantingScreen()));
                 },
                 icon: PhosphorIcon(
                   PhosphorIcons.tree(),
@@ -137,10 +133,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   size: 32.0,
                 ),
               ),
-              SizedBox(width: 90), 
+              SizedBox(width: 90),
               IconButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => ArticleScreen()));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => ArticleScreen()));
                 },
                 icon: PhosphorIcon(
                   PhosphorIcons.articleNyTimes(),
@@ -151,7 +148,8 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(width: 30),
               IconButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen()));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => ProfileScreen()));
                 },
                 icon: PhosphorIcon(
                   PhosphorIcons.microphoneStage(),
