@@ -37,7 +37,6 @@ class _FormWidgetState extends State<FormWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        // Added SingleChildScrollView to make the UI scrollable
         child: Column(
           children: [
             buildTextField(

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kawan_tani/ui/pages/auth/article_screen.dart';
+import 'package:flutter_kawan_tani/ui/pages/auth/profile_screen.dart';
+import 'package:flutter_kawan_tani/ui/pages/auth/start_planting_screen.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -9,181 +12,277 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // int _currentIndex = 0;
-
-  // final List<Widget> _pages = [
-  //   const Center(child: Text("Home Page")),
-  //   const Center(child: Text("Tanaman Page")),
-  //   const Center(child: Text("Artikel Page")),
-  // ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF78D14D),
-      body: Column(
+      body: Stack(
         children: [
-          Container(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Text("Selamat Pagi"),
-                    Icon(
-                      PhosphorIcons.arrowLeft(),
-                      size: 30.0,
-                    )
-                  ],
-                ),
-                Text("Pilemon B."),
-                Row(
-                  children: [
-                    Text("Sabtu, 11 Januari 2025"),
-                    Icon(
-                      PhosphorIcons.addressBook(),
-                    )
-                  ],
-                ),
-
-                // Expanded(
-                //   child: Container(
-                //     padding: const EdgeInsets.all(30),
-                //     decoration: const BoxDecoration(
-                //       color: Colors.white,
-                //     ),
-                //   )
-                // )
-              ],
+          // Konten Scrollable
+          Positioned.fill(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.only(
+                  top: 130, bottom: 100), // Supaya tidak ketutup footer
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildWeatherSection(),
+                  _buildPlantSection(),
+                  _buildWorkshopSection(),
+                  _buildNewsSection(),
+                ],
+              ),
             ),
-          )
+          ),
+
+          // Header tetap di atas
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: _buildHeader(),
+          ),
         ],
       ),
-      // backgroundColor: Colors.white,
-      // body: SafeArea(
-      //   child: _currentIndex == 0 ? _buildHomePage() : _pages[_currentIndex],
-      // ),
-      // bottomNavigationBar: _buildBottomNavigationBar(),
+
+      // Floating Action Button
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        backgroundColor: Color(0xFF5CAD35),
+        child: PhosphorIcon(
+          PhosphorIcons.plus(),
+          color: Colors.white,
+          size: 32.0,
+        ),
+      ),
+
+      // Posisi FAB supaya di tengah footer
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+
+      // Footer di bagian bawah layar
+      bottomNavigationBar: _buildFooter(),
     );
   }
 
-  // Widget _buildHomePage() {
-  //   return ListView(
-  //     padding: EdgeInsets.zero,
-  //     children: [
-  //       _buildHeader(),
-  //       const SizedBox(height: 20),
-  //       _buildWeatherSection(),
-  //       const SizedBox(height: 20),
-  //       _buildPlantSection(),
-  //     ],
-  //   );
-  // }
+  // Widget untuk Header
+  Widget _buildHeader() {
+    return Container(
+      height: 130,
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Color(0xFF78D14D),
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(16),
+          bottomRight: Radius.circular(16),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Selamat Pagi",
+            style: TextStyle(color: Colors.white, fontSize: 16),
+          ),
+          SizedBox(height: 4),
+          Text(
+            "Pilemon B. 👋",
+            style: TextStyle(
+                color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            "Sabtu, 11 Januari 2025",
+            style: TextStyle(color: Colors.white70, fontSize: 14),
+          ),
+        ],
+      ),
+    );
+  }
 
-  // Widget _buildHeader() {
-  //   return Container(
-  //     padding: const EdgeInsets.all(20),
-  //     decoration: const BoxDecoration(
-  //       color: Colors.green,
-  //       borderRadius: BorderRadius.only(
-  //         bottomLeft: Radius.circular(30),
-  //         bottomRight: Radius.circular(30),
-  //       ),
-  //     ),
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: const [
-  //         Text("Selamat Pagi", style: TextStyle(color: Colors.white70)),
-  //         Text(
-  //           "Pilemon B. 👋",
-  //           style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
-  //         ),
-  //         Text("Sabtu, 11 Januari 2025", style: TextStyle(color: Colors.white70)),
-  //       ],
-  //     ),
-  //   );
-  // }
+  // Widget untuk Footer
+  Widget _buildFooter() {
+    return Container(
+      decoration: const BoxDecoration(
+        color: Color(0xFF78D14D), // Warna latar belakang BottomAppBar
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        ),
+      ),
+      child: BottomAppBar(
+        color: Colors.transparent, // Agar warna diambil dari Container
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 8.0), // Tambah padding agar lebih proporsional
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+                },
+                icon: PhosphorIcon(
+                  PhosphorIcons.house(),
+                  color: Colors.white,
+                  size: 32.0,
+                ),
+              ),
+              SizedBox(width:30), 
+              IconButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => StartPlantingScreen()));
+                },
+                icon: PhosphorIcon(
+                  PhosphorIcons.tree(),
+                  color: Colors.white,
+                  size: 32.0,
+                ),
+              ),
+              SizedBox(width: 90), 
+              IconButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ArticleScreen()));
+                },
+                icon: PhosphorIcon(
+                  PhosphorIcons.articleNyTimes(),
+                  color: Colors.white,
+                  size: 32.0,
+                ),
+              ),
+              SizedBox(width: 30),
+              IconButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen()));
+                },
+                icon: PhosphorIcon(
+                  PhosphorIcons.microphoneStage(),
+                  color: Colors.white,
+                  size: 32.0,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
-  // Widget _buildWeatherSection() {
-  //   return Padding(
-  //     padding: const EdgeInsets.symmetric(horizontal: 20),
-  //     child: Row(
-  //       children: [
-  //         _buildWeatherCard("Kelembapan", "36%", "assets/humidity.png"),
-  //         const SizedBox(width: 10),
-  //         _buildWeatherCard("Suhu", "36°C", "assets/temperature.png"),
-  //       ],
-  //     ),
-  //   );
-  // }
+  // Widget untuk bagian Cuaca
+  Widget _buildWeatherSection() {
+    return Padding(
+      padding: EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Mojokerto, Jawa Timur",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          SizedBox(height: 8),
+          Row(
+            children: [
+              _buildWeatherCard("Kelembapan", "36°C", "assets/suhu_image.jpg"),
+              SizedBox(width: 8),
+              _buildWeatherCard("Suhu", "36°C", "assets/suhu_image.jpg"),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 
-  // Widget _buildWeatherCard(String title, String value, String imagePath) {
-  //   return Expanded(
-  //     child: Card(
-  //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-  //       child: Padding(
-  //         padding: const EdgeInsets.all(10),
-  //         child: Column(
-  //           children: [
-  //             Image.asset(imagePath, height: 60),
-  //             const SizedBox(height: 5),
-  //             Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-  //             Text(value, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
+  Widget _buildWeatherCard(String title, String value, String imagePath) {
+    return Expanded(
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          image: DecorationImage(
+            image: AssetImage(imagePath),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title, style: TextStyle(color: Colors.white, fontSize: 14)),
+            Text(value,
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold)),
+          ],
+        ),
+      ),
+    );
+  }
 
-  // Widget _buildPlantSection() {
-  //   return Padding(
-  //     padding: const EdgeInsets.symmetric(horizontal: 20),
-  //     child: Card(
-  //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-  //       child: Column(
-  //         children: [
-  //           const ListTile(
-  //             title: Text("Lemon Malang", style: TextStyle(fontWeight: FontWeight.bold)),
-  //             subtitle: Text("36 hari menuju panen"),
-  //             trailing: Icon(Icons.agriculture),
-  //           ),
-  //           _buildWaterButton(true),
-  //           _buildWaterButton(false),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
+  // Widget untuk bagian Tanaman
+  Widget _buildPlantSection() {
+    return Padding(
+      padding: EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Tanamanmu",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          SizedBox(height: 8),
+          Container(
+            padding: EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.grey.shade300),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Lemon Malang",
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Text("36 hari menuju panen",
+                    style: TextStyle(color: Colors.grey)),
+                SizedBox(height: 8),
+                ElevatedButton.icon(
+                  onPressed: () {},
+                  icon: Icon(Icons.water_drop, color: Colors.white),
+                  label: Text("Siram tanaman"),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF78D14D)),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-  // Widget _buildWaterButton(bool enabled) {
-  //   return Padding(
-  //     padding: const EdgeInsets.all(10),
-  //     child: ElevatedButton.icon(
-  //       onPressed: enabled ? () {} : null,
-  //       icon: const Icon(Icons.water_drop),
-  //       label: const Text("Siram tanaman"),
-  //       style: ElevatedButton.styleFrom(
-  //         backgroundColor: enabled ? Colors.green : Colors.grey.shade300,
-  //         foregroundColor: enabled ? Colors.white : Colors.grey,
-  //         minimumSize: const Size(double.infinity, 50),
-  //       ),
-  //     ),
-  //   );
-  // }
+  // Widget untuk bagian Workshop
+  Widget _buildWorkshopSection() {
+    return Padding(
+      padding: EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Informasi Workshop",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          SizedBox(height: 8),
+          Image.asset("assets/suhu_image.jpg", fit: BoxFit.cover),
+        ],
+      ),
+    );
+  }
 
-  // Widget _buildBottomNavigationBar() {
-  //   return BottomNavigationBar(
-  //     currentIndex: _currentIndex,
-  //     onTap: (index) {
-  //       setState(() {
-  //         _currentIndex = index;
-  //       });
-  //     },
-  //     items: const [
-  //       BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-  //       BottomNavigationBarItem(icon: Icon(Icons.nature), label: "Tanaman"),
-  //       BottomNavigationBarItem(icon: Icon(Icons.article), label: "Artikel"),
-  //     ],
-  //   );
+  // Widget untuk bagian Berita
+  Widget _buildNewsSection() {
+    return Padding(
+      padding: EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Berita Terkini",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          SizedBox(height: 8),
+          Image.asset("assets/suhu_image.jpg", fit: BoxFit.cover),
+        ],
+      ),
+    );
+  }
 }
