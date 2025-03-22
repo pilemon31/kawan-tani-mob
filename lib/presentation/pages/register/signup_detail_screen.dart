@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kawan_tani/presentation/controllers/auth/registration_controller.dart';
 import 'package:flutter_kawan_tani/presentation/controllers/auth/validation_service.dart';
-import 'package:flutter_kawan_tani/presentation/pages/auth/profile_upload_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/register/profile_upload_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
