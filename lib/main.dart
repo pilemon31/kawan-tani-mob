@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kawan_tani/presentation/pages/Auth/login_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/login/login_screen.dart';
 import 'package:flutter_kawan_tani/presentation/pages/intro/onboarding_screen.dart';
 import 'package:flutter_kawan_tani/presentation/pages/intro/splash_screen.dart';
 import "package:get/get.dart";

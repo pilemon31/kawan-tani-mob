@@ -14,12 +14,20 @@ class ValidationService {
   }
 
   String? validatePassword(String? value) {
-    if (value == null) {
+    if (value == null || value.isEmpty) {
       return "Password harus diisi!";
     }
 
     if (value.length < 8) {
       return "Passsword harus lebih dari 8 karakter";
+    }
+
+    return null;
+  }
+
+  String? validateName(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Nama harus diisi!";
     }
 
     return null;

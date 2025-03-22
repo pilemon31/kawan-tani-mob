@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kawan_tani/presentation/controllers/auth/validation_service.dart';
 import 'package:flutter_kawan_tani/presentation/pages/dashboard/home_screen.dart';
-import 'package:flutter_kawan_tani/presentation/pages/auth/signup_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/register/signup_screen.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -192,9 +192,7 @@ class _LogInScreenState extends State<LogInScreen> {
                             ElevatedButton(
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
-                                  print('Email: ${_emailController.text}');
-                                  print(
-                                      'Password: ${_passwordController.text}');
+                                  Get.to(() => HomeScreen());
                                 }
                               },
                               style: ElevatedButton.styleFrom(

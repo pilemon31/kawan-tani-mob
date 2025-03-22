@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kawan_tani/presentation/pages/auth/login_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/login/login_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class VerificationSuccessfulScreen extends StatefulWidget {
