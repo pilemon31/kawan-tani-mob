@@ -32,4 +32,12 @@ class ValidationService {
 
     return null;
   }
+
+  String? validatePhoneNumber(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Nama harus diisi!";
+    }
+
+    return null;
+  }
 }

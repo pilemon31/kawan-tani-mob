@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_kawan_tani/presentation/controllers/auth/registration_controller.dart';
 import 'package:flutter_kawan_tani/presentation/controllers/auth/validation_service.dart';
 import 'package:flutter_kawan_tani/presentation/pages/login/login_screen.dart';
-import 'package:flutter_kawan_tani/presentation/pages/auth/signup_detail_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/register/signup_detail_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -16,7 +16,7 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final RegistrationController controller = RegistrationController();
+  final RegistrationController controller = Get.put(RegistrationController());
   final _formKey = GlobalKey<FormState>();
   bool obscureText = true;
 
@@ -29,6 +29,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
     super.initState();
     _firstNameController.text = controller.firstName.value;
     _emailController.text = controller.emailAddress.value;
+  }
+
+  @override
+  void dispose() {
+    _firstNameController.dispose();
+    _emailController.dispose();
+    super.dispose();
   }
 
   @override
@@ -68,9 +75,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   EdgeInsets.symmetric(horizontal: 38.0),
               width: double.infinity,
               decoration: BoxDecoration(
-                color: whiteColor, // Set background color here
+                color: whiteColor,
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30.0), // Set border radius
+                  topLeft: Radius.circular(30.0),
                   topRight: Radius.circular(30.0),
                 ),
               ),
@@ -119,32 +126,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       fontSize: 15, color: blackColor),
                                 ),
                                 SizedBox(height: 8.0),
-                                // Container with background color
                                 TextFormField(
                                   controller: _firstNameController,
                                   keyboardType: TextInputType.name,
                                   decoration: InputDecoration(
-                                      hintText: "John",
-                                      hintStyle: GoogleFonts.poppins(
-                                          fontSize: 15.0, fontWeight: light),
-                                      prefixIcon: PhosphorIcon(
-                                        PhosphorIconsRegular.user,
-                                        size: 19.0,
-                                        color: Color(0xff8594AC),
-                                      ),
-                                      border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                          borderSide: BorderSide.none),
-                                      fillColor: Color(0xffE7EFF2),
-                                      filled: true,
-                                      contentPadding: EdgeInsets.symmetric(
-                                          vertical: 12.0, horizontal: 15.0)
-                                      // Adjust vertical padding
-                                      ),
+                                    hintText: "John",
+                                    hintStyle: GoogleFonts.poppins(
+                                        fontSize: 15.0, fontWeight: light),
+                                    prefixIcon: PhosphorIcon(
+                                      PhosphorIconsRegular.user,
+                                      size: 19.0,
+                                      color: Color(0xff8594AC),
+                                    ),
+                                    border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                        borderSide: BorderSide.none),
+                                    fillColor: Color(0xffE7EFF2),
+                                    filled: true,
+                                    contentPadding: EdgeInsets.symmetric(
+                                        vertical: 12.0, horizontal: 15.0),
+                                  ),
                                   validator: _inputValidator.validateName,
-                                  onSaved: (value) {
-                                    controller.firstName.value = value ?? "";
+                                  onChanged: (value) {
+                                    controller.firstName.value = value;
                                   },
                                 ),
                               ],
@@ -160,32 +165,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       fontSize: 15, color: blackColor),
                                 ),
                                 SizedBox(height: 8.0),
-                                // Container with background color
                                 TextFormField(
                                   controller: _emailController,
                                   keyboardType: TextInputType.emailAddress,
                                   decoration: InputDecoration(
-                                      hintText: "johndoe@examplemail.com",
-                                      hintStyle: GoogleFonts.poppins(
-                                          fontSize: 15.0, fontWeight: light),
-                                      prefixIcon: PhosphorIcon(
-                                        PhosphorIconsRegular.envelope,
-                                        size: 19.0,
-                                        color: Color(0xff8594AC),
-                                      ),
-                                      border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                          borderSide: BorderSide.none),
-                                      fillColor: Color(0xffE7EFF2),
-                                      filled: true,
-                                      contentPadding: EdgeInsets.symmetric(
-                                          vertical: 12.0, horizontal: 15.0)
-                                      // Adjust vertical padding
-                                      ),
+                                    hintText: "johndoe@examplemail.com",
+                                    hintStyle: GoogleFonts.poppins(
+                                        fontSize: 15.0, fontWeight: light),
+                                    prefixIcon: PhosphorIcon(
+                                      PhosphorIconsRegular.envelope,
+                                      size: 19.0,
+                                      color: Color(0xff8594AC),
+                                    ),
+                                    border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                        borderSide: BorderSide.none),
+                                    fillColor: Color(0xffE7EFF2),
+                                    filled: true,
+                                    contentPadding: EdgeInsets.symmetric(
+                                        vertical: 12.0, horizontal: 15.0),
+                                  ),
                                   validator: _inputValidator.validateEmail,
-                                  onSaved: (value) {
-                                    controller.emailAddress.value = value ?? "";
+                                  onChanged: (value) {
+                                    controller.emailAddress.value = value;
                                   },
                                 ),
                               ],
