@@ -1,4 +1,6 @@
 import "package:get/get.dart";
+import 'package:flutter/foundation.dart';
+
 
 class RegistrationController extends GetxController {
   //Insialisasi data user
@@ -20,7 +22,7 @@ class RegistrationController extends GetxController {
       'password': password.value,
     };
 
-    print('Mengirim data ke backend: $userData');
+    debugPrint('Mengirim data ke backend: $userData');
 
     await Future.delayed(Duration(seconds: 2));
 
