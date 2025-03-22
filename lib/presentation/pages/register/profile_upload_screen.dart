@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kawan_tani/presentation/pages/register/createpassword_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/register/sign_up_confirmation_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -182,7 +183,7 @@ class _ProfileUploadState extends State<ProfileUpload> {
                               // Button Selanjutnya
                               ElevatedButton(
                                 onPressed: () {
-                                  Get.to(() => CreatePasswordScreen());
+                                  Get.to(() => SignUpConfirmationScreen());
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: primaryColor,
