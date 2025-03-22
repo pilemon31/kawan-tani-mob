@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kawan_tani/presentation/controllers/auth/registration_controller.dart';
 import 'package:flutter_kawan_tani/presentation/controllers/auth/validation_service.dart';
 import 'package:flutter_kawan_tani/presentation/pages/login/login_screen.dart';
 import 'package:flutter_kawan_tani/presentation/pages/auth/signup_detail_screen.dart';
@@ -15,12 +16,20 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  final RegistrationController controller = RegistrationController();
   final _formKey = GlobalKey<FormState>();
   bool obscureText = true;
 
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final ValidationService _inputValidator = ValidationService();
+
+  @override
+  void initState() {
+    super.initState();
+    _firstNameController.text = controller.firstName.value;
+    _emailController.text = controller.emailAddress.value;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -134,6 +143,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       // Adjust vertical padding
                                       ),
                                   validator: _inputValidator.validateName,
+                                  onSaved: (value) {
+                                    controller.firstName.value = value ?? "";
+                                  },
                                 ),
                               ],
                             ),
@@ -172,6 +184,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       // Adjust vertical padding
                                       ),
                                   validator: _inputValidator.validateEmail,
+                                  onSaved: (value) {
+                                    controller.emailAddress.value = value ?? "";
+                                  },
                                 ),
                               ],
                             ),
@@ -179,6 +194,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ElevatedButton(
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
+                                  _formKey.currentState!.save();
                                   Get.to(() => SignUpDetailScreen());
                                 }
                               },
@@ -192,7 +208,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 ),
                               ),
                               child: Text(
-                                'Masuk',
+                                'Daftar Akun',
                                 style: GoogleFonts.poppins(
                                     color: whiteColor,
                                     fontSize: 16,
