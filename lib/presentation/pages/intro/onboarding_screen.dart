@@ -1,6 +1,6 @@
 import 'package:flutter_kawan_tani/presentation/controllers/intro/onboarding_controller.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
-import 'package:flutter_kawan_tani/presentation/pages/auth/login_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/login/login_screen.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:flutter/material.dart';
 import "package:get/get.dart";
