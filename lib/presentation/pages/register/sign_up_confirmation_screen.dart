@@ -1,32 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kawan_tani/presentation/controllers/auth/registration_controller.dart';
 import 'package:flutter_kawan_tani/presentation/controllers/auth/validation_service.dart';
+import 'package:flutter_kawan_tani/presentation/pages/register/createpassword_screen.dart';
 import 'package:flutter_kawan_tani/presentation/pages/register/profile_upload_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import "package:get/get.dart";
 
-class SignUpDetailScreen extends StatefulWidget {
-  const SignUpDetailScreen({super.key});
+class SignUpConfirmationScreen extends StatefulWidget {
+  const SignUpConfirmationScreen({super.key});
 
   @override
-  State<SignUpDetailScreen> createState() => _SignUpScreenDetailState();
+  State<SignUpConfirmationScreen> createState() => _SignUpConfirmationState();
 }
 
-class _SignUpScreenDetailState extends State<SignUpDetailScreen> {
+class _SignUpConfirmationState extends State<SignUpConfirmationScreen> {
   final RegistrationController controller = Get.put(RegistrationController());
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
-  final ValidationService _inputValidator = ValidationService();
 
   @override
   void initState() {
     super.initState();
-
     _firstNameController.text = controller.firstName.value;
     _lastNameController.text = controller.lastName.value;
     _emailController.text = controller.emailAddress.value;
@@ -92,7 +91,7 @@ class _SignUpScreenDetailState extends State<SignUpDetailScreen> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          "Lengkapi Daftar Diri",
+                          "Konfirmasi Data Diri",
                           textAlign: TextAlign.left,
                           style: GoogleFonts.poppins(
                               fontSize: 28.0,
@@ -105,7 +104,7 @@ class _SignUpScreenDetailState extends State<SignUpDetailScreen> {
                         child: Container(
                           width: MediaQuery.of(context).size.width * 0.77,
                           child: Text(
-                            "Lengkapi daftar diri anda!",
+                            "Konfirmasi data diri akun anda, pastikan sudah sesuai!",
                             textAlign: TextAlign.left,
                             style: GoogleFonts.poppins(
                                 fontSize: 15.0,
@@ -171,32 +170,35 @@ class _SignUpScreenDetailState extends State<SignUpDetailScreen> {
                                       fontSize: 15, color: blackColor),
                                 ),
                                 SizedBox(height: 8.0),
-                                TextFormField(
-                                  controller: _lastNameController,
-                                  keyboardType: TextInputType.name,
-                                  decoration: InputDecoration(
-                                    hintText: "Doe",
-                                    hintStyle: GoogleFonts.poppins(
-                                        fontSize: 15.0, fontWeight: light),
-                                    prefixIcon: PhosphorIcon(
-                                      PhosphorIconsRegular.user,
-                                      size: 19.0,
-                                      color: Color(0xff8594AC),
-                                    ),
-                                    border: OutlineInputBorder(
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 12.0, horizontal: 15.0),
+                                  decoration: BoxDecoration(
+                                      color: Color.fromARGB(255, 255, 255, 255),
                                       borderRadius: BorderRadius.circular(10.0),
-                                      borderSide: BorderSide.none,
-                                    ),
-                                    fillColor: Color(0xffE7EFF2),
-                                    filled: true,
-                                    contentPadding: EdgeInsets.symmetric(
-                                        vertical: 12.0, horizontal: 15.0),
+                                      border: Border.all(
+                                          color: Color(0xffE7EFF2),
+                                          width: 2.0)),
+                                  child: Row(
+                                    children: [
+                                      PhosphorIcon(
+                                        PhosphorIconsRegular.user,
+                                        size: 19.0,
+                                        color: Color(0xff8594AC),
+                                      ),
+                                      SizedBox(width: 12),
+                                      Expanded(
+                                          child: Obx(
+                                        () => Text(
+                                          controller.lastName.value,
+                                          style: GoogleFonts.poppins(
+                                              fontSize: 15.0,
+                                              fontWeight: light),
+                                        ),
+                                      )),
+                                    ],
                                   ),
-                                  validator: _inputValidator.validateName,
-                                  onSaved: (value) {
-                                    controller.lastName.value = value ?? "";
-                                  },
-                                ),
+                                )
                               ],
                             ),
                             SizedBox(height: 20),
@@ -222,7 +224,7 @@ class _SignUpScreenDetailState extends State<SignUpDetailScreen> {
                                   child: Row(
                                     children: [
                                       PhosphorIcon(
-                                        PhosphorIconsRegular.envelope,
+                                        PhosphorIconsRegular.user,
                                         size: 19.0,
                                         color: Color(0xff8594AC),
                                       ),
@@ -252,33 +254,35 @@ class _SignUpScreenDetailState extends State<SignUpDetailScreen> {
                                       fontSize: 15, color: blackColor),
                                 ),
                                 SizedBox(height: 8.0),
-                                TextFormField(
-                                  controller: _phoneNumberController,
-                                  keyboardType: TextInputType.phone,
-                                  decoration: InputDecoration(
-                                    hintText: "+62812345678",
-                                    hintStyle: GoogleFonts.poppins(
-                                        fontSize: 15.0, fontWeight: light),
-                                    prefixIcon: PhosphorIcon(
-                                      PhosphorIconsRegular.phone,
-                                      size: 19.0,
-                                      color: Color(0xff8594AC),
-                                    ),
-                                    border: OutlineInputBorder(
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 12.0, horizontal: 15.0),
+                                  decoration: BoxDecoration(
+                                      color: Color.fromARGB(255, 255, 255, 255),
                                       borderRadius: BorderRadius.circular(10.0),
-                                      borderSide: BorderSide.none,
-                                    ),
-                                    fillColor: Color(0xffE7EFF2),
-                                    filled: true,
-                                    contentPadding: EdgeInsets.symmetric(
-                                        vertical: 12.0, horizontal: 15.0),
+                                      border: Border.all(
+                                          color: Color(0xffE7EFF2),
+                                          width: 2.0)),
+                                  child: Row(
+                                    children: [
+                                      PhosphorIcon(
+                                        PhosphorIconsRegular.user,
+                                        size: 19.0,
+                                        color: Color(0xff8594AC),
+                                      ),
+                                      SizedBox(width: 12),
+                                      Expanded(
+                                          child: Obx(
+                                        () => Text(
+                                          controller.phoneNumber.value,
+                                          style: GoogleFonts.poppins(
+                                              fontSize: 15.0,
+                                              fontWeight: light),
+                                        ),
+                                      )),
+                                    ],
                                   ),
-                                  validator:
-                                      _inputValidator.validatePhoneNumber,
-                                  onSaved: (value) {
-                                    controller.phoneNumber.value = value ?? "";
-                                  },
-                                ),
+                                )
                               ],
                             ),
                             SizedBox(height: 56),
@@ -287,7 +291,7 @@ class _SignUpScreenDetailState extends State<SignUpDetailScreen> {
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
                                   _formKey.currentState!.save();
-                                  Get.to(() => ProfileUpload());
+                                  Get.to(() => CreatePasswordScreen());
                                 }
                               },
                               style: ElevatedButton.styleFrom(
