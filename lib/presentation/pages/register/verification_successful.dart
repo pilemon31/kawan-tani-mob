@@ -18,108 +18,122 @@ class _VerificationSuccessfulScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF78D14D),
-      resizeToAvoidBottomInset: false,
-      body: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(top: 30.0) +
-                EdgeInsets.symmetric(horizontal: 16.0) +
-                EdgeInsets.symmetric(vertical: 54.0),
-            child: Column(
-              children: [
-                Text(
-                  "KawanTani",
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.poppins(
-                      fontSize: 36.0, fontWeight: bold, color: whiteColor),
-                ),
-                SizedBox(height: 5.0),
-                Text(
-                  "Teman Bertani Anda",
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.poppins(
-                      fontSize: 18.0, fontWeight: light, color: whiteColor),
-                ),
+        backgroundColor: const Color(0xFF78D14D),
+        resizeToAvoidBottomInset: false,
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color(0xFF78D14D),
+                Color(0xFF349107),
               ],
             ),
           ),
-          Expanded(
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 38.0, vertical: 28.0),
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: whiteColor,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30.0),
-                  topRight: Radius.circular(30.0),
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(top: 30.0) +
+                    EdgeInsets.symmetric(horizontal: 16.0) +
+                    EdgeInsets.symmetric(vertical: 54.0),
+                child: Column(
+                  children: [
+                    Text(
+                      "KawanTani",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.poppins(
+                          fontSize: 36.0, fontWeight: bold, color: whiteColor),
+                    ),
+                    SizedBox(height: 5.0),
+                    Text(
+                      "Teman Bertani Anda",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.poppins(
+                          fontSize: 18.0, fontWeight: light, color: whiteColor),
+                    ),
+                  ],
                 ),
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            "Verifikasi Berhasil",
-                            textAlign: TextAlign.left,
-                            style: GoogleFonts.poppins(
-                                fontSize: 28.0,
-                                color: blackColor,
-                                fontWeight: semiBold),
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.topLeft,
-                          child: Container(
-                            width: MediaQuery.of(context).size.width * 0.77,
-                            child: Text(
-                              "Selamat akun anda berhasil diverifikasi, masuk untuk melanjutkan",
-                              textAlign: TextAlign.left,
-                              style: GoogleFonts.poppins(
-                                  fontSize: 15.0,
-                                  color: blackColor,
-                                  fontWeight: light),
-                            ),
-                          ),
-                        ),
-                      ]),
-                  Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Sekarang, Anda dapat melanjutkan dengan masuk ke akun Anda melalui halaman masuk.",
-                      style: GoogleFonts.poppins(fontSize: 15),
-                      textAlign: TextAlign.center,
+              Expanded(
+                child: Container(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 38.0, vertical: 28.0),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: whiteColor,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30.0),
+                      topRight: Radius.circular(30.0),
                     ),
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Get.to(() => LogInScreen());
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: primaryColor,
-                      elevation: 0.0,
-                      shadowColor: Colors.transparent,
-                      minimumSize: Size(double.infinity, 48),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Align(
+                              alignment: Alignment.topLeft,
+                              child: Text(
+                                "Verifikasi Berhasil",
+                                textAlign: TextAlign.left,
+                                style: GoogleFonts.poppins(
+                                    fontSize: 28.0,
+                                    color: blackColor,
+                                    fontWeight: semiBold),
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.topLeft,
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.77,
+                                child: Text(
+                                  "Selamat akun anda berhasil diverifikasi, masuk untuk melanjutkan",
+                                  textAlign: TextAlign.left,
+                                  style: GoogleFonts.poppins(
+                                      fontSize: 15.0,
+                                      color: blackColor,
+                                      fontWeight: light),
+                                ),
+                              ),
+                            ),
+                          ]),
+                      Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          "Sekarang, Anda dapat melanjutkan dengan masuk ke akun Anda melalui halaman masuk.",
+                          style: GoogleFonts.poppins(fontSize: 15),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                    ),
-                    child: Text(
-                      'Masuk',
-                      style: GoogleFonts.poppins(
-                          color: whiteColor, fontSize: 16, fontWeight: bold),
-                    ),
-                  )
-                ],
+                      ElevatedButton(
+                        onPressed: () {
+                          Get.to(() => LogInScreen());
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: primaryColor,
+                          elevation: 0.0,
+                          shadowColor: Colors.transparent,
+                          minimumSize: Size(double.infinity, 48),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: Text(
+                          'Masuk',
+                          style: GoogleFonts.poppins(
+                              color: whiteColor,
+                              fontSize: 16,
+                              fontWeight: bold),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
-    );
+        ));
   }
 }

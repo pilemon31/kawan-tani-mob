@@ -27,17 +27,28 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF78D14D),
-      body: Center(
-        child: Container(
-          width: 200.78,
-          height: 211.74,
-          decoration: const BoxDecoration(
+      // Menggunakan BoxDecoration dengan gradient
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFF78D14D),
+              Color(0xFF349107),
+            ],
+          ),
+        ),
+        child: Center(
+          child: Container(
+            width: 200.78,
+            height: 211.74,
+            decoration: const BoxDecoration(
               image: DecorationImage(
-            image: AssetImage(
-              'assets/logo.png',
+                image: AssetImage('assets/logo.png'),
+              ),
             ),
-          )),
+          ),
         ),
       ),
     );
