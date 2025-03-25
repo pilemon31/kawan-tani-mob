@@ -122,7 +122,7 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                           ),
                           Align(
                             alignment: Alignment.topLeft,
-                            child: Container(
+                            child: SizedBox(
                               width: MediaQuery.of(context).size.width * 0.77,
                               child: Text(
                                 "Masukkan password akun anda agar lebih aman",

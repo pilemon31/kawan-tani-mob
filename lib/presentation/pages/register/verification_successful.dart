@@ -3,7 +3,6 @@ import 'package:flutter_kawan_tani/presentation/pages/login/login_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import "package:get/get.dart";
-import 'package:flutter/services.dart';
 
 class VerificationSuccessfulScreen extends StatefulWidget {
   const VerificationSuccessfulScreen({super.key});
@@ -86,7 +85,7 @@ class _VerificationSuccessfulScreenState
                             ),
                             Align(
                               alignment: Alignment.topLeft,
-                              child: Container(
+                              child: SizedBox(
                                 width: MediaQuery.of(context).size.width * 0.77,
                                 child: Text(
                                   "Selamat akun anda berhasil diverifikasi, masuk untuk melanjutkan",

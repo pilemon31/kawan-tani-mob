@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kawan_tani/presentation/controllers/auth/registration_controller.dart';
-import 'package:flutter_kawan_tani/presentation/controllers/auth/validation_service.dart';
 import 'package:flutter_kawan_tani/presentation/pages/register/createpassword_screen.dart';
-import 'package:flutter_kawan_tani/presentation/pages/register/profile_upload_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -112,7 +110,7 @@ class _SignUpConfirmationState extends State<SignUpConfirmationScreen> {
                           ),
                           Align(
                             alignment: Alignment.topLeft,
-                            child: Container(
+                            child: SizedBox(
                               width: MediaQuery.of(context).size.width * 0.77,
                               child: Text(
                                 "Konfirmasi data diri akun anda, pastikan sudah sesuai!",

@@ -145,7 +145,7 @@ class _SignUpScreenDetailState extends State<SignUpDetailScreen> {
                           ),
                           Align(
                             alignment: Alignment.topLeft,
-                            child: Container(
+                            child: SizedBox(
                               width: MediaQuery.of(context).size.width * 0.77,
                               child: Text(
                                 "Lengkapi daftar diri anda!",
@@ -351,7 +351,7 @@ class _SignUpScreenDetailState extends State<SignUpDetailScreen> {
                                             style: ElevatedButton.styleFrom(
                                               elevation: 0.0,
                                               backgroundColor: isMaleClicked
-                                                  ? Color(0xffFFFF)
+                                                  ? Color(0x00ffffff)
                                                   : Color(
                                                       0xffE7EFF2), // Button color based on selection
                                               shape: RoundedRectangleBorder(
@@ -378,7 +378,7 @@ class _SignUpScreenDetailState extends State<SignUpDetailScreen> {
                                             style: ElevatedButton.styleFrom(
                                               elevation: 0.0,
                                               backgroundColor: isFemaleClicked
-                                                  ? Color(0xffFFFF)
+                                                  ? Color(0x00ffffff)
                                                   : Color(
                                                       0xffE7EFF2), // Change this to handle the female button selection
                                               shape: RoundedRectangleBorder(

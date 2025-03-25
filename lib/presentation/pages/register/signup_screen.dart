@@ -110,7 +110,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                           Align(
                             alignment: Alignment.topLeft,
-                            child: Container(
+                            child: SizedBox(
                               width: MediaQuery.of(context).size.width * 0.77,
                               child: Text(
                                 "Daftar sekarang dan nikmati berbagai fitur menarik!",
