@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kawan_tani/presentation/pages/article/article_list.dart';
+import 'package:flutter_kawan_tani/presentation/pages/dashboard/home_screen.dart';
 import 'package:flutter_kawan_tani/presentation/pages/login/login_screen.dart';
 import 'package:flutter_kawan_tani/presentation/pages/intro/onboarding_screen.dart';
 import 'package:flutter_kawan_tani/presentation/pages/intro/splash_screen.dart';
@@ -14,10 +16,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: "KawanTani",
+      theme: ThemeData(scaffoldBackgroundColor: Colors.white),
       debugShowCheckedModeBanner: false,
       initialRoute: "/",
       getPages: [
-        GetPage(name: "/", page: () => const SplashPage()),
+        GetPage(name: "/", page: () => const ArticleList()),
         GetPage(name: "/onboarding", page: () => const OnboardingPage()),
         GetPage(name: "/login", page: () => LogInScreen())
       ],
