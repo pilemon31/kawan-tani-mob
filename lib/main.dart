@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kawan_tani/presentation/pages/article/article_detail.dart';
 import 'package:flutter_kawan_tani/presentation/pages/article/article_list.dart';
 import 'package:flutter_kawan_tani/presentation/pages/dashboard/home_screen.dart';
 import 'package:flutter_kawan_tani/presentation/pages/login/login_screen.dart';
@@ -20,9 +21,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: "/",
       getPages: [
-        GetPage(name: "/", page: () => const ArticleList()),
+        GetPage(name: "/", page: () => const ArticleDetail()),
         GetPage(name: "/onboarding", page: () => const OnboardingPage()),
-        GetPage(name: "/login", page: () => LogInScreen())
+        GetPage(name: "/login", page: () => LogInScreen()),
+        GetPage(name: "/home", page: () => HomeScreen()),
+        GetPage(name: "/articles", page: () => ArticleList())
       ],
     );
   }
