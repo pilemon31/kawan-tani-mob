@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kawan_tani/presentation/pages/auth/verification_successful.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_kawan_tani/presentation/pages/register/verification_successful.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
 import "package:get/get.dart";
 import 'package:flutter/services.dart';
 
@@ -185,7 +183,9 @@ class _VerificationScreenState extends State<VerificationScreen> {
                     ),
                   ),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Get.to(() => VerificationSuccessfulScreen());
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: primaryColor,
                       elevation: 0.0,
