@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kawan_tani/pages/splash_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/login/login_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/intro/onboarding_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/intro/splash_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/register/verification_screen.dart';
+import "package:get/get.dart";
 
 void main() => runApp(const MyApp());
 
@@ -8,9 +12,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return GetMaterialApp(
+      title: "KawanTani",
       debugShowCheckedModeBanner: false,
-      home: SplashPage(),
+      initialRoute: "/",
+      getPages: [
+        GetPage(name: "/", page: () => const VerificationScreen()),
+        GetPage(name: "/onboarding", page: () => const OnboardingPage()),
+        GetPage(name: "/login", page: () => LogInScreen())
+      ],
     );
   }
 }
