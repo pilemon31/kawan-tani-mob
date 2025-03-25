@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kawan_tani/presentation/pages/auth/verification_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/register/verification_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
