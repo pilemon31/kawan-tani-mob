@@ -54,27 +54,27 @@ class _ArticleListState extends State<ArticleList> {
           child: Column(
             children: [
               TextFormField(
-                              controller: _searchController,
-                              keyboardType: TextInputType.name,
-                              decoration: InputDecoration(
-              hintText: "Cari berita pertanian....",
-              hintStyle:
-                  GoogleFonts.poppins(fontSize: 15.0, fontWeight: light),
-              prefixIcon: PhosphorIcon(
-                PhosphorIconsRegular.magnifyingGlass,
-                size: 19.0,
-                color: Color(0xff8594AC),
+                controller: _searchController,
+                keyboardType: TextInputType.name,
+                decoration: InputDecoration(
+                  hintText: "Cari berita pertanian....",
+                  hintStyle:
+                      GoogleFonts.poppins(fontSize: 15.0, fontWeight: light),
+                  prefixIcon: PhosphorIcon(
+                    PhosphorIconsRegular.magnifyingGlass,
+                    size: 19.0,
+                    color: Color(0xff8594AC),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide(color: Color(0xffC3C6D4)),
+                  ),
+                  fillColor: Color(0xffE7EFF2),
+                  filled: true,
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 12.0, horizontal: 13.0),
+                ),
               ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
-                borderSide: BorderSide(color: Color(0xffC3C6D4)),
-              ),
-              fillColor: Color(0xffE7EFF2),
-              filled: true,
-              contentPadding:
-                  EdgeInsets.symmetric(vertical: 12.0, horizontal: 13.0),
-                              ),
-                            ),
               SizedBox(
                 height: 15,
               ),
