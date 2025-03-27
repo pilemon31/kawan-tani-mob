@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kawan_tani/presentation/pages/dashboard/home_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/plants/filter_plants_screen.dart';
 import 'package:flutter_kawan_tani/presentation/widgets/navbar/navbar.dart';
+import 'package:flutter_kawan_tani/shared/theme.dart';
+import "package:get/get.dart";
 import 'package:google_fonts/google_fonts.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
@@ -14,41 +18,43 @@ class _StartPlantingScreenState extends State<StartPlantingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          toolbarHeight: 80,
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: PhosphorIcon(
-              PhosphorIconsBold.arrowLeft,
-              size: 32,
-              color: Colors.black,
-            ),
-          ),
-          title: Text(
-            'Mulai Bertanam',
-            style: GoogleFonts.poppins(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
-          ),
-          actions: [
-            IconButton(
-              onPressed: () {},
-              icon: PhosphorIcon(
-                PhosphorIconsFill.dotsThreeOutlineVertical,
-                size: 32,
-                color: Colors.black,
-              ),
-            ),
-          ],
-        ),
+        appBar: PreferredSize(
+            preferredSize: Size.fromHeight(100.0),
+            child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 27),
+                child: AppBar(
+                  backgroundColor: Colors.white,
+                  toolbarHeight: 80.0,
+                  leading: IconButton(
+                    onPressed: () {
+                      Get.to(() => HomeScreen());
+                    },
+                    icon: PhosphorIcon(
+                      PhosphorIconsBold.arrowLeft,
+                      size: 32.0,
+                    ),
+                  ),
+                  title: Padding(
+                      padding: EdgeInsets.all(0),
+                      child: Text(
+                        'Mulai Bertanam',
+                        style: GoogleFonts.poppins(
+                            fontSize: 20, color: blackColor, fontWeight: bold),
+                      )),
+                  actions: [
+                    IconButton(
+                      onPressed: () {
+                        Get.to(() => FilterPlantsScreen());
+                      },
+                      icon: PhosphorIcon(
+                        PhosphorIconsFill.dotsThreeOutlineVertical,
+                        size: 32.0,
+                      ),
+                    ),
+                  ],
+                ))),
         body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 30),
           child: GridView.builder(
             itemCount: 4,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -67,8 +73,8 @@ class _StartPlantingScreenState extends State<StartPlantingScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      width: 150,
-                      height: 90,
+                      width: 130,
+                      height: 80,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         image: DecorationImage(
