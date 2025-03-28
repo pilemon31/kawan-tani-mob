@@ -110,7 +110,7 @@ class _SignUpConfirmationState extends State<SignUpConfirmationScreen> {
                           ),
                           Align(
                             alignment: Alignment.topLeft,
-                            child: Container(
+                            child: SizedBox(
                               width: MediaQuery.of(context).size.width * 0.77,
                               child: Text(
                                 "Konfirmasi data diri akun anda, pastikan sudah sesuai!",

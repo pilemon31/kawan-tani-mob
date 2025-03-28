@@ -105,7 +105,7 @@ class _ProfileUploadState extends State<ProfileUpload> {
                             ),
                             Align(
                               alignment: Alignment.topLeft,
-                              child: Container(
+                              child: SizedBox(
                                 width: MediaQuery.of(context).size.width * 0.77,
                                 child: Text(
                                   "Masukkan Foto Profil",

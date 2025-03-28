@@ -53,8 +53,7 @@ class _ArticleListState extends State<ArticleList> {
           padding: EdgeInsets.symmetric(horizontal: 27),
           child: Column(
             children: [
-              Container(
-                  child: TextFormField(
+              TextFormField(
                 controller: _searchController,
                 keyboardType: TextInputType.name,
                 decoration: InputDecoration(
@@ -75,7 +74,7 @@ class _ArticleListState extends State<ArticleList> {
                   contentPadding:
                       EdgeInsets.symmetric(vertical: 12.0, horizontal: 13.0),
                 ),
-              )),
+              ),
               SizedBox(
                 height: 15,
               ),

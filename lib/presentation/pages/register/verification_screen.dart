@@ -115,7 +115,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                             ),
                             Align(
                               alignment: Alignment.topLeft,
-                              child: Container(
+                              child: SizedBox(
                                 width: MediaQuery.of(context).size.width * 0.77,
                                 child: Text(
                                   "Cek kotak masuk ke email anda untuk menerima kode verifikasi",
