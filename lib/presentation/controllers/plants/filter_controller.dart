@@ -6,6 +6,8 @@ class FilterController extends GetxController {
   var tanamanHortikultura = false.obs;
 
   bool isValid() {
-    return tanamanPangan.value || tanamanPerkebunan.value || tanamanHortikultura.value;
+    return tanamanPangan.value ||
+        tanamanPerkebunan.value ||
+        tanamanHortikultura.value;
   }
 }
