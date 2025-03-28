@@ -4,8 +4,6 @@ import 'package:flutter_kawan_tani/presentation/pages/article/article_list.dart'
 import 'package:flutter_kawan_tani/presentation/pages/dashboard/home_screen.dart';
 import 'package:flutter_kawan_tani/presentation/pages/login/login_screen.dart';
 import 'package:flutter_kawan_tani/presentation/pages/intro/onboarding_screen.dart';
-import 'package:flutter_kawan_tani/presentation/pages/intro/splash_screen.dart';
-import 'package:flutter_kawan_tani/presentation/pages/register/verification_screen.dart';
 import "package:get/get.dart";
 
 void main() => runApp(const MyApp());
