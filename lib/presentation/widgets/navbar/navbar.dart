@@ -9,7 +9,7 @@ class Navbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final NavbarController _controller = Get.put(NavbarController());
+    final NavbarController controller = Get.put(NavbarController());
 
     return Stack(
       alignment: Alignment.center,
@@ -37,12 +37,12 @@ class Navbar extends StatelessWidget {
             children: [
               IconButton(
                 onPressed: () {
-                  _controller.changePage(0);
+                  controller.changePage(0);
                   Get.toNamed("/home");
                 },
                 icon: Obx(
                   () => PhosphorIcon(
-                      _controller.currentIndex.value == 0
+                      controller.currentIndex.value == 0
                           ? PhosphorIconsFill.house
                           : PhosphorIconsRegular.house,
                       size: 29.0,
@@ -51,10 +51,10 @@ class Navbar extends StatelessWidget {
               ),
               IconButton(
                 onPressed: () {
-                  _controller.changePage(1);
+                  controller.changePage(1);
                 },
                 icon: Obx(() => PhosphorIcon(
-                      _controller.currentIndex.value == 1
+                      controller.currentIndex.value == 1
                           ? PhosphorIconsFill.tree
                           : PhosphorIconsRegular.tree,
                       size: 29.0,
@@ -64,11 +64,11 @@ class Navbar extends StatelessWidget {
               SizedBox(width: 70),
               IconButton(
                 onPressed: () {
-                  _controller.changePage(2);
+                  controller.changePage(2);
                   Get.toNamed("/articles");
                 },
                 icon: Obx(() => PhosphorIcon(
-                      _controller.currentIndex.value == 2
+                      controller.currentIndex.value == 2
                           ? PhosphorIconsFill.articleMedium
                           : PhosphorIconsRegular.articleMedium,
                       size: 29.0,
@@ -77,10 +77,10 @@ class Navbar extends StatelessWidget {
               ),
               IconButton(
                 onPressed: () {
-                  _controller.changePage(3);
+                  controller.changePage(3);
                 },
                 icon: Obx(() => PhosphorIcon(
-                      _controller.currentIndex.value == 3
+                      controller.currentIndex.value == 3
                           ? PhosphorIconsFill.microphoneStage
                           : PhosphorIconsRegular.microphoneStage,
                       size: 29.0,
