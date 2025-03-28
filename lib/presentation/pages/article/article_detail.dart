@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kawan_tani/presentation/pages/article/article_comments.dart';
 import 'package:flutter_kawan_tani/presentation/widgets/navbar/navbar.dart';
+import 'package:flutter_kawan_tani/presentation/widgets/toast/custom_toast.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -13,6 +15,8 @@ class ArticleDetail extends StatefulWidget {
 }
 
 class _ArticleDetailState extends State<ArticleDetail> {
+  bool isBookmarked = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +38,9 @@ class _ArticleDetailState extends State<ArticleDetail> {
                   ),
                   actions: [
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Get.to(() => ArticleComments());
+                      },
                       icon: PhosphorIcon(
                         PhosphorIconsBold.chatCircle,
                         size: 32.0,
@@ -132,9 +138,25 @@ class _ArticleDetailState extends State<ArticleDetail> {
                       ),
                     ),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        if (isBookmarked == false) {
+                          showCustomToast(
+                              context, "Berhasil menambah artikel!");
+                          setState(() {
+                            isBookmarked = true;
+                          });
+                        } else {
+                          showCustomToast(
+                              context, "Berhasil mennghapus artikel!");
+                          setState(() {
+                            isBookmarked = false;
+                          });
+                        }
+                      },
                       icon: PhosphorIcon(
-                        PhosphorIconsBold.bookmarkSimple,
+                        isBookmarked
+                            ? PhosphorIconsFill.bookmarkSimple
+                            : PhosphorIconsBold.bookmarkSimple,
                         size: 32.0,
                       ),
                     ),
