@@ -79,6 +79,7 @@ class Navbar extends StatelessWidget {
               IconButton(
                 onPressed: () {
                   controller.changePage(3);
+                  Get.toNamed("/workshops");
                 },
                 icon: Obx(() => PhosphorIcon(
                       controller.currentIndex.value == 3
