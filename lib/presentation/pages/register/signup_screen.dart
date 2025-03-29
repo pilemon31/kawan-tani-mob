@@ -240,7 +240,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "Belum memiliki akun?",
+                            "Sudah punya akun?",
                             style: GoogleFonts.poppins(
                                 fontSize: 14, fontWeight: light),
                           ),
@@ -259,7 +259,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 ),
                                 side: BorderSide(color: primaryColor)),
                             child: Text(
-                              'Daftar Akun',
+                              'Masuk',
                               style: GoogleFonts.poppins(
                                   color: primaryColor,
                                   fontSize: 16,
