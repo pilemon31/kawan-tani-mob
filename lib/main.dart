@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kawan_tani/presentation/pages/article/article_comments.dart';
 import 'package:flutter_kawan_tani/presentation/pages/article/article_list.dart';
 import 'package:flutter_kawan_tani/presentation/pages/dashboard/home_screen.dart';
-import 'package:flutter_kawan_tani/presentation/pages/intro/splash_screen.dart';
 import 'package:flutter_kawan_tani/presentation/pages/login/login_screen.dart';
 import 'package:flutter_kawan_tani/presentation/pages/intro/onboarding_screen.dart';
 import 'package:flutter_kawan_tani/presentation/pages/plants/start_planting_screen.dart';
