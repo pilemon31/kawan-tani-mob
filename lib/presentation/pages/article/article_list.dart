@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kawan_tani/presentation/pages/article/article_detail.dart';
 import 'package:flutter_kawan_tani/presentation/widgets/navbar/navbar.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import "package:get/get.dart";
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import "package:get/get.dart";
 
 class ArticleList extends StatefulWidget {
   const ArticleList({super.key});
@@ -42,9 +42,7 @@ class _ArticleListState extends State<ArticleList> {
                       )),
                   actions: [
                     IconButton(
-                      onPressed: () {
-                        Get.to(() => ArticleDetail());
-                      },
+                      onPressed: () {},
                       icon: PhosphorIcon(
                         PhosphorIconsFill.dotsThreeOutlineVertical,
                         size: 32.0,
@@ -53,7 +51,7 @@ class _ArticleListState extends State<ArticleList> {
                   ],
                 ))),
         body: SafeArea(
-            child: Container(
+            child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 27),
           child: Column(
             children: [
@@ -89,95 +87,103 @@ class _ArticleListState extends State<ArticleList> {
                   return SizedBox(height: 10);
                 },
                 itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-                    decoration: BoxDecoration(
+                  return InkWell(
+                    onTap: () {
+                      Get.to(() => ArticleDetail());
+                    },
+                    borderRadius: BorderRadius.circular(10),
+                    child: Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                      decoration: BoxDecoration(
                         border: Border.all(color: Color(0xffC3C6D4)),
-                        borderRadius: BorderRadius.circular(10)),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.25,
-                          height: 100,
-                          decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.25,
+                            height: 100,
+                            decoration: BoxDecoration(
                               image: DecorationImage(
-                                  image: AssetImage("assets/apple.jpg"),
-                                  fit: BoxFit.cover),
-                              borderRadius: BorderRadius.circular(10)),
-                        ),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: [
-                              Text(
-                                "Mencegah Hama yang Baik pada Tanaman Apel",
-                                style: GoogleFonts.poppins(fontSize: 12),
+                                image: AssetImage("assets/apple.jpg"),
+                                fit: BoxFit.cover,
                               ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    width: 27,
-                                    height: 27,
-                                    decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                            image: AssetImage(
-                                                "assets/farmer2.jpg"),
-                                            fit: BoxFit.cover),
-                                        shape: BoxShape.circle),
-                                  ),
-                                  SizedBox(width: 4.5),
-                                  Text(
-                                    "Pak Darmono",
-                                    style: GoogleFonts.poppins(fontSize: 12),
-                                  )
-                                ],
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "Feb 20, 2025",
-                                    style: GoogleFonts.poppins(
-                                        fontSize: 12,
-                                        fontWeight: light,
-                                        color: greyColor),
-                                  ),
-                                  Row(
-                                    children: [
-                                      PhosphorIcon(
-                                        PhosphorIconsFill.star,
-                                        size: 17.0,
-                                        color: Colors.yellow,
-                                      ),
-                                      SizedBox(
-                                        width: 3,
-                                      ),
-                                      Text(
-                                        "4.7/5",
-                                        style: GoogleFonts.poppins(
-                                            fontSize: 12,
-                                            fontWeight: light,
-                                            color: greyColor),
-                                      )
-                                    ],
-                                  )
-                                ],
-                              )
-                            ],
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                           ),
-                        )
-                      ],
+                          SizedBox(width: 20),
+                          Expanded(
+                            child: Column(
+                              children: [
+                                Text(
+                                  "Mencegah Hama yang Baik pada Tanaman Apel",
+                                  style: GoogleFonts.poppins(fontSize: 12),
+                                ),
+                                SizedBox(height: 10),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      width: 27,
+                                      height: 27,
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                          image:
+                                              AssetImage("assets/farmer2.jpg"),
+                                          fit: BoxFit.cover,
+                                        ),
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                    SizedBox(width: 4.5),
+                                    Text(
+                                      "Pak Darmono",
+                                      style: GoogleFonts.poppins(fontSize: 12),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 10),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Feb 20, 2025",
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w300,
+                                        color:
+                                            greyColor, // Pastikan greyColor sudah didefinisikan
+                                      ),
+                                    ),
+                                    Row(
+                                      children: [
+                                        PhosphorIcon(
+                                          PhosphorIconsFill.star,
+                                          size: 17.0,
+                                          color: Colors.yellow,
+                                        ),
+                                        SizedBox(width: 3),
+                                        Text(
+                                          "4.7/5",
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w300,
+                                            color:
+                                                greyColor, // Pastikan greyColor sudah didefinisikan
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },

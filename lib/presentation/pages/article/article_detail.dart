@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kawan_tani/presentation/pages/article/article_comments.dart';
 import 'package:flutter_kawan_tani/presentation/widgets/navbar/navbar.dart';
+import 'package:flutter_kawan_tani/presentation/widgets/toast/custom_toast.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import "package:get/get.dart";
 
 class ArticleDetail extends StatefulWidget {
   const ArticleDetail({super.key});
@@ -12,6 +15,8 @@ class ArticleDetail extends StatefulWidget {
 }
 
 class _ArticleDetailState extends State<ArticleDetail> {
+  bool isBookmarked = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +28,9 @@ class _ArticleDetailState extends State<ArticleDetail> {
                   backgroundColor: Colors.white,
                   toolbarHeight: 80.0,
                   leading: IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Get.back();
+                    },
                     icon: PhosphorIcon(
                       PhosphorIconsBold.arrowLeft,
                       size: 32.0,
@@ -31,23 +38,125 @@ class _ArticleDetailState extends State<ArticleDetail> {
                   ),
                   actions: [
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Get.to(() => ArticleComments());
+                      },
                       icon: PhosphorIcon(
                         PhosphorIconsBold.chatCircle,
                         size: 32.0,
                       ),
                     ),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => Dialog(
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 30, vertical: 15),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: whiteColor,
+                              ),
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Align(
+                                        alignment: Alignment.topRight,
+                                        child: IconButton(
+                                          onPressed: () {
+                                            Get.back();
+                                          },
+                                          icon: PhosphorIcon(
+                                            PhosphorIconsBold.x,
+                                            size: 25.0,
+                                            color: blackColor,
+                                          ),
+                                        )),
+                                    Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Text("Beri Rating Artikel",
+                                          textAlign: TextAlign.left,
+                                          style: GoogleFonts.poppins(
+                                              fontSize: 20, fontWeight: bold)),
+                                    ),
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    Text(
+                                      "Berikan rating Anda untuk artikel ini dan bantu kami meningkatkan kualitas konten yang disajikan.",
+                                      style: GoogleFonts.poppins(fontSize: 12),
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Row(
+                                      children: List.generate(
+                                          5,
+                                          (index) => IconButton(
+                                                onPressed: () {},
+                                                icon: PhosphorIcon(
+                                                  PhosphorIconsBold.star,
+                                                  size: 30.0,
+                                                  color: blackColor,
+                                                ),
+                                              )),
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          Get.back();
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                            backgroundColor: primaryColor,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(8)),
+                                            elevation: 0.0,
+                                            minimumSize:
+                                                Size(double.infinity, 42)),
+                                        child: Text(
+                                          "Beri Rating",
+                                          style: GoogleFonts.poppins(
+                                              color: whiteColor,
+                                              fontSize: 15,
+                                              fontWeight: bold),
+                                        ))
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
                       icon: PhosphorIcon(
                         PhosphorIconsBold.star,
                         size: 32.0,
                       ),
                     ),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        if (isBookmarked == false) {
+                          showCustomToast(
+                              context, "Berhasil menambah artikel!");
+                          setState(() {
+                            isBookmarked = true;
+                          });
+                        } else {
+                          showCustomToast(
+                              context, "Berhasil mennghapus artikel!");
+                          setState(() {
+                            isBookmarked = false;
+                          });
+                        }
+                      },
                       icon: PhosphorIcon(
-                        PhosphorIconsBold.bookmarkSimple,
+                        isBookmarked
+                            ? PhosphorIconsFill.bookmarkSimple
+                            : PhosphorIconsBold.bookmarkSimple,
                         size: 32.0,
                       ),
                     ),

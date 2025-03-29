@@ -27,34 +27,45 @@ class _LogInScreenState extends State<LogInScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFF78D14D),
       resizeToAvoidBottomInset: false,
-      body: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(top: 30.0) +
-                EdgeInsets.symmetric(horizontal: 16.0) +
-                EdgeInsets.symmetric(vertical: 54.0),
-            child: Column(
-              children: [
-                Text(
-                  "KawanTani",
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.poppins(
-                      fontSize: 36.0, fontWeight: bold, color: whiteColor),
-                ),
-                SizedBox(
-                  height: 5.0,
-                ),
-                Text(
-                  "Teman Bertani Anda",
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.poppins(
-                      fontSize: 18.0, fontWeight: light, color: whiteColor),
-                ),
-              ],
-            ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFF78D14D),
+              Color(0xFF349107),
+            ],
           ),
-          Expanded(
-            child: Container(
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(top: 30.0) +
+                  EdgeInsets.symmetric(horizontal: 16.0) +
+                  EdgeInsets.symmetric(vertical: 54.0),
+              child: Column(
+                children: [
+                  Text(
+                    "KawanTani",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.poppins(
+                        fontSize: 36.0, fontWeight: bold, color: whiteColor),
+                  ),
+                  SizedBox(
+                    height: 5.0,
+                  ),
+                  Text(
+                    "Teman Bertani Anda",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.poppins(
+                        fontSize: 18.0, fontWeight: light, color: whiteColor),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+                child: Container(
               padding: EdgeInsets.symmetric(vertical: 28.0) +
                   EdgeInsets.symmetric(horizontal: 38.0),
               width: double.infinity,
@@ -251,9 +262,9 @@ class _LogInScreenState extends State<LogInScreen> {
                   ),
                 ],
               ),
-            ),
-          ),
-        ],
+            )),
+          ],
+        ),
       ),
     );
   }

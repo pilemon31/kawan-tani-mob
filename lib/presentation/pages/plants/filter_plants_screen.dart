@@ -42,73 +42,79 @@ class _FilterPlantsScreenState extends State<FilterPlantsScreen> {
                         style: GoogleFonts.poppins(
                             fontSize: 20, color: blackColor, fontWeight: bold),
                       )),
-                  actions: [
-                    IconButton(
-                      onPressed: () {
-                        Get.to(() => FilterPlantsScreen());
-                      },
-                      icon: PhosphorIcon(
-                        PhosphorIconsFill.dotsThreeOutlineVertical,
-                        size: 32.0,
-                      ),
-                    ),
-                  ],
                 ))),
-        body: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 37),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Kategori Tanaman",
-                  style: GoogleFonts.poppins(
-                      fontSize: 18, color: blackColor, fontWeight: bold),
-                ),
-                const SizedBox(height: 10),
-                Obx(() => Row(
-                      children: [
-                        Checkbox(
-                          value: controller.tanamanPangan.value,
-                          activeColor: Color(0xFF78D14D),
-                          side: BorderSide(color: Color(0xFF78D14D), width: 2),
-                          onChanged: (value) =>
-                              controller.tanamanPangan.value = value!,
-                        ),
-                        const SizedBox(width: 10),
-                        Text("Tanaman Pangan",
-                            style: GoogleFonts.poppins(fontSize: 16)),
-                      ],
-                    )),
-                Obx(() => Row(
-                      children: [
-                        Checkbox(
-                          value: controller.tanamanPerkebunan.value,
-                          activeColor: Color(0xFF78D14D),
-                          side: BorderSide(color: Color(0xFF78D14D), width: 2),
-                          onChanged: (value) =>
-                              controller.tanamanPerkebunan.value = value!,
-                        ),
-                        const SizedBox(width: 10),
-                        Text("Tanaman Perkebunan",
-                            style: GoogleFonts.poppins(fontSize: 16)),
-                      ],
-                    )),
-                Obx(() => Row(
-                      children: [
-                        Checkbox(
-                          value: controller.tanamanHortikultura.value,
-                          activeColor: Color(0xFF78D14D),
-                          side: BorderSide(color: Color(0xFF78D14D), width: 2),
-                          onChanged: (value) =>
-                              controller.tanamanHortikultura.value = value!,
-                        ),
-                        const SizedBox(width: 10),
-                        Text("Tanaman Hortikultura",
-                            style: GoogleFonts.poppins(fontSize: 16)),
-                      ],
-                    )),
-              ],
-            )),
+        body: Column(
+          children: [
+            Padding(
+                padding: EdgeInsets.symmetric(horizontal: 44),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Kategori Tanaman",
+                      style: GoogleFonts.poppins(
+                          fontSize: 18,
+                          color: blackColor,
+                          fontWeight: semiBold),
+                    ),
+                    const SizedBox(height: 10),
+                    Obx(() => Row(
+                          children: [
+                            Checkbox(
+                              value: controller.tanamanPangan.value,
+                              activeColor: Color(0xFF78D14D),
+                              side: BorderSide(
+                                  color: Color(0xFF78D14D), width: 2),
+                              onChanged: (value) =>
+                                  controller.tanamanPangan.value = value!,
+                            ),
+                            const SizedBox(width: 10),
+                            Text("Tanaman Pangan",
+                                style: GoogleFonts.poppins(fontSize: 16)),
+                          ],
+                        )),
+                    Obx(() => Row(
+                          children: [
+                            Checkbox(
+                              value: controller.tanamanPerkebunan.value,
+                              activeColor: Color(0xFF78D14D),
+                              side: BorderSide(
+                                  color: Color(0xFF78D14D), width: 2),
+                              onChanged: (value) =>
+                                  controller.tanamanPerkebunan.value = value!,
+                            ),
+                            const SizedBox(width: 10),
+                            Text("Tanaman Perkebunan",
+                                style: GoogleFonts.poppins(fontSize: 16)),
+                          ],
+                        )),
+                    Obx(() => Row(
+                          children: [
+                            Checkbox(
+                              value: controller.tanamanHortikultura.value,
+                              activeColor: Color(0xFF78D14D),
+                              side: BorderSide(
+                                  color: Color(0xFF78D14D), width: 2),
+                              onChanged: (value) =>
+                                  controller.tanamanHortikultura.value = value!,
+                            ),
+                            const SizedBox(width: 10),
+                            Text("Tanaman Hortikultura",
+                                style: GoogleFonts.poppins(fontSize: 16)),
+                          ],
+                        )),
+                  ],
+                )),
+            SizedBox(
+              height: 19,
+            ),
+            Container(
+              width: double.infinity,
+              height: 1,
+              color: greyColor,
+            )
+          ],
+        ),
         bottomNavigationBar: Navbar());
   }
 }
