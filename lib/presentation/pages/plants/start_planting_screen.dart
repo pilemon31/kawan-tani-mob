@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kawan_tani/presentation/pages/dashboard/home_screen.dart';
 import 'package:flutter_kawan_tani/presentation/pages/plants/filter_plants_screen.dart';
+// import 'package:flutter_kawan_tani/presentation/pages/plants/filter_plants_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/plants/start_planting_detail_screen.dart';
 import 'package:flutter_kawan_tani/presentation/widgets/navbar/navbar.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import "package:get/get.dart";
@@ -74,7 +76,7 @@ class _StartPlantingScreenState extends State<StartPlantingScreen> {
                   children: [
                     Container(
                       width: 130,
-                      height: 80,
+                      height: 75,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         image: DecorationImage(
@@ -113,25 +115,26 @@ class _StartPlantingScreenState extends State<StartPlantingScreen> {
                               ),
                             ])),
                     const SizedBox(
-                      height: 10,
+                      height: 5,
                     ),
                     Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          decoration: const BoxDecoration(
-                            color: Color(0xFF78D14D),
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Get.to(() => StartPlantingDetailScreen());
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xFF78D14D),
+                            minimumSize: Size(double.infinity, 35),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
                           ),
-                          child: Center(
-                            child: Text(
-                              'Lihat Detail',
-                              style: GoogleFonts.poppins(
+                          child: Text(
+                            "Lihat detail",
+                            style: GoogleFonts.poppins(
                                 fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
+                                fontWeight: semiBold,
+                                color: Colors.white),
                           ),
                         )),
                   ],
