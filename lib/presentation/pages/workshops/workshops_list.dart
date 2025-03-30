@@ -23,21 +23,15 @@ class _WorkshopsListState extends State<WorkshopsList> {
           child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 27),
               child: AppBar(
+                automaticallyImplyLeading: false,
                 backgroundColor: Colors.white,
                 toolbarHeight: 80.0,
-                leading: IconButton(
-                  onPressed: () {},
-                  icon: PhosphorIcon(
-                    PhosphorIconsBold.arrowLeft,
-                    size: 32.0,
-                  ),
-                ),
                 title: Padding(
                     padding: EdgeInsets.all(0),
                     child: Text(
-                      'Workshop',
+                      'Workshop Pertanian',
                       style: GoogleFonts.poppins(
-                          fontSize: 20, color: blackColor, fontWeight: bold),
+                          fontSize: 22, color: blackColor, fontWeight: bold),
                     )),
                 actions: [
                   IconButton(
@@ -45,6 +39,7 @@ class _WorkshopsListState extends State<WorkshopsList> {
                     icon: PhosphorIcon(
                       PhosphorIconsFill.dotsThreeOutlineVertical,
                       size: 32.0,
+                      color: blackColor,
                     ),
                   ),
                 ],

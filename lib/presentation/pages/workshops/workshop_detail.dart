@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kawan_tani/presentation/widgets/toast/custom_toast.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import "package:get/get.dart";
 import "package:google_fonts/google_fonts.dart";
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 
 class WorkshopDetail extends StatefulWidget {
   const WorkshopDetail({super.key});
@@ -12,6 +15,14 @@ class WorkshopDetail extends StatefulWidget {
 }
 
 class _WorkshopDetailState extends State<WorkshopDetail> {
+  bool isBookMarked = false;
+
+  void changeBookmark() {
+    setState(() {
+      isBookMarked = !isBookMarked;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,9 +43,18 @@ class _WorkshopDetailState extends State<WorkshopDetail> {
                 )),
             actions: [
               IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    isBookMarked
+                        ? showCustomToast(
+                            context, "Berhasil menghapus workshop!")
+                        : showCustomToast(
+                            context, "Berhasil menambahkan workshop!");
+                    changeBookmark();
+                  },
                   icon: PhosphorIcon(
-                    PhosphorIconsBold.bookmarkSimple,
+                    isBookMarked
+                        ? PhosphorIconsFill.bookmarkSimple
+                        : PhosphorIconsBold.bookmarkSimple,
                     size: 32.0,
                   )),
               IconButton(
@@ -184,6 +204,91 @@ class _WorkshopDetailState extends State<WorkshopDetail> {
                 Text(
                   "Workshop \"Teknik Tanam Padi\" adalah sebuah acara yang dirancang untuk memberikan pelatihan dan pengetahuan kepada para petani atau praktisi pertanian tentang teknik-teknik terbaru dalam meningkatkan hasil produksi padi. Dalam workshop ini, peserta akan mempelajari berbagai metode inovatif untuk meningkatkan efisiensi dan produktivitas lahan pertanian padi, termasuk teknik pengelolaan air yang tepat, pemilihan varietas padi unggul, penggunaan pupuk yang efektif, serta pengendalian hama dan penyakit secara ramah lingkungan.",
                   style: GoogleFonts.poppins(fontSize: 14),
+                )
+              ],
+            ),
+            SizedBox(
+              height: 11,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "Lokasi",
+                    textAlign: TextAlign.start,
+                    style: GoogleFonts.poppins(fontSize: 14, fontWeight: bold),
+                  ),
+                ),
+                SizedBox(
+                  height: 11,
+                ),
+                Container(
+                  width: double.infinity,
+                  height: 238,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: FlutterMap(
+                      options: MapOptions(
+                        initialCenter: LatLng(-8.4671, 115.6122),
+                        initialZoom: 13.0,
+                        interactionOptions: InteractionOptions(
+                          flags: InteractiveFlag.none,
+                        ),
+                      ),
+                      children: [
+                        TileLayer(
+                          urlTemplate:
+                              "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                          subdomains: ['a', 'b', 'c'],
+                        ),
+                        MarkerLayer(
+                          markers: [
+                            Marker(
+                              width: 50.0,
+                              height: 50.0,
+                              point: LatLng(-8.4671, 115.6122),
+                              child: Icon(
+                                Icons.location_pin,
+                                color: Colors.red,
+                                size: 40,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 19,
+                ),
+                Container(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primaryColor,
+                      elevation: 0.0,
+                      shadowColor: Colors.transparent,
+                      minimumSize: Size(double.infinity, 48),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: Text(
+                      'Daftar Workshop',
+                      style: GoogleFonts.poppins(
+                          color: whiteColor, fontSize: 16, fontWeight: bold),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 23,
                 )
               ],
             )
