@@ -26,19 +26,13 @@ class _ArticleListState extends State<ArticleList> {
                 child: AppBar(
                   backgroundColor: Colors.white,
                   toolbarHeight: 80.0,
-                  leading: IconButton(
-                    onPressed: () {},
-                    icon: PhosphorIcon(
-                      PhosphorIconsBold.arrowLeft,
-                      size: 32.0,
-                    ),
-                  ),
+                  automaticallyImplyLeading: false,
                   title: Padding(
                       padding: EdgeInsets.all(0),
                       child: Text(
-                        'Berita Pertanian',
+                        'Artikel Pertanian',
                         style: GoogleFonts.poppins(
-                            fontSize: 20, color: blackColor, fontWeight: bold),
+                            fontSize: 22, color: blackColor, fontWeight: bold),
                       )),
                   actions: [
                     IconButton(
@@ -46,6 +40,7 @@ class _ArticleListState extends State<ArticleList> {
                       icon: PhosphorIcon(
                         PhosphorIconsFill.dotsThreeOutlineVertical,
                         size: 32.0,
+                        color: blackColor,
                       ),
                     ),
                   ],
@@ -59,7 +54,7 @@ class _ArticleListState extends State<ArticleList> {
                 controller: _searchController,
                 keyboardType: TextInputType.name,
                 decoration: InputDecoration(
-                  hintText: "Cari berita pertanian....",
+                  hintText: "Cari artikel pertanian....",
                   hintStyle:
                       GoogleFonts.poppins(fontSize: 15.0, fontWeight: light),
                   prefixIcon: PhosphorIcon(
