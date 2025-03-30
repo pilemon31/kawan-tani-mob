@@ -77,41 +77,57 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "Tanamanmu",
-                          style: GoogleFonts.poppins(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Tanamanmu",
+                              style: GoogleFonts.poppins(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              "Lihat Semua",
+                              style: GoogleFonts.poppins(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF78D14D)),
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 8),
-                        Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: Colors.grey.shade300),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Lemon Malang",
-                                style: GoogleFonts.poppins(
-                                    fontSize: 16, fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                "36 hari menuju panen",
-                                style: GoogleFonts.poppins(color: Colors.grey),
-                              ),
-                              const SizedBox(height: 8),
-                              ElevatedButton.icon(
-                                onPressed: () {},
-                                icon: const Icon(Icons.water_drop,
-                                    color: Colors.white),
-                                label: Text("Siram tanaman",
-                                    style: GoogleFonts.poppins()),
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF78D14D)),
-                              ),
-                            ],
+                        Center(
+                          child: Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: Colors.grey.shade300),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Lemon Malang",
+                                  style: GoogleFonts.poppins(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  "36 hari menuju panen",
+                                  style:
+                                      GoogleFonts.poppins(color: Colors.grey),
+                                ),
+                                const SizedBox(height: 8),
+                                ElevatedButton.icon(
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.water_drop,
+                                      color: Colors.white),
+                                  label: Text("Siram tanaman",
+                                      style: GoogleFonts.poppins()),
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF78D14D)),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],
@@ -122,10 +138,22 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "Informasi Workshop",
-                          style: GoogleFonts.poppins(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Informasi Workshop",
+                              style: GoogleFonts.poppins(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              "Lihat Semua",
+                              style: GoogleFonts.poppins(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF78D14D)),
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 8),
                         Image.asset("assets/suhu_image.jpg", fit: BoxFit.cover),
@@ -177,10 +205,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: Colors.white, fontSize: 16),
                       ),
                       Container(
-                        padding: const EdgeInsets.all(
-                            8), 
+                        padding: const EdgeInsets.all(8),
                         decoration: const BoxDecoration(
-                          color: Colors.white24, 
+                          color: Colors.white24,
                           shape: BoxShape.circle,
                         ),
                         child: PhosphorIcon(
