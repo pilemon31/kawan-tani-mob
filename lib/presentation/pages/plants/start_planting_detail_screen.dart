@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kawan_tani/presentation/pages/plants/plants_tasks_screen.dart';
 import 'package:flutter_kawan_tani/presentation/widgets/navbar/navbar.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import "package:get/get.dart";
@@ -165,9 +166,18 @@ class _StartPlantingDetailScreenState extends State<StartPlantingDetailScreen> {
                     "Tugas Harian",
                     style: GoogleFonts.poppins(fontSize: 22, fontWeight: bold),
                   ),
-                  Text(
-                    "Lihat Detail",
-                    style: GoogleFonts.poppins(fontSize: 12, fontWeight: light, color:  Color(0xFF78D14D)),
+                  GestureDetector(
+                    onTap: () {
+                      Get.to(() => const PlantsTasksScreen());
+                    },
+                    child: Text(
+                      "Lihat Detail",
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        fontWeight: light,
+                        color: Color(0xFF78D14D),
+                      ),
+                    ),
                   ),
                 ],
               ),
