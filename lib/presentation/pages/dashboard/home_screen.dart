@@ -94,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 10),
                         Center(
                           child: Container(
                             padding: const EdgeInsets.all(16),
@@ -116,15 +116,66 @@ class _HomeScreenState extends State<HomeScreen> {
                                   style:
                                       GoogleFonts.poppins(color: Colors.grey),
                                 ),
-                                const SizedBox(height: 8),
-                                ElevatedButton.icon(
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.water_drop,
-                                      color: Colors.white),
-                                  label: Text("Siram tanaman",
-                                      style: GoogleFonts.poppins()),
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xFF78D14D)),
+                                const SizedBox(height: 12),
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 10),
+                                  margin: EdgeInsets.only(bottom: 10),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border:
+                                        Border.all(color: Colors.grey.shade300),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      PhosphorIcon(PhosphorIconsBold.drop,
+                                          size: 24),
+                                      SizedBox(width: 10),
+                                      Text("Siram tanaman",
+                                          style: GoogleFonts.poppins(
+                                              fontSize: 16, fontWeight: bold)),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 10),
+                                  margin: EdgeInsets.only(bottom: 10),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border:
+                                        Border.all(color: Colors.grey.shade300),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      PhosphorIcon(PhosphorIconsBold.drop,
+                                          size: 24),
+                                      SizedBox(width: 10),
+                                      Text("Siram tanaman",
+                                          style: GoogleFonts.poppins(
+                                              fontSize: 16, fontWeight: bold)),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 10),
+                                  margin: EdgeInsets.only(bottom: 10),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border:
+                                        Border.all(color: Colors.grey.shade300),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      PhosphorIcon(PhosphorIconsBold.drop,
+                                          size: 24),
+                                      SizedBox(width: 10),
+                                      Text("Siram tanaman",
+                                          style: GoogleFonts.poppins(
+                                              fontSize: 16, fontWeight: bold)),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
@@ -155,8 +206,16 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 8),
-                        Image.asset("assets/suhu_image.jpg", fit: BoxFit.cover),
+                        const SizedBox(height: 12),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.asset(
+                            "assets/suhu_image.jpg",
+                            width: double.infinity,
+                            height: 200,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -165,13 +224,33 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "Berita Terkini",
-                          style: GoogleFonts.poppins(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Berita Terkini",
+                              style: GoogleFonts.poppins(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              "Lihat Semua",
+                              style: GoogleFonts.poppins(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF78D14D)),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 8),
-                        Image.asset("assets/suhu_image.jpg", fit: BoxFit.cover),
+                        const SizedBox(height: 12),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.asset(
+                            "assets/suhu_image.jpg",
+                            width: double.infinity,
+                            height: 200,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ],
                     ),
                   ),
