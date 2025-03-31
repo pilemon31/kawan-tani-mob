@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class WeatherCard extends StatelessWidget {
   final String title;
@@ -14,31 +15,48 @@ class WeatherCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        ClipRRect(
           borderRadius: BorderRadius.circular(12),
-          image: DecorationImage(
-            image: AssetImage(imagePath),
+          child: Image.asset(
+            imagePath,
+            width: double.infinity,
+            height: double.infinity,
             fit: BoxFit.cover,
           ),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: Colors.black.withAlpha((0.4 * 255).toInt()),
+          ),
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(title, style: const TextStyle(color: Colors.white, fontSize: 14)),
+            Text(
+              title,
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
             Text(
               value,
-              style: const TextStyle(
+              style: GoogleFonts.poppins(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
                 color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
               ),
             ),
           ],
         ),
-      ),
+      ],
     );
   }
 }
