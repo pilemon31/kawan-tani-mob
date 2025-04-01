@@ -4,6 +4,7 @@ import 'package:flutter_kawan_tani/presentation/pages/dashboard/home_screen.dart
 import 'package:flutter_kawan_tani/presentation/pages/login/login_screen.dart';
 import 'package:flutter_kawan_tani/presentation/pages/intro/onboarding_screen.dart';
 import 'package:flutter_kawan_tani/presentation/pages/plants/start_planting_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/plants/your_plants_screen.dart';
 import 'package:flutter_kawan_tani/presentation/pages/workshops/workshops_list.dart';
 import "package:get/get.dart";
 
@@ -24,9 +25,10 @@ class MyApp extends StatelessWidget {
         GetPage(name: "/onboarding", page: () => const OnboardingPage()),
         GetPage(name: "/login", page: () => LogInScreen()),
         GetPage(name: "/home", page: () => HomeScreen()),
-        GetPage(name: "/plants", page: () => StartPlantingScreen()),
+        GetPage(name: "/plants", page: () => YourPlantsScreen()),
         GetPage(name: "/articles", page: () => ArticleList()),
-        GetPage(name: "/workshops", page: () => WorkshopsList())
+        GetPage(name: "/workshops", page: () => WorkshopsList()),
+        GetPage(name: "/add", page: () => StartPlantingScreen())
       ],
     );
   }

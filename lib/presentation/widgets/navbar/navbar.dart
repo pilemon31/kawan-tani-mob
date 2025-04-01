@@ -116,7 +116,10 @@ class Navbar extends StatelessWidget {
               ],
             ),
             child: IconButton(
-              onPressed: () {},
+              onPressed: () {
+                controller.changePage(4);
+                Get.toNamed("/add");
+              },
               icon: Icon(
                 Icons.add,
                 color: whiteColor,
