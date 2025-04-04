@@ -5,14 +5,14 @@ import "package:get/get.dart";
 import 'package:google_fonts/google_fonts.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-class PlantsTasksScreen extends StatefulWidget {
-  const PlantsTasksScreen({super.key});
+class YourPlantsDetailScreen extends StatefulWidget {
+  const YourPlantsDetailScreen({super.key});
 
   @override
-  State<PlantsTasksScreen> createState() => _PlantsTasksScreenState();
+  State<YourPlantsDetailScreen> createState() => _YourPlantsDetailScreenState();
 }
 
-class _PlantsTasksScreenState extends State<PlantsTasksScreen> {
+class _YourPlantsDetailScreenState extends State<YourPlantsDetailScreen> {
   int selectedDay = 2;
 
   @override
@@ -35,7 +35,7 @@ class _PlantsTasksScreenState extends State<PlantsTasksScreen> {
               ),
             ),
             title: Text(
-              'Detail Tugas',
+              'Cabaiku Tani',
               style: GoogleFonts.poppins(
                 fontSize: 20,
                 color: blackColor,
@@ -49,6 +49,15 @@ class _PlantsTasksScreenState extends State<PlantsTasksScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 21),
         child: ListView(
           children: [
+            Text(
+              'Progress: 60%',
+              style: GoogleFonts.poppins(
+                fontSize: 18,
+                color: blackColor,
+                fontWeight: bold,
+              ),
+            ),
+            SizedBox(height: 10),
             Center(
               child: Column(
                 children: [
@@ -73,7 +82,8 @@ class _PlantsTasksScreenState extends State<PlantsTasksScreen> {
                           width: 40,
                           height: 40,
                           decoration: BoxDecoration(
-                            color: isSelected ? Color(0xFF78D14D) : Colors.white,
+                            color:
+                                isSelected ? Color(0xFF78D14D) : Colors.white,
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(color: Colors.grey.shade400),
                           ),
@@ -95,13 +105,12 @@ class _PlantsTasksScreenState extends State<PlantsTasksScreen> {
               ),
             ),
             const SizedBox(height: 30),
-
+            
             Text(
               "Tugas Harian",
               style: GoogleFonts.poppins(fontSize: 22, fontWeight: bold),
             ),
             const SizedBox(height: 10),
-
             Container(
               padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
               margin: const EdgeInsets.only(bottom: 10),

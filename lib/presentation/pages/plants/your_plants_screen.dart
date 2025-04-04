@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kawan_tani/presentation/pages/plants/filter_your_plants_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/plants/your_plants_detail_screen.dart';
 import 'package:flutter_kawan_tani/presentation/widgets/navbar/navbar.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
-// import 'package:get/get.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
@@ -39,7 +41,9 @@ class _YourPlantsScreenState extends State<YourPlantsScreen> {
                       )),
                   actions: [
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Get.to(() => FilterYourPlantsScreen());
+                      },
                       icon: PhosphorIcon(
                         PhosphorIconsFill.dotsThreeOutlineVertical,
                         size: 32.0,
@@ -58,7 +62,9 @@ class _YourPlantsScreenState extends State<YourPlantsScreen> {
                   itemCount: 5,
                   itemBuilder: (BuildContext context, int index) {
                     return InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        Get.to(() => YourPlantsDetailScreen());
+                      },
                       borderRadius: BorderRadius.circular(10),
                       child: Container(
                         padding:

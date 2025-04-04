@@ -65,78 +65,81 @@ class _StartPlantingScreenState extends State<StartPlantingScreen> {
               mainAxisSpacing: 20,
             ),
             itemBuilder: (context, index) {
-              return Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: const Color(0xffC3C6D4)),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 130,
-                      height: 75,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        image: DecorationImage(
-                          image: AssetImage("assets/apple.jpg"),
-                          fit: BoxFit.cover,
+              return InkWell(
+                onTap: () {
+                  Get.to(() => StartPlantingDetailScreen());
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: const Color(0xffC3C6D4)),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 130,
+                        height: 75,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          image: DecorationImage(
+                            image: AssetImage("assets/apple.jpg"),
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Cabai',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              Row(
-                                children: [
-                                  PhosphorIcon(PhosphorIcons.clock(),
-                                      size: 17.0, color: Colors.black54),
-                                  const SizedBox(width: 5),
-                                  Text(
-                                    '6 bulan',
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 14,
-                                      color: Colors.black54,
-                                    ),
+                      const SizedBox(height: 10),
+                      Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Cabai',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
                                   ),
-                                ],
-                              ),
-                            ])),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Get.to(() => StartPlantingDetailScreen());
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFF78D14D),
-                            minimumSize: Size(double.infinity, 35),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)),
-                          ),
-                          child: Text(
-                            "Lihat detail",
-                            style: GoogleFonts.poppins(
-                                fontSize: 14,
-                                fontWeight: semiBold,
-                                color: Colors.white),
-                          ),
-                        )),
-                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    PhosphorIcon(PhosphorIcons.clock(),
+                                        size: 17.0, color: Colors.black54),
+                                    const SizedBox(width: 5),
+                                    Text(
+                                      '6 bulan',
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 14,
+                                        color: Colors.black54,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ])),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: ElevatedButton(
+                            onPressed: () {},
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFF78D14D),
+                              minimumSize: Size(double.infinity, 35),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                            ),
+                            child: Text(
+                              "Lihat detail",
+                              style: GoogleFonts.poppins(
+                                  fontSize: 14,
+                                  fontWeight: semiBold,
+                                  color: Colors.white),
+                            ),
+                          )),
+                    ],
+                  ),
                 ),
               );
             },
