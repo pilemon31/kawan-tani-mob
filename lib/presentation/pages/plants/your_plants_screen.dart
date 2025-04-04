@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kawan_tani/presentation/widgets/navbar/navbar.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
+// import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
@@ -23,8 +24,7 @@ class _YourPlantsScreenState extends State<YourPlantsScreen> {
                   backgroundColor: Colors.white,
                   toolbarHeight: 80.0,
                   leading: IconButton(
-                    onPressed: () {
-                    },
+                    onPressed: () {},
                     icon: PhosphorIcon(
                       PhosphorIconsBold.arrowLeft,
                       size: 32.0,
@@ -39,9 +39,7 @@ class _YourPlantsScreenState extends State<YourPlantsScreen> {
                       )),
                   actions: [
                     IconButton(
-                      onPressed: () {
-                        
-                      },
+                      onPressed: () {},
                       icon: PhosphorIcon(
                         PhosphorIconsFill.dotsThreeOutlineVertical,
                         size: 32.0,
@@ -49,11 +47,91 @@ class _YourPlantsScreenState extends State<YourPlantsScreen> {
                     ),
                   ],
                 ))),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30),
-
-        ),
+        body: SafeArea(
+            child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 27),
+                child: Expanded(
+                    child: ListView.separated(
+                  separatorBuilder: (BuildContext context, int index) {
+                    return SizedBox(height: 21);
+                  },
+                  itemCount: 5,
+                  itemBuilder: (BuildContext context, int index) {
+                    return InkWell(
+                      onTap: () {},
+                      borderRadius: BorderRadius.circular(10),
+                      child: Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Color(0xffC3C6D4)),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Column(
+                          children: [
+                            Container(
+                              height: 100,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  image: DecorationImage(
+                                      image: AssetImage("assets/apple.jpg"),
+                                      fit: BoxFit.cover)),
+                            ),
+                            SizedBox(height: 10),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Cabaiku Tani (60%)",
+                                  style: GoogleFonts.poppins(
+                                      fontSize: 20, fontWeight: bold),
+                                ),
+                                SizedBox(
+                                  height: 4,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    PhosphorIcon(
+                                      PhosphorIconsRegular.clock,
+                                      size: 17.0,
+                                    ),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      "32 Hari hingga panen",
+                                      style: GoogleFonts.poppins(fontSize: 12),
+                                    )
+                                  ],
+                                ),
+                                SizedBox(height: 4),
+                                ElevatedButton(
+                                  onPressed: () {},
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Color(0xFF78D14D),
+                                    minimumSize: Size(double.infinity, 30),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                  ),
+                                  child: Text(
+                                    "Selesaikan Tugas Harian",
+                                    style: GoogleFonts.poppins(
+                                        fontSize: 14,
+                                        fontWeight: semiBold,
+                                        color: Colors.white),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                )))),
         bottomNavigationBar: Navbar());
-
   }
 }
