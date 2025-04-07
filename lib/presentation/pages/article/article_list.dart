@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kawan_tani/presentation/pages/article/article_detail.dart';
+import 'package:flutter_kawan_tani/presentation/pages/article/article_filter.dart';
 import 'package:flutter_kawan_tani/presentation/widgets/navbar/navbar.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -36,7 +37,9 @@ class _ArticleListState extends State<ArticleList> {
                       )),
                   actions: [
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Get.to(() => FilterArticleScreen());
+                      },
                       icon: PhosphorIcon(
                         PhosphorIconsFill.dotsThreeOutlineVertical,
                         size: 32.0,
