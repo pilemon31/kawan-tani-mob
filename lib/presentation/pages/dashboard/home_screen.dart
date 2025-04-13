@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kawan_tani/presentation/controllers/weather/weather_controller.dart';
+import 'package:flutter_kawan_tani/presentation/pages/profile/profile_screen.dart';
 import 'package:flutter_kawan_tani/presentation/widgets/navbar/navbar.dart';
 import 'package:flutter_kawan_tani/presentation/widgets/weather/weather_card.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
@@ -264,7 +265,8 @@ class _HomeScreenState extends State<HomeScreen> {
             right: 0,
             child: Container(
               height: 135,
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.only(
+                  top: 30, left: 20, right: 20),
               decoration: const BoxDecoration(
                 color: Color(0xFF78D14D),
                 borderRadius: BorderRadius.only(
@@ -283,21 +285,25 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: GoogleFonts.poppins(
                             color: Colors.white, fontSize: 16),
                       ),
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: const BoxDecoration(
-                          color: Colors.white24,
-                          shape: BoxShape.circle,
-                        ),
-                        child: PhosphorIcon(
-                          PhosphorIcons.gear(),
-                          size: 20.0,
-                          color: Colors.white,
+                      InkWell(
+                        onTap: () {
+                          Get.to(() => ProfileScreen());
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: const BoxDecoration(
+                            color: Colors.white24,
+                            shape: BoxShape.circle,
+                          ),
+                          child: PhosphorIcon(
+                            PhosphorIcons.gear(),
+                            size: 20.0,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 4),
                   Text(
                     "Pilemon B. 👋",
                     style: GoogleFonts.poppins(

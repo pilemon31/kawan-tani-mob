@@ -24,7 +24,7 @@ class _StartPlantingScreenState extends State<StartPlantingScreen> {
             child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 27),
                 child: AppBar(
-                  backgroundColor: Colors.white,
+                  backgroundColor: whiteColor,
                   toolbarHeight: 80.0,
                   leading: IconButton(
                     onPressed: () {
@@ -71,7 +71,7 @@ class _StartPlantingScreenState extends State<StartPlantingScreen> {
                 },
                 child: Container(
                   decoration: BoxDecoration(
-                    border: Border.all(color: const Color(0xffC3C6D4)),
+                    border: Border.all(color: greyColor),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Column(
@@ -99,19 +99,19 @@ class _StartPlantingScreenState extends State<StartPlantingScreen> {
                                   style: GoogleFonts.poppins(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.black,
+                                    color: blackColor,
                                   ),
                                 ),
                                 Row(
                                   children: [
                                     PhosphorIcon(PhosphorIcons.clock(),
-                                        size: 17.0, color: Colors.black54),
+                                        size: 17.0, color: blackColor),
                                     const SizedBox(width: 5),
                                     Text(
                                       '6 bulan',
                                       style: GoogleFonts.poppins(
                                         fontSize: 14,
-                                        color: Colors.black54,
+                                        color: blackColor,
                                       ),
                                     ),
                                   ],
@@ -125,7 +125,7 @@ class _StartPlantingScreenState extends State<StartPlantingScreen> {
                           child: ElevatedButton(
                             onPressed: () {},
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFF78D14D),
+                              backgroundColor: primaryColor,
                               minimumSize: Size(double.infinity, 35),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10)),
@@ -135,7 +135,7 @@ class _StartPlantingScreenState extends State<StartPlantingScreen> {
                               style: GoogleFonts.poppins(
                                   fontSize: 14,
                                   fontWeight: semiBold,
-                                  color: Colors.white),
+                                  color: whiteColor),
                             ),
                           )),
                     ],
