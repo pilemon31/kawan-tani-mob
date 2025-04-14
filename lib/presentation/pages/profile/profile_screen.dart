@@ -127,7 +127,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     ),
                                     SizedBox(height: 8.0),
                                     TextFormField(
-                                      controller: _lastNameController,
+                                      controller: _firstNameController,
                                       keyboardType: TextInputType.name,
                                       decoration: InputDecoration(
                                         hintText: "John",
