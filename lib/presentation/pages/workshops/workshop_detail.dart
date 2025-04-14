@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kawan_tani/presentation/pages/workshops/register_workshop.dart';
 import 'package:flutter_kawan_tani/presentation/widgets/toast/custom_toast.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -270,7 +271,9 @@ class _WorkshopDetailState extends State<WorkshopDetail> {
                 Container(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Get.to(() => RegisterWorkshop());
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: primaryColor,
                       elevation: 0.0,
