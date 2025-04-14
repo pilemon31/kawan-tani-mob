@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kawan_tani/presentation/pages/workshops/register_workshop_payment.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:flutter_kawan_tani/presentation/controllers/auth/registration_controller.dart';
 import 'package:flutter_kawan_tani/presentation/controllers/auth/validation_service.dart';
@@ -42,7 +43,7 @@ class _RegisterWorkshopState extends State<RegisterWorkshop> {
   void verifyData() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      // Get.to();
+      Get.to(() => RegisterWorkshopPayment());
     }
   }
 
