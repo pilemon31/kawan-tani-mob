@@ -67,7 +67,7 @@ class _RegisterWorkshopState extends State<RegisterWorkshop> {
               ),
             ),
             title: Text(
-              'Cabaiku Tani',
+              'Daftar Workshop',
               style: GoogleFonts.poppins(
                 fontSize: 20,
                 color: blackColor,

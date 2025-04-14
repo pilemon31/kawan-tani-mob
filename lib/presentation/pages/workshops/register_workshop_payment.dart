@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kawan_tani/presentation/pages/dashboard/home_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/workshops/register_workshop_confirmation.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -261,7 +261,7 @@ class _RegisterWorkshopPaymentState extends State<RegisterWorkshopPayment> {
 
             ElevatedButton(
               onPressed: selectedIndex != -1
-                  ? () => Get.to(() => const HomeScreen())
+                  ? () => Get.to(() => const RegisterWorkshopConfirmation())
                   : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: primaryColor,
