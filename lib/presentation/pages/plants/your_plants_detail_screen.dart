@@ -158,7 +158,7 @@ class _YourPlantsDetailScreenState extends State<YourPlantsDetailScreen> {
                 },
                 child: Container(
                   padding:
-                      const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                      const EdgeInsets.symmetric(horizontal: 15),
                   margin: const EdgeInsets.only(bottom: 10),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
@@ -171,12 +171,12 @@ class _YourPlantsDetailScreenState extends State<YourPlantsDetailScreen> {
                       Expanded(
                         child: Row(
                           children: [
-                            PhosphorIcon(PhosphorIconsBold.drop,
+                            PhosphorIcon(PhosphorIconsFill.drop,
                                 size: 24,
                                 color: task.isDone
                                     ? whiteColor
                                     : Colors.grey.shade400),
-                            SizedBox(width: 10),
+                            SizedBox(width: 15),
                             Text(
                               task.title,
                               style: GoogleFonts.poppins(
