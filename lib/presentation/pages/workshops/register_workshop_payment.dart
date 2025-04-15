@@ -154,7 +154,7 @@ class _RegisterWorkshopPaymentState extends State<RegisterWorkshopPayment> {
                         style: GoogleFonts.poppins(
                           fontSize: 16,
                           fontWeight: bold,
-                          color: selectedIndex == 0 ? Colors.white : blackColor,
+                          color: selectedIndex == 1 ? Colors.white : blackColor,
                         ),
                       ),
                     ],
@@ -201,7 +201,7 @@ class _RegisterWorkshopPaymentState extends State<RegisterWorkshopPayment> {
                         style: GoogleFonts.poppins(
                           fontSize: 16,
                           fontWeight: bold,
-                          color: selectedIndex == 0 ? Colors.white : blackColor,
+                          color: selectedIndex == 2 ? Colors.white : blackColor,
                         ),
                       ),
                     ],
@@ -248,7 +248,7 @@ class _RegisterWorkshopPaymentState extends State<RegisterWorkshopPayment> {
                         style: GoogleFonts.poppins(
                           fontSize: 16,
                           fontWeight: bold,
-                          color: selectedIndex == 0 ? Colors.white : blackColor,
+                          color: selectedIndex == 3 ? Colors.white : blackColor,
                         ),
                       ),
                     ],

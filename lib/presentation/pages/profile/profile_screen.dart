@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kawan_tani/presentation/controllers/auth/registration_controller.dart';
-import 'package:flutter_kawan_tani/presentation/controllers/auth/validation_service.dart';
-import 'package:flutter_kawan_tani/presentation/pages/register/profile_upload_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/profile/profile_edit.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import "package:get/get.dart";
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -15,422 +12,186 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  String warningMessage = "";
-  final RegistrationController controller = Get.put(RegistrationController());
-  final _formKey = GlobalKey<FormState>();
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _lastNameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _phoneNumberController = TextEditingController();
-  final ValidationService _inputValidator = ValidationService();
-
-  @override
-  void initState() {
-    super.initState();
-
-    _firstNameController.text = controller.firstName.value;
-    _lastNameController.text = controller.lastName.value;
-    _emailController.text = controller.emailAddress.value;
-    _phoneNumberController.text = controller.phoneNumber.value;
-  }
-
-  @override
-  void dispose() {
-    _firstNameController.dispose();
-    _lastNameController.dispose();
-    _emailController.dispose();
-    _phoneNumberController.dispose();
-    super.dispose();
-  }
-
-  void verifyData() {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      Get.to(() => ProfileUpload());
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: const Color(0xFF78D14D),
-        resizeToAvoidBottomInset: false,
-        body: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Color(0xFF78D14D),
-                Color(0xFF349107),
-              ],
-            ),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(50),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 27),
+          child: AppBar(
+            backgroundColor: Colors.white,
+            toolbarHeight: 80,
+            leading: IconButton(
+                onPressed: () {
+                  Get.back();
+                },
+                icon: PhosphorIcon(
+                  PhosphorIconsBold.arrowLeft,
+                  size: 32.0,
+                )),
           ),
+        ),
+      ),
+      body: SafeArea(
+          child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
+        child: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: EdgeInsets.only(top: 30.0) +
-                    EdgeInsets.symmetric(horizontal: 20.0) +
-                    EdgeInsets.symmetric(vertical: 54.0),
-                child: Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        Get.back();
-                      },
-                      icon: PhosphorIcon(
-                        PhosphorIconsBold.arrowLeft,
-                        size: 32.0,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(width: 20,),
-                    Text(
-                      "Pengaturan Akun",
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.poppins(
-                          fontSize: 25.0, fontWeight: bold, color: whiteColor),
-                    ),
-                  ],
+              // Judul utama
+              Text(
+                'Pengaturan',
+                style: GoogleFonts.poppins(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              Expanded(
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 38.0),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: whiteColor,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30.0),
-                      topRight: Radius.circular(30.0),
-                    ),
-                  ),
-                  child: ListView(
-                    shrinkWrap: true,
-                    physics: ClampingScrollPhysics(),
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Form(
-                            key: _formKey,
-                            child: Column(
-                              children: [
-                                // Nama Depan
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Nama Depan",
-                                      style: GoogleFonts.poppins(
-                                          fontSize: 15, color: blackColor),
-                                    ),
-                                    SizedBox(height: 8.0),
-                                    TextFormField(
-                                      controller: _firstNameController,
-                                      keyboardType: TextInputType.name,
-                                      decoration: InputDecoration(
-                                        hintText: "John",
-                                        hintStyle: GoogleFonts.poppins(
-                                            fontSize: 15.0, fontWeight: light),
-                                        prefixIcon: PhosphorIcon(
-                                          PhosphorIcons.user(),
-                                          size: 19.0,
-                                          color: Color(0xff8594AC),
-                                        ),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                          borderSide: BorderSide.none,
-                                        ),
-                                        fillColor: Color(0xffE7EFF2),
-                                        filled: true,
-                                        contentPadding: EdgeInsets.symmetric(
-                                            vertical: 12.0, horizontal: 15.0),
-                                      ),
-                                      validator: _inputValidator.validateName,
-                                      onSaved: (value) {
-                                        controller.firstName.value =
-                                            value ?? "";
-                                      },
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 20),
-                                // Nama Belakang
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Nama Belakang",
-                                      style: GoogleFonts.poppins(
-                                          fontSize: 15, color: blackColor),
-                                    ),
-                                    SizedBox(height: 8.0),
-                                    TextFormField(
-                                      controller: _lastNameController,
-                                      keyboardType: TextInputType.name,
-                                      decoration: InputDecoration(
-                                        hintText: "Doe",
-                                        hintStyle: GoogleFonts.poppins(
-                                            fontSize: 15.0, fontWeight: light),
-                                        prefixIcon: PhosphorIcon(
-                                          PhosphorIcons.user(),
-                                          size: 19.0,
-                                          color: Color(0xff8594AC),
-                                        ),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                          borderSide: BorderSide.none,
-                                        ),
-                                        fillColor: Color(0xffE7EFF2),
-                                        filled: true,
-                                        contentPadding: EdgeInsets.symmetric(
-                                            vertical: 12.0, horizontal: 15.0),
-                                      ),
-                                      validator: _inputValidator.validateName,
-                                      onSaved: (value) {
-                                        controller.lastName.value = value ?? "";
-                                      },
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 20),
-                                // Tanggal Lahir
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Tanggal Lahir",
-                                      style: GoogleFonts.poppins(
-                                          fontSize: 15, color: blackColor),
-                                    ),
-                                    SizedBox(height: 8.0),
-                                    TextFormField(
-                                      controller: _lastNameController,
-                                      keyboardType: TextInputType.name,
-                                      decoration: InputDecoration(
-                                        hintText: "08/08/2008",
-                                        hintStyle: GoogleFonts.poppins(
-                                            fontSize: 15.0, fontWeight: light),
-                                        prefixIcon: PhosphorIcon(
-                                          PhosphorIcons.calendar(),
-                                          size: 19.0,
-                                          color: Color(0xff8594AC),
-                                        ),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                          borderSide: BorderSide.none,
-                                        ),
-                                        fillColor: Color(0xffE7EFF2),
-                                        filled: true,
-                                        contentPadding: EdgeInsets.symmetric(
-                                            vertical: 12.0, horizontal: 15.0),
-                                      ),
-                                      validator: _inputValidator.validateName,
-                                      onSaved: (value) {
-                                        controller.lastName.value = value ?? "";
-                                      },
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 20),
-                                // Email
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Email",
-                                      style: GoogleFonts.poppins(
-                                          fontSize: 15, color: blackColor),
-                                    ),
-                                    SizedBox(height: 8.0),
-                                    TextFormField(
-                                      controller: _lastNameController,
-                                      keyboardType: TextInputType.name,
-                                      decoration: InputDecoration(
-                                        hintText: "johndoe@examplemail.com",
-                                        hintStyle: GoogleFonts.poppins(
-                                            fontSize: 15.0, fontWeight: light),
-                                        prefixIcon: PhosphorIcon(
-                                          PhosphorIcons.envelope(),
-                                          size: 19.0,
-                                          color: Color(0xff8594AC),
-                                        ),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                          borderSide: BorderSide.none,
-                                        ),
-                                        fillColor: Color(0xffE7EFF2),
-                                        filled: true,
-                                        contentPadding: EdgeInsets.symmetric(
-                                            vertical: 12.0, horizontal: 15.0),
-                                      ),
-                                      validator: _inputValidator.validateName,
-                                      onSaved: (value) {
-                                        controller.lastName.value = value ?? "";
-                                      },
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 20),
-                                // Nomor Telepon
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Nomor Telepon",
-                                      style: GoogleFonts.poppins(
-                                          fontSize: 15, color: blackColor),
-                                    ),
-                                    SizedBox(height: 8.0),
-                                    TextFormField(
-                                      controller: _lastNameController,
-                                      keyboardType: TextInputType.name,
-                                      decoration: InputDecoration(
-                                        hintText: "+628234569",
-                                        hintStyle: GoogleFonts.poppins(
-                                            fontSize: 15.0, fontWeight: light),
-                                        prefixIcon: PhosphorIcon(
-                                          PhosphorIcons.phone(),
-                                          size: 19.0,
-                                          color: Color(0xff8594AC),
-                                        ),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                          borderSide: BorderSide.none,
-                                        ),
-                                        fillColor: Color(0xffE7EFF2),
-                                        filled: true,
-                                        contentPadding: EdgeInsets.symmetric(
-                                            vertical: 12.0, horizontal: 15.0),
-                                      ),
-                                      validator: _inputValidator.validateName,
-                                      onSaved: (value) {
-                                        controller.lastName.value = value ?? "";
-                                      },
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 20),
-                                // Jenis Kelamin
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Jenis Kelamin",
-                                      style: GoogleFonts.poppins(
-                                          fontSize: 15, color: blackColor),
-                                    ),
-                                    SizedBox(height: 8.0),
-                                    TextFormField(
-                                      controller: _lastNameController,
-                                      keyboardType: TextInputType.name,
-                                      decoration: InputDecoration(
-                                        hintText: "Laki-laki",
-                                        hintStyle: GoogleFonts.poppins(
-                                            fontSize: 15.0, fontWeight: light),
-                                        prefixIcon: PhosphorIcon(
-                                          PhosphorIcons.genderNeuter(),
-                                          size: 19.0,
-                                          color: Color(0xff8594AC),
-                                        ),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                          borderSide: BorderSide.none,
-                                        ),
-                                        fillColor: Color(0xffE7EFF2),
-                                        filled: true,
-                                        contentPadding: EdgeInsets.symmetric(
-                                            vertical: 12.0, horizontal: 15.0),
-                                      ),
-                                      validator: _inputValidator.validateName,
-                                      onSaved: (value) {
-                                        controller.lastName.value = value ?? "";
-                                      },
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    if (warningMessage.isNotEmpty)
-                                      Container(
-                                        padding: EdgeInsets.only(left: 16),
-                                        child: Align(
-                                          alignment: Alignment.topLeft,
-                                          child: Text(
-                                            warningMessage,
-                                            style: GoogleFonts.poppins(
-                                                fontSize: 11.5,
-                                                color: const Color.fromARGB(
-                                                    255, 187, 53, 43)),
-                                          ),
-                                        ),
-                                      )
-                                  ],
-                                ),
-                                SizedBox(height: 56),
-                                // Button Selanjutnya
-                                ElevatedButton(
-                                  onPressed: verifyData,
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: primaryColor,
-                                    elevation: 0.0,
-                                    shadowColor: Colors.transparent,
-                                    minimumSize: Size(double.infinity, 48),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    'Ubah Profil',
-                                    style: GoogleFonts.poppins(
-                                        color: whiteColor,
-                                        fontSize: 16,
-                                        fontWeight: bold),
-                                  ),
-                                ),
-                                SizedBox(height: 18),
-                                // Button Kembali
-                                ElevatedButton(
-                                  onPressed: () {
-                                    _formKey.currentState?.save();
-                                    Get.back();
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: whiteColor,
-                                      elevation: 0.0,
-                                      shadowColor: Colors.transparent,
-                                      minimumSize: Size(double.infinity, 48),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      side: BorderSide(color: primaryColor)),
-                                  child: Text(
-                                    'Keluar',
-                                    style: GoogleFonts.poppins(
-                                        color: primaryColor,
-                                        fontSize: 16,
-                                        fontWeight: bold),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+
+              const SizedBox(height: 32),
+
+              // Section: Akun
+              Text(
+                'Akun',
+                style: GoogleFonts.poppins(
+                    fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+
+              // Item: Info Personal
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: PhosphorIcon(
+                  PhosphorIconsBold.user,
+                  size: 28.0,
                 ),
+                title: Text(
+                  'John Doe',
+                  style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.bold, fontSize: 18),
+                ),
+                subtitle: Text(
+                  'Info Personal',
+                  style: GoogleFonts.poppins(),
+                ),
+                trailing: Icon(PhosphorIcons.arrowRight(), size: 28),
+                onTap: () {
+                  Get.to(() => ProfileEdit());
+                },
+              ),
+
+              // Item: Riwayat Artikel
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: PhosphorIcon(
+                  PhosphorIconsBold.clockCounterClockwise,
+                  size: 28.0,
+                ),
+                title: Text(
+                  'Artikel',
+                  style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.bold, fontSize: 18),
+                ),
+                subtitle: Text(
+                  'Riwayat Artikel',
+                  style: GoogleFonts.poppins(),
+                ),
+                trailing: Icon(PhosphorIcons.arrowRight(), size: 28),
+                onTap: () {
+                },
+              ),
+
+              // Item: Riwayat Seminar
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: PhosphorIcon(
+                  PhosphorIconsBold.clockCounterClockwise,
+                  size: 28.0,
+                ),
+                title: Text(
+                  'Seminar',
+                  style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.bold, fontSize: 18),
+                ),
+                subtitle: Text(
+                  'Riwayat Seminar',
+                  style: GoogleFonts.poppins(),
+                ),
+                trailing: Icon(PhosphorIcons.arrowRight(), size: 28),
+                onTap: () {
+                },
+              ),
+
+              const SizedBox(height: 32),
+
+              // Section: Pengaturan
+              Text(
+                'Pengaturan',
+                style: GoogleFonts.poppins(
+                    fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+
+              // Item: Bahasa
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: PhosphorIcon(
+                  PhosphorIconsBold.translate,
+                  size: 28.0,
+                ),
+                title: Text(
+                  'Bahasa',
+                  style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.bold, fontSize: 18),
+                ),
+                subtitle: Text(
+                  'Bahasa Indonesia',
+                  style: GoogleFonts.poppins(),
+                ),
+                trailing: Icon(PhosphorIcons.arrowRight(), size: 28),
+                onTap: () {
+                },
+              ),
+
+
+              // Item: Notifikasi
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: PhosphorIcon(
+                  PhosphorIconsBold.bell,
+                  size: 28.0,
+                ),
+                title: Text(
+                  'Notifikasi',
+                  style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.bold, fontSize: 18),
+                ),
+                trailing: Icon(PhosphorIcons.arrowRight(), size: 28),
+                onTap: () {
+                },
+              ),
+
+              // Item: Bantuan
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: PhosphorIcon(
+                  PhosphorIconsBold.info,
+                  size: 28.0,
+                ),
+                title: Text(
+                  'Notifikasi',
+                  style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.bold, fontSize: 18),
+                ),
+                trailing: Icon(PhosphorIcons.arrowRight(), size: 28),
+                onTap: () {
+                },
               ),
             ],
           ),
-        ));
+        ),
+      )),
+    );
   }
 }
