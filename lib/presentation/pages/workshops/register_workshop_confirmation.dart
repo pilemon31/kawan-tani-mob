@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kawan_tani/presentation/controllers/workshop/register_controller.dart';
 import 'package:flutter_kawan_tani/presentation/pages/workshops/workshops_list.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:get/get.dart';
@@ -15,6 +16,7 @@ class RegisterWorkshopConfirmation extends StatefulWidget {
 
 class _RegisterWorkshopConfirmationState
     extends State<RegisterWorkshopConfirmation> {
+  final controller = Get.put(RegisterController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,75 +75,75 @@ class _RegisterWorkshopConfirmationState
               ),
             ),
             const SizedBox(height: 16),
-            Row(
-              children: [
-                SizedBox(
-                  width: 130,
-                  child: Text('Nama',
-                      style: blackTextStyle.copyWith(
-                          fontSize: 14, fontWeight: medium)),
-                ),
-                Text(': Budi Gunaidi',
-                    style: blackTextStyle.copyWith(
-                        fontSize: 14, fontWeight: medium)),
-              ],
-            ),
+            Obx(() => Row(
+                  children: [
+                    SizedBox(
+                      width: 130,
+                      child: Text('Nama',
+                          style: blackTextStyle.copyWith(
+                              fontSize: 14, fontWeight: medium)),
+                    ),
+                    Text(': ${controller.nama.value}',
+                        style: blackTextStyle.copyWith(
+                            fontSize: 14, fontWeight: medium)),
+                  ],
+                )),
             const SizedBox(height: 12),
-            Row(
-              children: [
-                SizedBox(
-                  width: 130,
-                  child: Text('Email',
-                      style: blackTextStyle.copyWith(
-                          fontSize: 14, fontWeight: medium)),
-                ),
-                Text(': budigunaidi@gmail.com',
-                    style: blackTextStyle.copyWith(
-                        fontSize: 14, fontWeight: medium)),
-              ],
-            ),
+            Obx(() => Row(
+                  children: [
+                    SizedBox(
+                      width: 130,
+                      child: Text('Email',
+                          style: blackTextStyle.copyWith(
+                              fontSize: 14, fontWeight: medium)),
+                    ),
+                    Text(': ${controller.email.value}',
+                        style: blackTextStyle.copyWith(
+                            fontSize: 14, fontWeight: medium)),
+                  ],
+                )),
             const SizedBox(height: 12),
-            Row(
-              children: [
-                SizedBox(
-                  width: 130,
-                  child: Text('Nomor Telepon',
-                      style: blackTextStyle.copyWith(
-                          fontSize: 14, fontWeight: medium)),
-                ),
-                Text(': 08123456789',
-                    style: blackTextStyle.copyWith(
-                        fontSize: 14, fontWeight: medium)),
-              ],
-            ),
+            Obx(() => Row(
+                  children: [
+                    SizedBox(
+                      width: 130,
+                      child: Text('Nomor Telepon',
+                          style: blackTextStyle.copyWith(
+                              fontSize: 14, fontWeight: medium)),
+                    ),
+                    Text(': ${controller.noTelepon.value}',
+                        style: blackTextStyle.copyWith(
+                            fontSize: 14, fontWeight: medium)),
+                  ],
+                )),
             const SizedBox(height: 12),
-            Row(
-              children: [
-                SizedBox(
-                  width: 130,
-                  child: Text('Tanggal Lahir',
-                      style: blackTextStyle.copyWith(
-                          fontSize: 14, fontWeight: medium)),
-                ),
-                Text(': 09 April 2004',
-                    style: blackTextStyle.copyWith(
-                        fontSize: 14, fontWeight: medium)),
-              ],
-            ),
+            Obx(() => Row(
+                  children: [
+                    SizedBox(
+                      width: 130,
+                      child: Text('Tanggal Lahir',
+                          style: blackTextStyle.copyWith(
+                              fontSize: 14, fontWeight: medium)),
+                    ),
+                    Text(': ${controller.tanggalLahir.value}',
+                        style: blackTextStyle.copyWith(
+                            fontSize: 14, fontWeight: medium)),
+                  ],
+                )),
             const SizedBox(height: 12),
-            Row(
-              children: [
-                SizedBox(
-                  width: 130,
-                  child: Text('Jenis Kelamin',
-                      style: blackTextStyle.copyWith(
-                          fontSize: 14, fontWeight: medium)),
-                ),
-                Text(': Laki-Laki',
-                    style: blackTextStyle.copyWith(
-                        fontSize: 14, fontWeight: medium)),
-              ],
-            ),
+            Obx(() => Row(
+                  children: [
+                    SizedBox(
+                      width: 130,
+                      child: Text('Jenis Kelamin',
+                          style: blackTextStyle.copyWith(
+                              fontSize: 14, fontWeight: medium)),
+                    ),
+                    Text(': ${controller.jenisKelamin.value}',
+                        style: blackTextStyle.copyWith(
+                            fontSize: 14, fontWeight: medium)),
+                  ],
+                )),
             const SizedBox(height: 32),
             Text(
               'Informasi Pembayaran:',
@@ -151,47 +153,47 @@ class _RegisterWorkshopConfirmationState
               ),
             ),
             const SizedBox(height: 16),
-            Row(
-              children: [
-                SizedBox(
-                  width: 130,
-                  child: Text('Metode',
-                      style: blackTextStyle.copyWith(
-                          fontSize: 14, fontWeight: medium)),
-                ),
-                Text(': Gopay',
-                    style: blackTextStyle.copyWith(
-                        fontSize: 14, fontWeight: medium)),
-              ],
-            ),
+            Obx(() => Row(
+                  children: [
+                    SizedBox(
+                      width: 130,
+                      child: Text('Metode',
+                          style: blackTextStyle.copyWith(
+                              fontSize: 14, fontWeight: medium)),
+                    ),
+                    Text(': ${controller.metode.value}',
+                        style: blackTextStyle.copyWith(
+                            fontSize: 14, fontWeight: medium)),
+                  ],
+                )),
             const SizedBox(height: 12),
-            Row(
-              children: [
-                SizedBox(
-                  width: 130,
-                  child: Text('Jumlah',
-                      style: blackTextStyle.copyWith(
-                          fontSize: 14, fontWeight: medium)),
-                ),
-                Text(': Rp. 100.000,00',
-                    style: blackTextStyle.copyWith(
-                        fontSize: 14, fontWeight: medium)),
-              ],
-            ),
+            Obx(() => Row(
+                  children: [
+                    SizedBox(
+                      width: 130,
+                      child: Text('Jumlah',
+                          style: blackTextStyle.copyWith(
+                              fontSize: 14, fontWeight: medium)),
+                    ),
+                    Text(': ${controller.jumlah.value}',
+                        style: blackTextStyle.copyWith(
+                            fontSize: 14, fontWeight: medium)),
+                  ],
+                )),
             const SizedBox(height: 12),
-            Row(
-              children: [
-                SizedBox(
-                  width: 130,
-                  child: Text('Status',
-                      style: blackTextStyle.copyWith(
-                          fontSize: 14, fontWeight: medium)),
-                ),
-                Text(': Menunggu',
-                    style: blackTextStyle.copyWith(
-                        fontSize: 14, fontWeight: medium)),
-              ],
-            ),
+            Obx(() => Row(
+                  children: [
+                    SizedBox(
+                      width: 130,
+                      child: Text('Status',
+                          style: blackTextStyle.copyWith(
+                              fontSize: 14, fontWeight: medium)),
+                    ),
+                    Text(': ${controller.status.value}',
+                        style: blackTextStyle.copyWith(
+                            fontSize: 14, fontWeight: medium)),
+                  ],
+                )),
             const SizedBox(height: 64),
             ElevatedButton(
               onPressed: () {
