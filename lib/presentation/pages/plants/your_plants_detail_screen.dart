@@ -25,7 +25,11 @@ class _YourPlantsDetailScreenState extends State<YourPlantsDetailScreen> {
   Map<int, List<Task>> tasksPerDay = {
     1: [Task("Siram tanaman"), Task("Cek kelembapan"), Task("Bersihkan gulma")],
     2: [Task("Pupuk tanaman"), Task("Cek suhu tanah"), Task("Bersihkan gulma")],
-    3: [Task("Siram tanaman"), Task("Pangkas daun mati"), Task("Cek kelembapan")],
+    3: [
+      Task("Siram tanaman"),
+      Task("Pangkas daun mati"),
+      Task("Cek kelembapan")
+    ],
     4: [Task("Cek hama"), Task("Siram tanaman")],
     5: [Task("Panen daun sehat"), Task("Cek kelembapan")],
     6: [Task("Siram tanaman"), Task("Bersihkan pot")],
@@ -153,40 +157,63 @@ class _YourPlantsDetailScreenState extends State<YourPlantsDetailScreen> {
                   });
                 },
                 child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
                   margin: const EdgeInsets.only(bottom: 10),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: Colors.grey.shade300),
-                    color: task.isDone ? primaryColor: Colors.white,
+                    color: task.isDone ? primaryColor : whiteColor,
                   ),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Checkbox(
-                        value: task.isDone,
-                        onChanged: (value) {
-                          setState(() {
-                            task.isDone = value!;
-                          });
-                        },
-                        activeColor: primaryColor,
-                      ),
-                      const SizedBox(width: 10),
-                      PhosphorIcon(PhosphorIconsBold.checks, size: 24),
-                      const SizedBox(width: 10),
                       Expanded(
-                        child: Text(
-                          task.title,
-                          style: GoogleFonts.poppins(
-                            fontSize: 16,
-                            fontWeight: bold,
-                            color: blackColor,
-                            decoration: task.isDone
-                                ? TextDecoration.lineThrough
-                                : TextDecoration.none,
-                          ),
+                        child: Row(
+                          children: [
+                            PhosphorIcon(PhosphorIconsBold.drop,
+                                size: 24,
+                                color: task.isDone
+                                    ? whiteColor
+                                    : Colors.grey.shade400),
+                            SizedBox(width: 10),
+                            Text(
+                              task.title,
+                              style: GoogleFonts.poppins(
+                                fontSize: 16,
+                                fontWeight: bold,
+                                color: task.isDone
+                                    ? whiteColor
+                                    : Colors.grey.shade400,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
+                      CheckboxTheme(
+                        data: CheckboxThemeData(
+                          side: WidgetStateBorderSide.resolveWith(
+                            (states) {
+                              if (states.contains(WidgetState.selected)) {
+                                return BorderSide(
+                                    color: primaryColor);
+                              }
+                              return BorderSide(
+                                  color: whiteColor);
+                            },
+                          ),
+                        ),
+                        child: Checkbox(
+                          value: task.isDone,
+                          onChanged: (value) {
+                            setState(() {
+                              task.isDone = value!;
+                            });
+                          },
+                          activeColor: whiteColor,
+                          checkColor: primaryColor,
+                        ),
+                      )
                     ],
                   ),
                 ),
