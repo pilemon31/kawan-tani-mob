@@ -23,7 +23,8 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Positioned.fill(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.only(top: 140, bottom: 100),
+              padding: const EdgeInsets.only(
+                  top: 140, bottom: 100, left: 10, right: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -37,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           style: GoogleFonts.poppins(
                               fontSize: 20, fontWeight: semiBold),
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 12),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
@@ -51,7 +52,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                         value: WeatherController()
                                             .temperature
                                             .value,
-                                        imagePath: "assets/suhu_image.jpg",
+                                        imagePath:
+                                            "assets/kelembapan_image.jpg",
                                       )),
                                 ),
                                 const SizedBox(width: 30),
@@ -86,12 +88,18 @@ class _HomeScreenState extends State<HomeScreen> {
                               style: GoogleFonts.poppins(
                                   fontSize: 18, fontWeight: FontWeight.bold),
                             ),
-                            Text(
-                              "Lihat Semua",
-                              style: GoogleFonts.poppins(
+                            GestureDetector(
+                              onTap: () {
+                                Get.offNamed("/plants");
+                              },
+                              child: Text(
+                                "Lihat Semua",
+                                style: GoogleFonts.poppins(
                                   fontSize: 10,
                                   fontWeight: FontWeight.bold,
-                                  color: Color(0xFF78D14D)),
+                                  color: Color(0xFF78D14D),
+                                ),
+                              ),
                             ),
                           ],
                         ),
@@ -198,12 +206,18 @@ class _HomeScreenState extends State<HomeScreen> {
                               style: GoogleFonts.poppins(
                                   fontSize: 18, fontWeight: FontWeight.bold),
                             ),
-                            Text(
-                              "Lihat Semua",
-                              style: GoogleFonts.poppins(
+                            GestureDetector(
+                              onTap: () {
+                                Get.offNamed("/workshops");
+                              },
+                              child: Text(
+                                "Lihat Semua",
+                                style: GoogleFonts.poppins(
                                   fontSize: 10,
                                   fontWeight: FontWeight.bold,
-                                  color: Color(0xFF78D14D)),
+                                  color: Color(0xFF78D14D),
+                                ),
+                              ),
                             ),
                           ],
                         ),
@@ -211,7 +225,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ClipRRect(
                           borderRadius: BorderRadius.circular(12),
                           child: Image.asset(
-                            "assets/suhu_image.jpg",
+                            "assets/workshops.png",
                             width: double.infinity,
                             height: 200,
                             fit: BoxFit.cover,
@@ -233,12 +247,18 @@ class _HomeScreenState extends State<HomeScreen> {
                               style: GoogleFonts.poppins(
                                   fontSize: 18, fontWeight: FontWeight.bold),
                             ),
-                            Text(
-                              "Lihat Semua",
-                              style: GoogleFonts.poppins(
+                            GestureDetector(
+                              onTap: () {
+                                Get.offNamed("/plants");
+                              },
+                              child: Text(
+                                "Lihat Semua",
+                                style: GoogleFonts.poppins(
                                   fontSize: 10,
                                   fontWeight: FontWeight.bold,
-                                  color: Color(0xFF78D14D)),
+                                  color: Color(0xFF78D14D),
+                                ),
+                              ),
                             ),
                           ],
                         ),
@@ -246,7 +266,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ClipRRect(
                           borderRadius: BorderRadius.circular(12),
                           child: Image.asset(
-                            "assets/suhu_image.jpg",
+                            "assets/article.png",
                             width: double.infinity,
                             height: 200,
                             fit: BoxFit.cover,
@@ -265,8 +285,7 @@ class _HomeScreenState extends State<HomeScreen> {
             right: 0,
             child: Container(
               height: 135,
-              padding: const EdgeInsets.only(
-                  top: 30, left: 20, right: 20),
+              padding: const EdgeInsets.only(top: 30, left: 20, right: 20),
               decoration: const BoxDecoration(
                 color: Color(0xFF78D14D),
                 borderRadius: BorderRadius.only(
@@ -322,7 +341,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: const Navbar(),
+      bottomNavigationBar: Navbar(),
     );
   }
 }

@@ -114,7 +114,9 @@ class _YourPlantsScreenState extends State<YourPlantsScreen> {
                                 ),
                                 SizedBox(height: 4),
                                 ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Get.to(() => const YourPlantsDetailScreen());
+                                  },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Color(0xFF78D14D),
                                     minimumSize: Size(double.infinity, 30),

@@ -123,7 +123,9 @@ class _StartPlantingScreenState extends State<StartPlantingScreen> {
                       Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Get.to(() => const StartPlantingDetailScreen());
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: primaryColor,
                               minimumSize: Size(double.infinity, 35),
