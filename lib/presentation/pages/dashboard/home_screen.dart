@@ -249,7 +249,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                Get.offNamed("/plants");
+                                Get.offNamed("/articles");
                               },
                               child: Text(
                                 "Lihat Semua",

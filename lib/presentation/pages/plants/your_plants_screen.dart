@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kawan_tani/presentation/pages/dashboard/home_screen.dart';
 import 'package:flutter_kawan_tani/presentation/pages/plants/filter_your_plants_screen.dart';
 import 'package:flutter_kawan_tani/presentation/pages/plants/your_plants_detail_screen.dart';
 import 'package:flutter_kawan_tani/presentation/widgets/navbar/navbar.dart';
@@ -26,7 +27,9 @@ class _YourPlantsScreenState extends State<YourPlantsScreen> {
                   backgroundColor: Colors.white,
                   toolbarHeight: 80.0,
                   leading: IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Get.to(() => const HomeScreen());
+                    },
                     icon: PhosphorIcon(
                       PhosphorIconsBold.arrowLeft,
                       size: 32.0,
@@ -51,95 +54,92 @@ class _YourPlantsScreenState extends State<YourPlantsScreen> {
                     ),
                   ],
                 ))),
-        body: SafeArea(
-            child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 27),
-                child: Expanded(
-                    child: ListView.separated(
-                  separatorBuilder: (BuildContext context, int index) {
-                    return SizedBox(height: 21);
+        body: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 27),
+            child: Expanded(
+                child: ListView.separated(
+              separatorBuilder: (BuildContext context, int index) {
+                return SizedBox(height: 21);
+              },
+              itemCount: 5,
+              itemBuilder: (BuildContext context, int index) {
+                return InkWell(
+                  onTap: () {
+                    Get.to(() => YourPlantsDetailScreen());
                   },
-                  itemCount: 5,
-                  itemBuilder: (BuildContext context, int index) {
-                    return InkWell(
-                      onTap: () {
-                        Get.to(() => YourPlantsDetailScreen());
-                      },
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Color(0xffC3C6D4)),
                       borderRadius: BorderRadius.circular(10),
-                      child: Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Color(0xffC3C6D4)),
-                          borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Column(
+                      children: [
+                        Container(
+                          height: 100,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              image: DecorationImage(
+                                  image: AssetImage("assets/apple.jpg"),
+                                  fit: BoxFit.cover)),
                         ),
-                        child: Column(
+                        SizedBox(height: 10),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              height: 100,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  image: DecorationImage(
-                                      image: AssetImage("assets/apple.jpg"),
-                                      fit: BoxFit.cover)),
+                            Text(
+                              "Cabaiku Tani (60%)",
+                              style: GoogleFonts.poppins(
+                                  fontSize: 20, fontWeight: bold),
                             ),
-                            SizedBox(height: 10),
-                            Column(
+                            SizedBox(
+                              height: 4,
+                            ),
+                            Row(
                               mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  "Cabaiku Tani (60%)",
-                                  style: GoogleFonts.poppins(
-                                      fontSize: 20, fontWeight: bold),
+                                PhosphorIcon(
+                                  PhosphorIconsRegular.clock,
+                                  size: 17.0,
                                 ),
                                 SizedBox(
-                                  height: 4,
+                                  width: 5,
                                 ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    PhosphorIcon(
-                                      PhosphorIconsRegular.clock,
-                                      size: 17.0,
-                                    ),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(
-                                      "32 Hari hingga panen",
-                                      style: GoogleFonts.poppins(fontSize: 12),
-                                    )
-                                  ],
-                                ),
-                                SizedBox(height: 4),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    Get.to(() => const YourPlantsDetailScreen());
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Color(0xFF78D14D),
-                                    minimumSize: Size(double.infinity, 30),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                  ),
-                                  child: Text(
-                                    "Selesaikan Tugas Harian",
-                                    style: GoogleFonts.poppins(
-                                        fontSize: 14,
-                                        fontWeight: semiBold,
-                                        color: Colors.white),
-                                  ),
-                                ),
+                                Text(
+                                  "32 Hari hingga panen",
+                                  style: GoogleFonts.poppins(fontSize: 12),
+                                )
                               ],
+                            ),
+                            SizedBox(height: 4),
+                            ElevatedButton(
+                              onPressed: () {
+                                Get.to(() => const YourPlantsDetailScreen());
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xFF78D14D),
+                                minimumSize: Size(double.infinity, 30),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)),
+                              ),
+                              child: Text(
+                                "Selesaikan Tugas Harian",
+                                style: GoogleFonts.poppins(
+                                    fontSize: 14,
+                                    fontWeight: semiBold,
+                                    color: Colors.white),
+                              ),
                             ),
                           ],
                         ),
-                      ),
-                    );
-                  },
-                )))),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ))),
         bottomNavigationBar: Navbar());
   }
 }
