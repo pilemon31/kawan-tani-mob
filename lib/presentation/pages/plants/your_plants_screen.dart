@@ -56,8 +56,7 @@ class _YourPlantsScreenState extends State<YourPlantsScreen> {
                 ))),
         body: Padding(
             padding: EdgeInsets.symmetric(horizontal: 27),
-            child: Expanded(
-                child: ListView.separated(
+            child: ListView.separated(
               separatorBuilder: (BuildContext context, int index) {
                 return SizedBox(height: 21);
               },
@@ -139,7 +138,7 @@ class _YourPlantsScreenState extends State<YourPlantsScreen> {
                   ),
                 );
               },
-            ))),
+            )),
         bottomNavigationBar: Navbar());
   }
 }

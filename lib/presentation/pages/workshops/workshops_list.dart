@@ -117,7 +117,7 @@ class _WorkshopsListState extends State<WorkshopsList> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "Teknik Genjot Padi",
+                                        "Teknik Tanam Padi",
                                         style: GoogleFonts.poppins(
                                             fontSize: 20, fontWeight: bold),
                                       ),

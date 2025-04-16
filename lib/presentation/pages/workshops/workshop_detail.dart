@@ -92,7 +92,7 @@ class _WorkshopDetailState extends State<WorkshopDetail> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Teknik Genjot Padi",
+                      "Teknik Tanam Padi",
                       style:
                           GoogleFonts.poppins(fontWeight: bold, fontSize: 20),
                     ),
