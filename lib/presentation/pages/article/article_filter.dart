@@ -37,7 +37,7 @@ class _FilterArticleScreenState extends State<FilterArticleScreen> {
                 title: Padding(
                     padding: EdgeInsets.all(0),
                     child: Text(
-                      'Filter Tanaman',
+                      'Filter Artikel',
                       style: GoogleFonts.poppins(
                           fontSize: 20, color: blackColor, fontWeight: bold),
                     )),
