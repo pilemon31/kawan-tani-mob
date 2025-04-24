@@ -261,7 +261,7 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                                 _formKey.currentState!.save();
                                 controller.resetForm();
                                 Get.to(() => VerificationScreen());
-                              }
+                              } 
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: primaryColor,

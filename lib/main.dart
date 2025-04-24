@@ -20,16 +20,16 @@ class MyApp extends StatelessWidget {
       title: "KawanTani",
       theme: ThemeData(scaffoldBackgroundColor: Colors.white),
       debugShowCheckedModeBanner: false,
-      initialRoute: "/",
+      initialRoute: "/home",
       getPages: [
         GetPage(name: "/", page: () => const SplashPage()),
         GetPage(name: "/onboarding", page: () => const OnboardingPage()),
-        GetPage(name: "/login", page: () => LogInScreen()),
-        GetPage(name: "/home", page: () => HomeScreen()),
-        GetPage(name: "/plants", page: () => YourPlantsScreen()),
-        GetPage(name: "/articles", page: () => ArticleList()),
-        GetPage(name: "/workshops", page: () => WorkshopsList()),
-        GetPage(name: "/add", page: () => StartPlantingScreen())
+        GetPage(name: "/login", page: () => const LogInScreen()),
+        GetPage(name: "/home", page: () => const HomeScreen()),
+        GetPage(name: "/plants", page: () => const YourPlantsScreen()),
+        GetPage(name: "/articles", page: () => const ArticleList()),
+        GetPage(name: "/workshops", page: () => const WorkshopsList()),
+        GetPage(name: "/add", page: () => const StartPlantingScreen())
       ],
     );
   }

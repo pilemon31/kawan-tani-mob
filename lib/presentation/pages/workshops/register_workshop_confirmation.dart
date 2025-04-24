@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kawan_tani/presentation/controllers/workshop/register_controller.dart';
+import 'package:flutter_kawan_tani/presentation/controllers/workshop/payment_controller.dart';
+import 'package:flutter_kawan_tani/presentation/controllers/workshop/register_workshop_controller.dart';
 import 'package:flutter_kawan_tani/presentation/pages/workshops/workshops_list.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:get/get.dart';
@@ -16,7 +17,8 @@ class RegisterWorkshopConfirmation extends StatefulWidget {
 
 class _RegisterWorkshopConfirmationState
     extends State<RegisterWorkshopConfirmation> {
-  final controller = Get.put(RegisterController());
+  final controller = Get.put(RegisterWorkshopController());
+  final paymentController = Get.put(PaymentController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,7 +85,7 @@ class _RegisterWorkshopConfirmationState
                           style: blackTextStyle.copyWith(
                               fontSize: 14, fontWeight: medium)),
                     ),
-                    Text(': ${controller.nama.value}',
+                    Text(': ${controller.attendeesName.value}',
                         style: blackTextStyle.copyWith(
                             fontSize: 14, fontWeight: medium)),
                   ],
@@ -97,7 +99,7 @@ class _RegisterWorkshopConfirmationState
                           style: blackTextStyle.copyWith(
                               fontSize: 14, fontWeight: medium)),
                     ),
-                    Text(': ${controller.email.value}',
+                    Text(': ${controller.emailAddress.value}',
                         style: blackTextStyle.copyWith(
                             fontSize: 14, fontWeight: medium)),
                   ],
@@ -111,7 +113,7 @@ class _RegisterWorkshopConfirmationState
                           style: blackTextStyle.copyWith(
                               fontSize: 14, fontWeight: medium)),
                     ),
-                    Text(': ${controller.noTelepon.value}',
+                    Text(': ${controller.phoneNumber.value}',
                         style: blackTextStyle.copyWith(
                             fontSize: 14, fontWeight: medium)),
                   ],
@@ -125,7 +127,7 @@ class _RegisterWorkshopConfirmationState
                           style: blackTextStyle.copyWith(
                               fontSize: 14, fontWeight: medium)),
                     ),
-                    Text(': ${controller.tanggalLahir.value}',
+                    Text(': ${controller.birthDate.value}',
                         style: blackTextStyle.copyWith(
                             fontSize: 14, fontWeight: medium)),
                   ],
@@ -139,7 +141,7 @@ class _RegisterWorkshopConfirmationState
                           style: blackTextStyle.copyWith(
                               fontSize: 14, fontWeight: medium)),
                     ),
-                    Text(': ${controller.jenisKelamin.value}',
+                    Text(': ${controller.gender.value}',
                         style: blackTextStyle.copyWith(
                             fontSize: 14, fontWeight: medium)),
                   ],
@@ -161,7 +163,7 @@ class _RegisterWorkshopConfirmationState
                           style: blackTextStyle.copyWith(
                               fontSize: 14, fontWeight: medium)),
                     ),
-                    Text(': ${controller.metode.value}',
+                    Text(': ${paymentController.metode.value}',
                         style: blackTextStyle.copyWith(
                             fontSize: 14, fontWeight: medium)),
                   ],
@@ -175,7 +177,7 @@ class _RegisterWorkshopConfirmationState
                           style: blackTextStyle.copyWith(
                               fontSize: 14, fontWeight: medium)),
                     ),
-                    Text(': ${controller.jumlah.value}',
+                    Text(': ${paymentController.jumlah.value}',
                         style: blackTextStyle.copyWith(
                             fontSize: 14, fontWeight: medium)),
                   ],
@@ -189,7 +191,7 @@ class _RegisterWorkshopConfirmationState
                           style: blackTextStyle.copyWith(
                               fontSize: 14, fontWeight: medium)),
                     ),
-                    Text(': ${controller.status.value}',
+                    Text(': ${paymentController.status.value}',
                         style: blackTextStyle.copyWith(
                             fontSize: 14, fontWeight: medium)),
                   ],

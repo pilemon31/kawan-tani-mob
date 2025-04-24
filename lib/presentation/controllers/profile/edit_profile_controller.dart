@@ -1,24 +1,24 @@
 import "package:get/get.dart";
 import 'package:flutter/foundation.dart';
 
-class RegistrationController extends GetxController {
+class EditprofileController extends GetxController {
   //Insialisasi data user
   final firstName = "".obs;
   final lastName = "".obs;
+  final birthDate = "".obs;
   final emailAddress = "".obs;
   final phoneNumber = "".obs;
   final gender = "".obs;
-  final password = "".obs;
 
   //Function untuk mengirim ke backend
   Future<bool> submitRegistration() async {
     final userData = {
       'First Name': firstName.value,
       'Last Name': firstName.value,
+      'Tanggal Lahir': birthDate.value,
       'Email': emailAddress.value,
       'Phone Number': phoneNumber.value,
       'Gender': gender.value,
-      'password': password.value,
     };
 
     debugPrint('Mengirim data ke backend: $userData');
@@ -31,9 +31,9 @@ class RegistrationController extends GetxController {
   void resetForm() {
     firstName.value = '';
     lastName.value = '';
+    birthDate.value = '';
     emailAddress.value = '';
     phoneNumber.value = '';
     gender.value = '';
-    password.value = '';
   }
 }

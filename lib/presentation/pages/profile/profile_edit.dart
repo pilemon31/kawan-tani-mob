@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kawan_tani/presentation/controllers/auth/registration_controller.dart';
-import 'package:flutter_kawan_tani/presentation/controllers/auth/validation_service.dart';
-import 'package:flutter_kawan_tani/presentation/pages/register/profile_upload_screen.dart';
+import 'package:flutter_kawan_tani/presentation/controllers/profile/edit_profile_controller.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -16,13 +14,14 @@ class ProfileEdit extends StatefulWidget {
 
 class _ProfileEditState extends State<ProfileEdit> {
   String warningMessage = "";
-  final RegistrationController controller = Get.put(RegistrationController());
+  final EditprofileController controller = Get.put(EditprofileController());
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _birthDateController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
-  final ValidationService _inputValidator = ValidationService();
+  final TextEditingController _genderController = TextEditingController();
 
   @override
   void initState() {
@@ -30,8 +29,10 @@ class _ProfileEditState extends State<ProfileEdit> {
 
     _firstNameController.text = controller.firstName.value;
     _lastNameController.text = controller.lastName.value;
+    _birthDateController.text = controller.birthDate.value;
     _emailController.text = controller.emailAddress.value;
     _phoneNumberController.text = controller.phoneNumber.value;
+    _genderController.text = controller.phoneNumber.value;
   }
 
   @override
@@ -46,7 +47,7 @@ class _ProfileEditState extends State<ProfileEdit> {
   void verifyData() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      Get.to(() => ProfileUpload());
+      controller.resetForm();
     }
   }
 
@@ -148,7 +149,6 @@ class _ProfileEditState extends State<ProfileEdit> {
                                         contentPadding: EdgeInsets.symmetric(
                                             vertical: 12.0, horizontal: 15.0),
                                       ),
-                                      validator: _inputValidator.validateName,
                                       onSaved: (value) {
                                         controller.firstName.value =
                                             value ?? "";
@@ -189,7 +189,6 @@ class _ProfileEditState extends State<ProfileEdit> {
                                         contentPadding: EdgeInsets.symmetric(
                                             vertical: 12.0, horizontal: 15.0),
                                       ),
-                                      validator: _inputValidator.validateName,
                                       onSaved: (value) {
                                         controller.lastName.value = value ?? "";
                                       },
@@ -208,7 +207,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                                     ),
                                     SizedBox(height: 8.0),
                                     TextFormField(
-                                      controller: _lastNameController,
+                                      controller: _birthDateController,
                                       keyboardType: TextInputType.name,
                                       decoration: InputDecoration(
                                         hintText: "08/08/2008",
@@ -229,9 +228,8 @@ class _ProfileEditState extends State<ProfileEdit> {
                                         contentPadding: EdgeInsets.symmetric(
                                             vertical: 12.0, horizontal: 15.0),
                                       ),
-                                      validator: _inputValidator.validateName,
                                       onSaved: (value) {
-                                        controller.lastName.value = value ?? "";
+                                        controller.birthDate.value = value ?? "";
                                       },
                                     ),
                                   ],
@@ -248,7 +246,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                                     ),
                                     SizedBox(height: 8.0),
                                     TextFormField(
-                                      controller: _lastNameController,
+                                      controller: _emailController,
                                       keyboardType: TextInputType.name,
                                       decoration: InputDecoration(
                                         hintText: "johndoe@examplemail.com",
@@ -269,9 +267,8 @@ class _ProfileEditState extends State<ProfileEdit> {
                                         contentPadding: EdgeInsets.symmetric(
                                             vertical: 12.0, horizontal: 15.0),
                                       ),
-                                      validator: _inputValidator.validateName,
                                       onSaved: (value) {
-                                        controller.lastName.value = value ?? "";
+                                        controller.emailAddress.value = value ?? "";
                                       },
                                     ),
                                   ],
@@ -288,7 +285,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                                     ),
                                     SizedBox(height: 8.0),
                                     TextFormField(
-                                      controller: _lastNameController,
+                                      controller: _phoneNumberController,
                                       keyboardType: TextInputType.name,
                                       decoration: InputDecoration(
                                         hintText: "+628234569",
@@ -309,9 +306,8 @@ class _ProfileEditState extends State<ProfileEdit> {
                                         contentPadding: EdgeInsets.symmetric(
                                             vertical: 12.0, horizontal: 15.0),
                                       ),
-                                      validator: _inputValidator.validateName,
                                       onSaved: (value) {
-                                        controller.lastName.value = value ?? "";
+                                        controller.phoneNumber.value = value ?? "";
                                       },
                                     ),
                                   ],
@@ -328,7 +324,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                                     ),
                                     SizedBox(height: 8.0),
                                     TextFormField(
-                                      controller: _lastNameController,
+                                      controller: _genderController,
                                       keyboardType: TextInputType.name,
                                       decoration: InputDecoration(
                                         hintText: "Laki-laki",
@@ -349,9 +345,8 @@ class _ProfileEditState extends State<ProfileEdit> {
                                         contentPadding: EdgeInsets.symmetric(
                                             vertical: 12.0, horizontal: 15.0),
                                       ),
-                                      validator: _inputValidator.validateName,
                                       onSaved: (value) {
-                                        controller.lastName.value = value ?? "";
+                                        controller.gender.value = value ?? "";
                                       },
                                     ),
                                   ],
