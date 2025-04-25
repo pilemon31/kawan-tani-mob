@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class ValidationService {
   String? validateEmail(String? value) {
     if (value == null) {
@@ -35,9 +37,35 @@ class ValidationService {
 
   String? validatePhoneNumber(String? value) {
     if (value == null || value.isEmpty) {
-      return "Nama harus diisi!";
+      return "Nomor harus diisi!";
     }
 
     return null;
   }
+
+  String? validateGender(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Jenis kelamin harus diisi!";
+    }
+
+    return null;
+  }
+
+String? validateBirthDate(String? value) {
+  if (value == null || value.isEmpty) {
+    return "Tanggal lahir harus diisi!";
+  }
+
+  try {
+    final inputDate = DateFormat('dd/MM/yyyy').parseStrict(value);
+    if (inputDate.isAfter(DateTime.now())) {
+      return "Tanggal lahir tidak boleh di masa depan!";
+    }
+  } catch (e) {
+    return "Format tanggal tidak valid!";
+  }
+
+  return null;
+}
+
 }

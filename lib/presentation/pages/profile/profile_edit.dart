@@ -54,61 +54,68 @@ class _ProfileEditState extends State<ProfileEdit> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: const Color(0xFF78D14D),
-        resizeToAvoidBottomInset: false,
-        body: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Color(0xFF78D14D),
-                Color(0xFF349107),
-              ],
-            ),
-          ),
-          child: Column(
+      backgroundColor: const Color(0xFF78D14D),
+      resizeToAvoidBottomInset: false,
+      body: Stack(
+        children: [
+          Column(
             children: [
-              Padding(
-                padding: EdgeInsets.only(top: 30.0) +
-                    EdgeInsets.symmetric(horizontal: 20.0) +
-                    EdgeInsets.symmetric(vertical: 54.0),
-                child: Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        Get.back();
-                      },
-                      icon: PhosphorIcon(
-                        PhosphorIconsBold.arrowLeft,
-                        size: 32.0,
-                        color: Colors.white,
+              // Green top section
+              Container(
+                height: MediaQuery.of(context).size.height * 0.25,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xFF78D14D),
+                      Color(0xFF349107),
+                    ],
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      top: 30.0, left: 20.0, right: 20.0, bottom: 54.0),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          Get.back();
+                        },
+                        icon: PhosphorIcon(
+                          PhosphorIconsBold.arrowLeft,
+                          size: 32.0,
+                          color: Colors.white,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 20,),
-                    Text(
-                      "Pengaturan Akun",
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.poppins(
-                          fontSize: 25.0, fontWeight: bold, color: whiteColor),
-                    ),
-                  ],
+                      const SizedBox(width: 20),
+                      Text(
+                        "Pengaturan Akun",
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.poppins(
+                            fontSize: 25.0,
+                            fontWeight: bold,
+                            color: whiteColor),
+                      ),
+                    ],
+                  ),
                 ),
               ),
+              // White bottom section
               Expanded(
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 38.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 38.0),
                   width: double.infinity,
                   decoration: BoxDecoration(
                     color: whiteColor,
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(30.0),
                       topRight: Radius.circular(30.0),
                     ),
                   ),
                   child: ListView(
                     shrinkWrap: true,
-                    physics: ClampingScrollPhysics(),
+                    physics: const ClampingScrollPhysics(),
                     children: [
                       Column(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -117,16 +124,59 @@ class _ProfileEditState extends State<ProfileEdit> {
                             key: _formKey,
                             child: Column(
                               children: [
-                                // Nama Depan
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
+                                    // AVATAR HERE
+                                    Center(
+                                      child: Stack(
+                                        children: [
+                                          Container(
+                                            width: 120,
+                                            height: 120,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                    color: blackColor,
+                                                    blurRadius: 6)
+                                              ],
+                                            ),
+                                            child: CircleAvatar(
+                                              backgroundImage: AssetImage(
+                                                  "assets/apple.jpg"),
+                                              backgroundColor: Colors.grey[200],
+                                            ),
+                                          ),
+                                          Positioned(
+                                            bottom: 0,
+                                            right: 0,
+                                            child: Container(
+                                              height: 35,
+                                              width: 35,
+                                              decoration: BoxDecoration(
+                                                color: primaryColor,
+                                                shape: BoxShape.circle,
+                                              ),
+                                              child: IconButton(
+                                                icon: Icon(Icons.edit,
+                                                    color: Colors.white,
+                                                    size: 20),
+                                                onPressed: () {},
+                                                padding: EdgeInsets.zero,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    // First Name
                                     Text(
                                       "Nama Depan",
                                       style: GoogleFonts.poppins(
                                           fontSize: 15, color: blackColor),
                                     ),
-                                    SizedBox(height: 8.0),
+                                    const SizedBox(height: 8.0),
                                     TextFormField(
                                       controller: _firstNameController,
                                       keyboardType: TextInputType.name,
@@ -156,8 +206,8 @@ class _ProfileEditState extends State<ProfileEdit> {
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: 20),
-                                // Nama Belakang
+                                const SizedBox(height: 20),
+                                // Last Name
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -166,7 +216,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                                       style: GoogleFonts.poppins(
                                           fontSize: 15, color: blackColor),
                                     ),
-                                    SizedBox(height: 8.0),
+                                    const SizedBox(height: 8.0),
                                     TextFormField(
                                       controller: _lastNameController,
                                       keyboardType: TextInputType.name,
@@ -195,8 +245,8 @@ class _ProfileEditState extends State<ProfileEdit> {
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: 20),
-                                // Tanggal Lahir
+                                const SizedBox(height: 20),
+                                // Birth Date
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -205,7 +255,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                                       style: GoogleFonts.poppins(
                                           fontSize: 15, color: blackColor),
                                     ),
-                                    SizedBox(height: 8.0),
+                                    const SizedBox(height: 8.0),
                                     TextFormField(
                                       controller: _birthDateController,
                                       keyboardType: TextInputType.name,
@@ -229,12 +279,13 @@ class _ProfileEditState extends State<ProfileEdit> {
                                             vertical: 12.0, horizontal: 15.0),
                                       ),
                                       onSaved: (value) {
-                                        controller.birthDate.value = value ?? "";
+                                        controller.birthDate.value =
+                                            value ?? "";
                                       },
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: 20),
+                                const SizedBox(height: 20),
                                 // Email
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -244,7 +295,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                                       style: GoogleFonts.poppins(
                                           fontSize: 15, color: blackColor),
                                     ),
-                                    SizedBox(height: 8.0),
+                                    const SizedBox(height: 8.0),
                                     TextFormField(
                                       controller: _emailController,
                                       keyboardType: TextInputType.name,
@@ -268,13 +319,14 @@ class _ProfileEditState extends State<ProfileEdit> {
                                             vertical: 12.0, horizontal: 15.0),
                                       ),
                                       onSaved: (value) {
-                                        controller.emailAddress.value = value ?? "";
+                                        controller.emailAddress.value =
+                                            value ?? "";
                                       },
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: 20),
-                                // Nomor Telepon
+                                const SizedBox(height: 20),
+                                // Phone Number
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -283,7 +335,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                                       style: GoogleFonts.poppins(
                                           fontSize: 15, color: blackColor),
                                     ),
-                                    SizedBox(height: 8.0),
+                                    const SizedBox(height: 8.0),
                                     TextFormField(
                                       controller: _phoneNumberController,
                                       keyboardType: TextInputType.name,
@@ -307,13 +359,14 @@ class _ProfileEditState extends State<ProfileEdit> {
                                             vertical: 12.0, horizontal: 15.0),
                                       ),
                                       onSaved: (value) {
-                                        controller.phoneNumber.value = value ?? "";
+                                        controller.phoneNumber.value =
+                                            value ?? "";
                                       },
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: 20),
-                                // Jenis Kelamin
+                                const SizedBox(height: 20),
+                                // Gender
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -322,7 +375,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                                       style: GoogleFonts.poppins(
                                           fontSize: 15, color: blackColor),
                                     ),
-                                    SizedBox(height: 8.0),
+                                    const SizedBox(height: 8.0),
                                     TextFormField(
                                       controller: _genderController,
                                       keyboardType: TextInputType.name,
@@ -370,15 +423,16 @@ class _ProfileEditState extends State<ProfileEdit> {
                                       )
                                   ],
                                 ),
-                                SizedBox(height: 56),
-                                // Button Selanjutnya
+                                const SizedBox(height: 56),
+                                // Save Button
                                 ElevatedButton(
                                   onPressed: verifyData,
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: primaryColor,
                                     elevation: 0.0,
                                     shadowColor: Colors.transparent,
-                                    minimumSize: Size(double.infinity, 48),
+                                    minimumSize:
+                                        const Size(double.infinity, 48),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(8),
                                     ),
@@ -391,8 +445,8 @@ class _ProfileEditState extends State<ProfileEdit> {
                                         fontWeight: bold),
                                   ),
                                 ),
-                                SizedBox(height: 18),
-                                // Button Kembali
+                                const SizedBox(height: 18),
+                                // Cancel Button
                                 ElevatedButton(
                                   onPressed: () {
                                     _formKey.currentState?.save();
@@ -402,7 +456,8 @@ class _ProfileEditState extends State<ProfileEdit> {
                                       backgroundColor: whiteColor,
                                       elevation: 0.0,
                                       shadowColor: Colors.transparent,
-                                      minimumSize: Size(double.infinity, 48),
+                                      minimumSize:
+                                          const Size(double.infinity, 48),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(8),
                                       ),
@@ -426,6 +481,8 @@ class _ProfileEditState extends State<ProfileEdit> {
               ),
             ],
           ),
-        ));
+        ],
+      ),
+    );
   }
 }
