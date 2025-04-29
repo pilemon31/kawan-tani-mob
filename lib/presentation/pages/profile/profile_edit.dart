@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kawan_tani/presentation/controllers/auth/validation_service.dart';
 import 'package:flutter_kawan_tani/presentation/controllers/profile/edit_profile_controller.dart';
+import 'package:flutter_kawan_tani/presentation/pages/dashboard/home_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -14,6 +16,8 @@ class ProfileEdit extends StatefulWidget {
 
 class _ProfileEditState extends State<ProfileEdit> {
   String warningMessage = "";
+  bool isMaleClicked = false;
+  bool isFemaleClicked = false;
   final EditprofileController controller = Get.put(EditprofileController());
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _firstNameController = TextEditingController();
@@ -22,6 +26,7 @@ class _ProfileEditState extends State<ProfileEdit> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _genderController = TextEditingController();
+  final ValidationService _inputValidator = ValidationService();
 
   @override
   void initState() {
@@ -29,25 +34,88 @@ class _ProfileEditState extends State<ProfileEdit> {
 
     _firstNameController.text = controller.firstName.value;
     _lastNameController.text = controller.lastName.value;
-    _birthDateController.text = controller.birthDate.value;
+    if (controller.birthDate.value.isNotEmpty) {
+      final parts = controller.birthDate.value.split('-');
+      if (parts.length == 3) {
+        _birthDateController.text = "${parts[2]}/${parts[1]}/${parts[0]}";
+      } else {
+        _birthDateController.text = controller.birthDate.value;
+      }
+    }
     _emailController.text = controller.emailAddress.value;
     _phoneNumberController.text = controller.phoneNumber.value;
-    _genderController.text = controller.phoneNumber.value;
+    _genderController.text = controller.gender.value;
   }
 
   @override
   void dispose() {
     _firstNameController.dispose();
     _lastNameController.dispose();
+    _birthDateController.dispose();
     _emailController.dispose();
     _phoneNumberController.dispose();
+    _genderController.dispose();
     super.dispose();
   }
 
   void verifyData() {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      controller.resetForm();
+    if (isFemaleClicked == false && isMaleClicked == false) {
+      setState(() {
+        warningMessage = "Jenis kelamin harus dipilih!";
+      });
+    } else {
+      if (_formKey.currentState!.validate()) {
+        _formKey.currentState!.save();
+        Get.to(() => HomeScreen());
+      }
+    }
+  }
+
+  void clickedMale() {
+    controller.gender.value = "Laki-Laki";
+    setState(() {
+      isMaleClicked = true;
+      isFemaleClicked = false;
+    });
+  }
+
+  void clickedFemale() {
+    controller.gender.value = "Perempuan";
+    setState(() {
+      isMaleClicked = false;
+      isFemaleClicked = true;
+    });
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            colorScheme: ColorScheme.light(
+              primary: primaryColor, // Warna utama date picker
+              onPrimary: Colors.white, // Warna teks header
+              onSurface: Colors.black, // Warna teks tanggal
+            ),
+            dialogTheme: DialogTheme(
+              backgroundColor: Colors.white, // Ganti dengan DialogTheme
+            ), // Warna background
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null && picked != DateTime.now()) {
+      setState(() {
+        // Format tanggal menjadi dd/MM/yyyy
+        _birthDateController.text =
+            "${picked.day}/${picked.month}/${picked.year}";
+      });
     }
   }
 
@@ -62,7 +130,7 @@ class _ProfileEditState extends State<ProfileEdit> {
             children: [
               // Green top section
               Container(
-                height: MediaQuery.of(context).size.height * 0.25,
+                height: MediaQuery.of(context).size.height * 0.25 - 20,
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
@@ -170,6 +238,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                                         ],
                                       ),
                                     ),
+                                    const SizedBox(height: 30),
                                     // First Name
                                     Text(
                                       "Nama Depan",
@@ -199,6 +268,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                                         contentPadding: EdgeInsets.symmetric(
                                             vertical: 12.0, horizontal: 15.0),
                                       ),
+                                      validator: _inputValidator.validateName,
                                       onSaved: (value) {
                                         controller.firstName.value =
                                             value ?? "";
@@ -239,6 +309,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                                         contentPadding: EdgeInsets.symmetric(
                                             vertical: 12.0, horizontal: 15.0),
                                       ),
+                                      validator: _inputValidator.validateName,
                                       onSaved: (value) {
                                         controller.lastName.value = value ?? "";
                                       },
@@ -258,7 +329,8 @@ class _ProfileEditState extends State<ProfileEdit> {
                                     const SizedBox(height: 8.0),
                                     TextFormField(
                                       controller: _birthDateController,
-                                      keyboardType: TextInputType.name,
+                                      readOnly:
+                                          true, // Membuat field tidak bisa diketik manual
                                       decoration: InputDecoration(
                                         hintText: "08/08/2008",
                                         hintStyle: GoogleFonts.poppins(
@@ -278,9 +350,25 @@ class _ProfileEditState extends State<ProfileEdit> {
                                         contentPadding: EdgeInsets.symmetric(
                                             vertical: 12.0, horizontal: 15.0),
                                       ),
+                                      onTap: () {
+                                        _selectDate(
+                                            context); // Panggil date picker saat field di-tap
+                                      },
+                                      validator:
+                                          _inputValidator.validateBirthDate,
                                       onSaved: (value) {
-                                        controller.birthDate.value =
-                                            value ?? "";
+                                        if (value != null && value.isNotEmpty) {
+                                          final parts = value.split('/');
+                                          if (parts.length == 3) {
+                                            // Konversi dari dd/MM/yyyy ke yyyy-MM-dd
+                                            controller.birthDate.value =
+                                                "${parts[2]}-${parts[1]}-${parts[0]}";
+                                          } else {
+                                            controller.birthDate.value = value;
+                                          }
+                                        } else {
+                                          controller.birthDate.value = "";
+                                        }
                                       },
                                     ),
                                   ],
@@ -318,6 +406,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                                         contentPadding: EdgeInsets.symmetric(
                                             vertical: 12.0, horizontal: 15.0),
                                       ),
+                                      validator: _inputValidator.validateEmail,
                                       onSaved: (value) {
                                         controller.emailAddress.value =
                                             value ?? "";
@@ -358,6 +447,8 @@ class _ProfileEditState extends State<ProfileEdit> {
                                         contentPadding: EdgeInsets.symmetric(
                                             vertical: 12.0, horizontal: 15.0),
                                       ),
+                                      validator:
+                                          _inputValidator.validatePhoneNumber,
                                       onSaved: (value) {
                                         controller.phoneNumber.value =
                                             value ?? "";
@@ -375,38 +466,67 @@ class _ProfileEditState extends State<ProfileEdit> {
                                       style: GoogleFonts.poppins(
                                           fontSize: 15, color: blackColor),
                                     ),
-                                    const SizedBox(height: 8.0),
-                                    TextFormField(
-                                      controller: _genderController,
-                                      keyboardType: TextInputType.name,
-                                      decoration: InputDecoration(
-                                        hintText: "Laki-laki",
-                                        hintStyle: GoogleFonts.poppins(
-                                            fontSize: 15.0, fontWeight: light),
-                                        prefixIcon: PhosphorIcon(
-                                          PhosphorIcons.genderNeuter(),
-                                          size: 19.0,
-                                          color: Color(0xff8594AC),
+                                    SizedBox(height: 8.0),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: ElevatedButton(
+                                            onPressed: clickedMale,
+                                            style: ElevatedButton.styleFrom(
+                                              elevation: 0.0,
+                                              backgroundColor: isMaleClicked
+                                                  ? Color(0x00ffffff)
+                                                  : Color(
+                                                      0xffE7EFF2), // Button color based on selection
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                              ),
+                                              side: isMaleClicked
+                                                  ? BorderSide(
+                                                      color: Color(0xffE7EFF2))
+                                                  : BorderSide.none,
+                                            ),
+                                            child: Text(
+                                              "Laki-Laki",
+                                              style: GoogleFonts.poppins(
+                                                  fontSize: 15,
+                                                  color: Color(0xff4993F8)),
+                                            ),
+                                          ),
                                         ),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                          borderSide: BorderSide.none,
-                                        ),
-                                        fillColor: Color(0xffE7EFF2),
-                                        filled: true,
-                                        contentPadding: EdgeInsets.symmetric(
-                                            vertical: 12.0, horizontal: 15.0),
-                                      ),
-                                      onSaved: (value) {
-                                        controller.gender.value = value ?? "";
-                                      },
+                                        SizedBox(width: 18),
+                                        Expanded(
+                                          child: ElevatedButton(
+                                            onPressed: clickedFemale,
+                                            style: ElevatedButton.styleFrom(
+                                              elevation: 0.0,
+                                              backgroundColor: isFemaleClicked
+                                                  ? Color(0x00ffffff)
+                                                  : Color(
+                                                      0xffE7EFF2), // Change this to handle the female button selection
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                                side: isFemaleClicked
+                                                    ? BorderSide(
+                                                        color:
+                                                            Color(0xffE7EFF2))
+                                                    : BorderSide.none,
+                                              ),
+                                            ),
+                                            child: Text(
+                                              "Perempuan",
+                                              style: GoogleFonts.poppins(
+                                                  fontSize: 15,
+                                                  color: Color(0xffF99D9D)),
+                                            ),
+                                          ),
+                                        )
+                                      ],
                                     ),
-                                  ],
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
                                     if (warningMessage.isNotEmpty)
                                       Container(
                                         padding: EdgeInsets.only(left: 16),

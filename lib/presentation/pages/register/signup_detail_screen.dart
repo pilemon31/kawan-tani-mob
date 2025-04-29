@@ -29,7 +29,6 @@ class _SignUpScreenDetailState extends State<SignUpDetailScreen> {
   @override
   void initState() {
     super.initState();
-
     _firstNameController.text = controller.firstName.value;
     _lastNameController.text = controller.lastName.value;
     _emailController.text = controller.emailAddress.value;
