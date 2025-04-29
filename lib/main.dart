@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       title: "KawanTani",
       theme: ThemeData(scaffoldBackgroundColor: Colors.white),
       debugShowCheckedModeBanner: false,
-      initialRoute: "/home",
+      initialRoute: "/",
       getPages: [
         GetPage(name: "/", page: () => const SplashPage()),
         GetPage(name: "/onboarding", page: () => const OnboardingPage()),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kawan_tani/presentation/controllers/auth/validation_service.dart';
+import 'package:flutter_kawan_tani/utils/validation_utils.dart';
 import 'package:flutter_kawan_tani/presentation/controllers/profile/edit_profile_controller.dart';
 import 'package:flutter_kawan_tani/presentation/pages/dashboard/home_screen.dart';
 import 'package:google_fonts/google_fonts.dart';

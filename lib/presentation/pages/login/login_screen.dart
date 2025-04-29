@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kawan_tani/presentation/controllers/auth/validation_service.dart';
+import 'package:flutter_kawan_tani/utils/validation_utils.dart';
 import 'package:flutter_kawan_tani/presentation/pages/dashboard/home_screen.dart';
 import 'package:flutter_kawan_tani/presentation/pages/register/signup_screen.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import "package:flutter_kawan_tani/presentation/pages/register/verification_screen.dart";
+import 'package:flutter_kawan_tani/presentation/pages/register/successful_registration.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import "package:get/get.dart";
 import 'package:flutter_kawan_tani/presentation/controllers/auth/registration_controller.dart';
-import 'package:flutter_kawan_tani/presentation/controllers/auth/validation_service.dart';
+import 'package:flutter_kawan_tani/utils/validation_utils.dart';
 
 class CreatePasswordScreen extends StatefulWidget {
   const CreatePasswordScreen({super.key});
@@ -260,7 +260,7 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                               if (_formKey.currentState!.validate()) {
                                 _formKey.currentState!.save();
                                 controller.resetForm();
-                                Get.to(() => VerificationScreen());
+                                Get.to(() => SuccessfulRegistration());
                               } 
                             },
                             style: ElevatedButton.styleFrom(

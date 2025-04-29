@@ -1,32 +1,61 @@
+import 'package:flutter_kawan_tani/services/auth/auth_service.dart';
+import 'package:flutter_kawan_tani/shared/theme.dart';
 import "package:get/get.dart";
-import 'package:flutter/foundation.dart';
 
 class RegistrationController extends GetxController {
-  //Insialisasi data user
+  final Authservice _authservice = new Authservice();
+
   final firstName = "".obs;
   final lastName = "".obs;
   final emailAddress = "".obs;
   final phoneNumber = "".obs;
   final gender = "".obs;
   final password = "".obs;
+  var isLoading = false.obs;
 
-  //Function untuk mengirim ke backend
-  Future<bool> submitRegistration() async {
-    final userData = {
-      'First Name': firstName.value,
-      'Last Name': firstName.value,
-      'Email': emailAddress.value,
-      'Phone Number': phoneNumber.value,
-      'Gender': gender.value,
-      'password': password.value,
-    };
+  Future<void> registerAccount() async {
+    isLoading.value = true;
+    
+    try{
+      final response = await _authservice.registerUser(
+      namaDepanPengguna: firstName.value,
+      namaBelakangPengguna: lastName.value,
+      emailPengguna: emailAddress.value,
+      nomorTeleponPengguna: phoneNumber.value,
+      passwordPengguna: password.value,
+      confirmPasswordPengguna: password.value);
+    isLoading.value = false;
 
-    debugPrint('Mengirim data ke backend: $userData');
-
-    await Future.delayed(Duration(seconds: 2));
-
-    return true;
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      Get.snackbar(
+        "Sukses",
+        response['message'] ?? "Registrasi berhasil!",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: primaryColor,
+        colorText: whiteColor,
+      );
+      resetForm();
+    } else {
+      Get.snackbar(
+        "Gagal",
+        response['message'] ?? "Terjadi kesalahan",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: primaryColor,
+        colorText: whiteColor,
+      );
+    }
+    }catch(error){
+      isLoading.value = false;
+    Get.snackbar(
+      "Error",
+      error.toString(),
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: primaryColor,
+      colorText: whiteColor,
+    );
   }
+    }
+  
 
   void resetForm() {
     firstName.value = '';

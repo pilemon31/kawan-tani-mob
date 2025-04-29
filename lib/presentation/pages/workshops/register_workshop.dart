@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_kawan_tani/presentation/controllers/workshop/register_workshop_controller.dart';
 import 'package:flutter_kawan_tani/presentation/pages/workshops/register_workshop_payment.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
-import 'package:flutter_kawan_tani/presentation/controllers/auth/validation_service.dart';
+import 'package:flutter_kawan_tani/utils/validation_utils.dart';
 import "package:get/get.dart";
 import 'package:google_fonts/google_fonts.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
