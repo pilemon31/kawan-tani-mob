@@ -10,6 +10,7 @@ class RegistrationController extends GetxController {
   final phoneNumber = "".obs;
   final gender = "".obs;
   final password = "".obs;
+  final confirmPassword = "".obs;
   final dateOfBirth = "".obs;
   var isLoading = false.obs;
 
@@ -24,7 +25,7 @@ class RegistrationController extends GetxController {
           phoneNumber.value,
           dateOfBirth.value,
           password.value,
-          password.value);
+          confirmPassword.value);
 
       isLoading.value = false;
 

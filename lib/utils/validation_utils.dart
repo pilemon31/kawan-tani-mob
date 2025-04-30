@@ -51,21 +51,20 @@ class ValidationService {
     return null;
   }
 
-String? validateBirthDate(String? value) {
-  if (value == null || value.isEmpty) {
-    return "Tanggal lahir harus diisi!";
-  }
-
-  try {
-    final inputDate = DateFormat('dd/MM/yyyy').parseStrict(value);
-    if (inputDate.isAfter(DateTime.now())) {
-      return "Tanggal lahir tidak boleh di masa depan!";
+  String? validateBirthDate(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Tanggal lahir harus diisi!";
     }
-  } catch (e) {
-    return "Format tanggal tidak valid!";
+
+    try {
+      final inputDate = DateFormat('yyyy-MM-dd').parseStrict(value);
+      if (inputDate.isAfter(DateTime.now())) {
+        return "Tanggal lahir tidak boleh di masa depan!";
+      }
+    } catch (e) {
+      return "Format tanggal tidak valid!";
+    }
+
+    return null;
   }
-
-  return null;
-}
-
 }

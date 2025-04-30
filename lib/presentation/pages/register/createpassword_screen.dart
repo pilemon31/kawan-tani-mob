@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kawan_tani/presentation/pages/register/successful_registration.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -17,7 +16,8 @@ class CreatePasswordScreen extends StatefulWidget {
 class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
   final RegistrationController controller = Get.put(RegistrationController());
   final _formKey = GlobalKey<FormState>();
-  bool obscureText = true;
+  bool obscurePassword = true;
+  bool obscureConfirmPassword = true;
 
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
@@ -28,16 +28,18 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
   void initState() {
     super.initState();
     _passwordController.text = controller.password.value;
-    _confirmPasswordController.text = controller.password.value;
   }
 
   String? confirmPasswordValidator(String? value) {
+    print("Confirm value: $value");
+    print("Password value: ${_passwordController.text}");
+
     if (value == null || value.isEmpty) {
       return "Konfirmasi password harus diisi!";
     }
 
     if (value != _passwordController.text) {
-      return "Konfirmasi dan passwrod harus sama!";
+      return "Konfirmasi dan password harus sama!";
     }
 
     return null;
@@ -149,10 +151,11 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                                           fontSize: 15, color: blackColor),
                                     ),
                                     SizedBox(height: 8.0),
-                                    // Container with background color
                                     TextFormField(
                                       controller: _passwordController,
-                                      obscureText: obscureText,
+                                      obscureText: obscurePassword,
+                                      autovalidateMode:
+                                          AutovalidateMode.onUserInteraction,
                                       decoration: InputDecoration(
                                           hintText: "*********",
                                           hintStyle: GoogleFonts.poppins(
@@ -166,11 +169,12 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                                           suffixIcon: GestureDetector(
                                             onTap: () {
                                               setState(() {
-                                                obscureText = !obscureText;
+                                                obscurePassword =
+                                                    !obscurePassword;
                                               });
                                             },
                                             child: PhosphorIcon(
-                                                obscureText
+                                                obscurePassword
                                                     ? PhosphorIconsRegular
                                                         .eyeSlash
                                                     : PhosphorIconsRegular.eye,
@@ -184,9 +188,8 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                                           fillColor: Color(0xffE7EFF2),
                                           filled: true,
                                           contentPadding: EdgeInsets.symmetric(
-                                              vertical: 12.0, horizontal: 15.0)
-                                          // Adjust vertical padding
-                                          ),
+                                              vertical: 12.0,
+                                              horizontal: 15.0)),
                                       validator:
                                           _inputValidator.validatePassword,
                                       onSaved: (value) {
@@ -206,10 +209,11 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                                           fontSize: 15, color: blackColor),
                                     ),
                                     SizedBox(height: 8.0),
-                                    // Container with background color
                                     TextFormField(
                                       controller: _confirmPasswordController,
-                                      obscureText: obscureText,
+                                      obscureText: obscureConfirmPassword,
+                                      autovalidateMode:
+                                          AutovalidateMode.onUserInteraction,
                                       decoration: InputDecoration(
                                           hintText: "*********",
                                           hintStyle: GoogleFonts.poppins(
@@ -223,11 +227,12 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                                           suffixIcon: GestureDetector(
                                             onTap: () {
                                               setState(() {
-                                                obscureText = !obscureText;
+                                                obscureConfirmPassword =
+                                                    !obscureConfirmPassword;
                                               });
                                             },
                                             child: PhosphorIcon(
-                                                obscureText
+                                                obscureConfirmPassword
                                                     ? PhosphorIconsRegular
                                                         .eyeSlash
                                                     : PhosphorIconsRegular.eye,
@@ -241,10 +246,13 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                                           fillColor: Color(0xffE7EFF2),
                                           filled: true,
                                           contentPadding: EdgeInsets.symmetric(
-                                              vertical: 12.0, horizontal: 15.0)
-                                          // Adjust vertical padding
-                                          ),
+                                              vertical: 12.0,
+                                              horizontal: 15.0)),
                                       validator: confirmPasswordValidator,
+                                      onSaved: (value) {
+                                        controller.confirmPassword.value =
+                                            value ?? "";
+                                      },
                                     ),
                                   ],
                                 ),
@@ -259,9 +267,9 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
                                 _formKey.currentState!.save();
-                                controller.resetForm();
                                 controller.registerAccount();
-                              } 
+                                controller.resetForm();
+                              }
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: primaryColor,
