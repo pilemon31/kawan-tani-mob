@@ -25,7 +25,7 @@ class _ProfileUploadState extends State<ProfileUpload> {
   void initState() {
     super.initState();
     _firstNameController.text = controller.firstName.value;
-    _emailController.text = controller.emailAddress.value;
+    _emailController.text = controller.email.value;
   }
 
   @override

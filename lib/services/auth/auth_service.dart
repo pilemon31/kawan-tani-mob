@@ -3,37 +3,30 @@ import 'dart:convert';
 
 class Authservice {
   //Base URL
-  final String baseUrl = "http://localhost:3000";  
+  static String baseUrl = "http://localhost:3000/api";
 
   //Register User Service
-  Future registerUser({
-    required String namaDepanPengguna,
-    required String namaBelakangPengguna,
-    required String emailPengguna,
-    required String nomorTeleponPengguna,
-    required String passwordPengguna,
-    required String confirmPasswordPengguna,
-  }) async {
-    final url = Uri.parse('$baseUrl/auth/register');
-
-    try{
-      final response = await http.post(
-      url, 
-      headers: {"Content-Type": "application/json"},
+  static Future<http.Response> registerUser(
+      String firstName,
+      String lastName,
+      String email,
+      String phoneNumber,
+      String dateOfBirth,
+      String password,
+      String confirmPassword) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/auth/register'),
+      headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
-        "namaDepanPengguna": namaDepanPengguna,
-        "namaBelakangPengguna": namaBelakangPengguna,
-        "emailPengguna": emailPengguna,
-        "nomorTeleponPengguna": nomorTeleponPengguna,
-        "passwordPengguna" : passwordPengguna,
-        "confirmPasswordPengguna": confirmPasswordPengguna
+        "firstName": firstName,
+        "lastName": lastName,
+        "email": email,
+        "phoneNumber": phoneNumber,
+        "dateOfBirth": dateOfBirth,
+        "password": password,
+        "confirmPassword": confirmPassword
       }),
     );
-    final data = jsonDecode(response.body);
-    return data;
-    }catch(error){
-      final err = error;
-      return err;
-    }
+    return response;
   }
 }

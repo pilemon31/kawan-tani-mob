@@ -260,7 +260,7 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                               if (_formKey.currentState!.validate()) {
                                 _formKey.currentState!.save();
                                 controller.resetForm();
-                                Get.to(() => SuccessfulRegistration());
+                                controller.registerAccount();
                               } 
                             },
                             style: ElevatedButton.styleFrom(
@@ -273,7 +273,7 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                               ),
                             ),
                             child: Text(
-                              'Selanjutnya',
+                              'Daftar Akun',
                               style: GoogleFonts.poppins(
                                   color: whiteColor,
                                   fontSize: 16,

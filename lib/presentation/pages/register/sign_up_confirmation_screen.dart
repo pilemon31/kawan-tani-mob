@@ -26,7 +26,7 @@ class _SignUpConfirmationState extends State<SignUpConfirmationScreen> {
     super.initState();
     _firstNameController.text = controller.firstName.value;
     _lastNameController.text = controller.lastName.value;
-    _emailController.text = controller.emailAddress.value;
+    _emailController.text = controller.email.value;
     _phoneNumberController.text = controller.phoneNumber.value;
   }
 
@@ -247,7 +247,51 @@ class _SignUpConfirmationState extends State<SignUpConfirmationScreen> {
                                           Expanded(
                                               child: Obx(
                                             () => Text(
-                                              controller.emailAddress.value,
+                                              controller.email.value,
+                                              style: GoogleFonts.poppins(
+                                                  fontSize: 15.0,
+                                                  fontWeight: light),
+                                            ),
+                                          )),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                SizedBox(height: 20),
+                                // Tanggal Lahir
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Tanggal Lahir",
+                                      style: GoogleFonts.poppins(
+                                          fontSize: 15, color: blackColor),
+                                    ),
+                                    SizedBox(height: 8.0),
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 12.0, horizontal: 15.0),
+                                      decoration: BoxDecoration(
+                                          color: Color.fromARGB(
+                                              255, 255, 255, 255),
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                          border: Border.all(
+                                              color: Color(0xffE7EFF2),
+                                              width: 2.0)),
+                                      child: Row(
+                                        children: [
+                                          PhosphorIcon(
+                                            PhosphorIconsRegular.user,
+                                            size: 19.0,
+                                            color: Color(0xff8594AC),
+                                          ),
+                                          SizedBox(width: 12),
+                                          Expanded(
+                                              child: Obx(
+                                            () => Text(
+                                              controller.dateOfBirth.value,
                                               style: GoogleFonts.poppins(
                                                   fontSize: 15.0,
                                                   fontWeight: light),
@@ -303,7 +347,7 @@ class _SignUpConfirmationState extends State<SignUpConfirmationScreen> {
                                   ],
                                 ),
                                 SizedBox(height: 20),
-                                // Nama Belakang
+                                // Jenis Kelamin
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [

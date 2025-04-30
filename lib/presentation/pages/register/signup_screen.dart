@@ -28,7 +28,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   void initState() {
     super.initState();
     _firstNameController.text = controller.firstName.value;
-    _emailController.text = controller.emailAddress.value;
+    _emailController.text = controller.email.value;
   }
 
   @override
@@ -200,7 +200,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       ),
                                       validator: _inputValidator.validateEmail,
                                       onSaved: (value) {
-                                        controller.emailAddress.value =
+                                        controller.email.value =
                                             value ?? "";
                                       },
                                     ),

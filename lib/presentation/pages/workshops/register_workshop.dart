@@ -195,79 +195,81 @@ class _RegisterWorkshopState extends State<RegisterWorkshop> {
                       SizedBox(height: 20),
 
                       // Tanggal Lahir
-// Tanggal Lahir dengan Date Picker
-Column(
-  crossAxisAlignment: CrossAxisAlignment.start,
-  children: [
-    Text(
-      "Tanggal Lahir",
-      style: GoogleFonts.poppins(fontSize: 15, color: blackColor),
-    ),
-    SizedBox(height: 8.0),
-    TextFormField(
-      controller: _birthDateController,
-      readOnly: true, // Biar gak bisa diketik manual
-      decoration: InputDecoration(
-        hintText: "08/08/2008",
-        hintStyle: GoogleFonts.poppins(
-          fontSize: 15.0,
-          fontWeight: light,
-        ),
-        prefixIcon: PhosphorIcon(
-          PhosphorIcons.calendar(),
-          size: 19.0,
-          color: Color(0xff8594AC),
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide.none,
-        ),
-        fillColor: Color(0xffE7EFF2),
-        filled: true,
-        contentPadding:
-            EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
-      ),
-      onTap: () async {
-        FocusScope.of(context).requestFocus(FocusNode()); // close keyboard
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Tanggal Lahir",
+                            style: GoogleFonts.poppins(
+                                fontSize: 15, color: blackColor),
+                          ),
+                          SizedBox(height: 8.0),
+                          TextFormField(
+                            controller: _birthDateController,
+                            readOnly: true, // Biar gak bisa diketik manual
+                            decoration: InputDecoration(
+                              hintText: "08/08/2008",
+                              hintStyle: GoogleFonts.poppins(
+                                fontSize: 15.0,
+                                fontWeight: light,
+                              ),
+                              prefixIcon: PhosphorIcon(
+                                PhosphorIcons.calendar(),
+                                size: 19.0,
+                                color: Color(0xff8594AC),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                                borderSide: BorderSide.none,
+                              ),
+                              fillColor: Color(0xffE7EFF2),
+                              filled: true,
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 12.0, horizontal: 15.0),
+                            ),
+                            onTap: () async {
+                              FocusScope.of(context)
+                                  .requestFocus(FocusNode()); // close keyboard
 
-        final DateTime? pickedDate = await showDatePicker(
-          context: context,
-          initialDate: DateTime.now(),
-          firstDate: DateTime(1900),
-          lastDate: DateTime.now(),
-          builder: (context, child) {
-            return Theme(
-              data: Theme.of(context).copyWith(
-                colorScheme: ColorScheme.light(
-                  primary: blackColor, // warna utama date picker
-                  onPrimary: Colors.white,
-                  onSurface: Colors.black,
-                ),
-                textButtonTheme: TextButtonThemeData(
-                  style: TextButton.styleFrom(
-                    foregroundColor: blackColor,
-                  ),
-                ),
-              ),
-              child: child!,
-            );
-          },
-        );
+                              final DateTime? pickedDate = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(1900),
+                                lastDate: DateTime.now(),
+                                builder: (context, child) {
+                                  return Theme(
+                                    data: Theme.of(context).copyWith(
+                                      colorScheme: ColorScheme.light(
+                                        primary:
+                                            blackColor, // warna utama date picker
+                                        onPrimary: Colors.white,
+                                        onSurface: Colors.black,
+                                      ),
+                                      textButtonTheme: TextButtonThemeData(
+                                        style: TextButton.styleFrom(
+                                          foregroundColor: blackColor,
+                                        ),
+                                      ),
+                                    ),
+                                    child: child!,
+                                  );
+                                },
+                              );
 
-        if (pickedDate != null) {
-          String formattedDate =
-              DateFormat('dd/MM/yyyy').format(pickedDate); 
-          _birthDateController.text = formattedDate;
-          controller.birthDate.value = formattedDate;
-        }
-      },
-      validator: _inputValidator.validateBirthDate, 
-      onSaved: (value) {
-        controller.birthDate.value = value ?? "";
-      },
-    ),
-  ],
-),
+                              if (pickedDate != null) {
+                                String formattedDate =
+                                    DateFormat('dd/MM/yyyy').format(pickedDate);
+                                _birthDateController.text = formattedDate;
+                                controller.birthDate.value = formattedDate;
+                              }
+                            },
+                            validator: _inputValidator.validateBirthDate,
+                            onSaved: (value) {
+                              controller.birthDate.value = value ?? "";
+                            },
+                          ),
+                        ],
+                      ),
 
                       SizedBox(height: 20),
                       // Nomor Telepon

@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import "package:get/get.dart";
+import 'package:intl/intl.dart';
 
 class SignUpDetailScreen extends StatefulWidget {
   const SignUpDetailScreen({super.key});
@@ -24,6 +25,7 @@ class _SignUpScreenDetailState extends State<SignUpDetailScreen> {
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
+  final TextEditingController _birthDateController = TextEditingController();
   final ValidationService _inputValidator = ValidationService();
 
   @override
@@ -31,8 +33,9 @@ class _SignUpScreenDetailState extends State<SignUpDetailScreen> {
     super.initState();
     _firstNameController.text = controller.firstName.value;
     _lastNameController.text = controller.lastName.value;
-    _emailController.text = controller.emailAddress.value;
+    _emailController.text = controller.email.value;
     _phoneNumberController.text = controller.phoneNumber.value;
+    _birthDateController.text = controller.dateOfBirth.value;
   }
 
   @override
@@ -40,6 +43,7 @@ class _SignUpScreenDetailState extends State<SignUpDetailScreen> {
     _firstNameController.dispose();
     _lastNameController.dispose();
     _emailController.dispose();
+    _birthDateController.dispose();
     _phoneNumberController.dispose();
     super.dispose();
   }
@@ -277,7 +281,7 @@ class _SignUpScreenDetailState extends State<SignUpDetailScreen> {
                                           Expanded(
                                               child: Obx(
                                             () => Text(
-                                              controller.emailAddress.value,
+                                              controller.email.value,
                                               style: GoogleFonts.poppins(
                                                   fontSize: 15.0,
                                                   fontWeight: light),
@@ -331,6 +335,91 @@ class _SignUpScreenDetailState extends State<SignUpDetailScreen> {
                                   ],
                                 ),
                                 SizedBox(height: 20),
+                                // Tanggal Lahir
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Tanggal Lahir",
+                                      style: GoogleFonts.poppins(
+                                          fontSize: 15, color: blackColor),
+                                    ),
+                                    SizedBox(height: 8.0),
+                                    TextFormField(
+                                      controller: _birthDateController,
+                                      readOnly:
+                                          true, // Biar gak bisa diketik manual
+                                      decoration: InputDecoration(
+                                        hintText: "08/08/2008",
+                                        hintStyle: GoogleFonts.poppins(
+                                          fontSize: 15.0,
+                                          fontWeight: light,
+                                        ),
+                                        prefixIcon: PhosphorIcon(
+                                          PhosphorIcons.calendar(),
+                                          size: 19.0,
+                                          color: Color(0xff8594AC),
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                          borderSide: BorderSide.none,
+                                        ),
+                                        fillColor: Color(0xffE7EFF2),
+                                        filled: true,
+                                        contentPadding: EdgeInsets.symmetric(
+                                            vertical: 12.0, horizontal: 15.0),
+                                      ),
+                                      onTap: () async {
+                                        FocusScope.of(context).requestFocus(
+                                            FocusNode()); // close keyboard
+                                        final DateTime? pickedDate =
+                                            await showDatePicker(
+                                          context: context,
+                                          initialDate: DateTime.now(),
+                                          firstDate: DateTime(1900),
+                                          lastDate: DateTime.now(),
+                                          builder: (context, child) {
+                                            return Theme(
+                                              data: Theme.of(context).copyWith(
+                                                colorScheme: ColorScheme.light(
+                                                  primary:
+                                                      blackColor, // warna utama date picker
+                                                  onPrimary: Colors.white,
+                                                  onSurface: Colors.black,
+                                                ),
+                                                textButtonTheme:
+                                                    TextButtonThemeData(
+                                                  style: TextButton.styleFrom(
+                                                    foregroundColor: blackColor,
+                                                  ),
+                                                ),
+                                              ),
+                                              child: child!,
+                                            );
+                                          },
+                                        );
+
+                                        if (pickedDate != null) {
+                                          String formattedDate =
+                                              DateFormat('dd/MM/yyyy')
+                                                  .format(pickedDate);
+                                          _birthDateController.text =
+                                              formattedDate;
+                                          controller.dateOfBirth.value =
+                                              formattedDate;
+                                        }
+                                      },
+                                      validator:
+                                          _inputValidator.validateBirthDate,
+                                      onSaved: (value) {
+                                        controller.dateOfBirth.value =
+                                            value ?? "";
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 20),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
