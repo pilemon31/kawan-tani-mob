@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kawan_tani/presentation/pages/login/login_screen.dart';
 import 'package:flutter_kawan_tani/presentation/pages/profile/profile_edit.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -98,8 +99,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   style: GoogleFonts.poppins(),
                 ),
                 trailing: Icon(PhosphorIcons.arrowRight(), size: 28),
-                onTap: () {
-                },
+                onTap: () {},
               ),
 
               // Item: Riwayat Seminar
@@ -119,8 +119,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   style: GoogleFonts.poppins(),
                 ),
                 trailing: Icon(PhosphorIcons.arrowRight(), size: 28),
-                onTap: () {
-                },
+                onTap: () {},
               ),
 
               const SizedBox(height: 32),
@@ -150,10 +149,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   style: GoogleFonts.poppins(),
                 ),
                 trailing: Icon(PhosphorIcons.arrowRight(), size: 28),
-                onTap: () {
-                },
+                onTap: () {},
               ),
-
 
               // Item: Notifikasi
               ListTile(
@@ -168,8 +165,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       fontWeight: FontWeight.bold, fontSize: 18),
                 ),
                 trailing: Icon(PhosphorIcons.arrowRight(), size: 28),
-                onTap: () {
-                },
+                onTap: () {},
               ),
 
               // Item: Bantuan
@@ -180,12 +176,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   size: 28.0,
                 ),
                 title: Text(
-                  'Notifikasi',
+                  'Bantuan',
+                  style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.bold, fontSize: 18),
+                ),
+                trailing: Icon(PhosphorIcons.arrowRight(), size: 28),
+                onTap: () {},
+              ),
+
+              //Item: Keluar
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: PhosphorIcon(
+                  PhosphorIconsBold.signOut,
+                  size: 28.0,
+                ),
+                title: Text(
+                  'Keluar',
                   style: GoogleFonts.poppins(
                       fontWeight: FontWeight.bold, fontSize: 18),
                 ),
                 trailing: Icon(PhosphorIcons.arrowRight(), size: 28),
                 onTap: () {
+                  Get.to(() => LogInScreen());
                 },
               ),
             ],

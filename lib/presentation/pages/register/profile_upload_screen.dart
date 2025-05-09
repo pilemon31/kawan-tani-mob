@@ -5,6 +5,8 @@ import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import "package:get/get.dart";
 import 'package:flutter_kawan_tani/presentation/controllers/auth/registration_controller.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class ProfileUpload extends StatefulWidget {
   const ProfileUpload({super.key});
@@ -16,10 +18,24 @@ class ProfileUpload extends StatefulWidget {
 class _ProfileUploadState extends State<ProfileUpload> {
   final RegistrationController controller = Get.put(RegistrationController());
   final _formKey = GlobalKey<FormState>();
+  File? _imageFile;
+  final ImagePicker _picker = ImagePicker();
   bool obscureText = true;
 
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+
+  Future<void> _pickImage(ImageSource source) async {
+    final pickedFile =
+        await _picker.pickImage(source: source, imageQuality: 75);
+
+    if (pickedFile != null) {
+      print("File path: ${pickedFile.path}");
+      setState(() {
+        _imageFile = File(pickedFile.path);
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -133,23 +149,41 @@ class _ProfileUploadState extends State<ProfileUpload> {
                                             fontSize: 20, color: blackColor),
                                       ),
                                       SizedBox(height: 9.0),
+// Di bagian where you display the image, modify like this:
                                       Container(
-                                        padding: EdgeInsets.all(56.0),
+                                        width: 150,
+                                        height: 150,
                                         decoration: BoxDecoration(
-                                            border: Border.all(),
-                                            borderRadius:
-                                                BorderRadius.circular(100)),
-                                        child: PhosphorIcon(
-                                          PhosphorIconsRegular.upload,
-                                          size: 41.0,
-                                          color: Color(0xff8594AC),
+                                          shape: BoxShape.circle,
+                                          color: _imageFile == null
+                                              ? Colors.grey[200]
+                                              : null,
+                                          border:
+                                              Border.all(color: Colors.grey),
+                                        ),
+                                        child: ClipOval(
+                                          child: _imageFile != null
+                                              ? Image.file(
+                                                  _imageFile!,
+                                                  fit: BoxFit.cover,
+                                                  width: 150,
+                                                  height: 150,
+                                                )
+                                              : Center(
+                                                  child: PhosphorIcon(
+                                                    PhosphorIconsRegular.upload,
+                                                    size: 41.0,
+                                                    color: Color(0xff8594AC),
+                                                  ),
+                                                ),
                                         ),
                                       ),
                                     ],
                                   ),
                                   SizedBox(height: 42),
                                   ElevatedButton(
-                                    onPressed: () {},
+                                    onPressed: () =>
+                                        _pickImage(ImageSource.camera),
                                     style: ElevatedButton.styleFrom(
                                         backgroundColor: whiteColor,
                                         elevation: 0.0,
@@ -170,7 +204,8 @@ class _ProfileUploadState extends State<ProfileUpload> {
                                   ),
                                   SizedBox(height: 20),
                                   ElevatedButton(
-                                    onPressed: () {},
+                                    onPressed: () =>
+                                        _pickImage(ImageSource.gallery),
                                     style: ElevatedButton.styleFrom(
                                         backgroundColor: whiteColor,
                                         elevation: 0.0,

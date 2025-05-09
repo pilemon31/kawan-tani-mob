@@ -379,7 +379,9 @@ class _SignUpConfirmationState extends State<SignUpConfirmationScreen> {
                                           Expanded(
                                               child: Obx(
                                             () => Text(
-                                              controller.gender.value,
+                                              controller.gender.value == 0
+                                                  ? "Laki-laki"
+                                                  : "Perempuan",
                                               style: GoogleFonts.poppins(
                                                   fontSize: 15.0,
                                                   fontWeight: light),

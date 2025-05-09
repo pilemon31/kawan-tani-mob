@@ -8,7 +8,7 @@ class RegistrationController extends GetxController {
   final lastName = "".obs;
   final email = "".obs;
   final phoneNumber = "".obs;
-  final gender = "".obs;
+  final gender = 0.obs;
   final password = "".obs;
   final confirmPassword = "".obs;
   final dateOfBirth = "".obs;
@@ -24,6 +24,7 @@ class RegistrationController extends GetxController {
           email.value,
           phoneNumber.value,
           dateOfBirth.value,
+          gender.value,
           password.value,
           confirmPassword.value);
 
@@ -67,7 +68,8 @@ class RegistrationController extends GetxController {
     email.value = '';
     phoneNumber.value = '';
     dateOfBirth.value = '';
-    gender.value = '';
+    gender.value = 0;
     password.value = '';
+    confirmPassword.value = '';
   }
 }

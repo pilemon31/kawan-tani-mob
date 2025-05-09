@@ -49,7 +49,7 @@ class _SignUpScreenDetailState extends State<SignUpDetailScreen> {
   }
 
   void clickedMale() {
-    controller.gender.value = "Laki-Laki";
+    controller.gender.value = 0;
     setState(() {
       isMaleClicked = true;
       isFemaleClicked = false;
@@ -57,7 +57,7 @@ class _SignUpScreenDetailState extends State<SignUpDetailScreen> {
   }
 
   void clickedFemale() {
-    controller.gender.value = "Perempuan";
+    controller.gender.value = 1;
     setState(() {
       isMaleClicked = false;
       isFemaleClicked = true;

@@ -6,6 +6,7 @@ import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:get/get.dart';
+import 'package:flutter_kawan_tani/presentation/controllers/auth/login_controller.dart';
 
 class LogInScreen extends StatefulWidget {
   const LogInScreen({super.key});
@@ -15,8 +16,9 @@ class LogInScreen extends StatefulWidget {
 }
 
 class _LogInScreenState extends State<LogInScreen> {
+  final LoginController controller = Get.put(LoginController());
   final _formKey = GlobalKey<FormState>();
-  bool obscureText = true;
+  bool obscurePassword = true;
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -145,6 +147,9 @@ class _LogInScreenState extends State<LogInScreen> {
                                       // Adjust vertical padding
                                       ),
                                   validator: _inputValidator.validateEmail,
+                                  onSaved: (value) {
+                                    controller.email.value = value ?? "";
+                                  },
                                 ),
                               ],
                             ),
@@ -162,7 +167,7 @@ class _LogInScreenState extends State<LogInScreen> {
                                 // Container with background color
                                 TextFormField(
                                   controller: _passwordController,
-                                  obscureText: obscureText,
+                                  obscureText: obscurePassword,
                                   decoration: InputDecoration(
                                       hintText: "*********",
                                       hintStyle: GoogleFonts.poppins(
@@ -175,11 +180,11 @@ class _LogInScreenState extends State<LogInScreen> {
                                       suffixIcon: GestureDetector(
                                         onTap: () {
                                           setState(() {
-                                            obscureText = !obscureText;
+                                            obscurePassword = !obscurePassword;
                                           });
                                         },
                                         child: PhosphorIcon(
-                                            obscureText
+                                            obscurePassword
                                                 ? PhosphorIconsRegular.eyeSlash
                                                 : PhosphorIconsRegular.eye,
                                             size: 19.0,
@@ -193,17 +198,26 @@ class _LogInScreenState extends State<LogInScreen> {
                                       filled: true,
                                       contentPadding: EdgeInsets.symmetric(
                                           vertical: 12.0, horizontal: 15.0)
-                                      // Adjust vertical padding
                                       ),
                                   validator: _inputValidator.validatePassword,
+                                  onSaved: (value) {
+                                    controller.password.value = value ?? "";
+                                  },
                                 ),
                               ],
                             ),
                             SizedBox(height: 20.0),
                             ElevatedButton(
-                              onPressed: () {
+                              onPressed: () async {
                                 if (_formKey.currentState!.validate()) {
-                                  Get.to(() => HomeScreen());
+                                  _formKey.currentState!
+                                      .save();
+                                  final success =
+                                      await controller.loginAccount();
+                                  if (success) {
+                                    Get.offAll(() =>
+                                        HomeScreen()); 
+                                  }
                                 }
                               },
                               style: ElevatedButton.styleFrom(

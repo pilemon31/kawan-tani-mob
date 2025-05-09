@@ -3,7 +3,7 @@ import 'dart:convert';
 
 class Authservice {
   //Base URL
-  static String baseUrl = "http://localhost:3000/api";
+  static String baseUrl = "http://localhost:2000/api";
 
   //Register User Service
   static Future<http.Response> registerUser(
@@ -12,6 +12,7 @@ class Authservice {
       String email,
       String phoneNumber,
       String dateOfBirth,
+      int gender,
       String password,
       String confirmPassword) async {
     final response = await http.post(
@@ -23,8 +24,22 @@ class Authservice {
         "email": email,
         "phoneNumber": phoneNumber,
         "dateOfBirth": dateOfBirth,
+        "gender": gender,
         "password": password,
         "confirmPassword": confirmPassword
+      }),
+    );
+    return response;
+  }
+
+  // Login User Service
+  static Future<http.Response> loginUser(String email, String password) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/auth/login'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        "email": email,
+        "password": password,
       }),
     );
     return response;
