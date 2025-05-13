@@ -197,8 +197,7 @@ class _LogInScreenState extends State<LogInScreen> {
                                       fillColor: Color(0xffE7EFF2),
                                       filled: true,
                                       contentPadding: EdgeInsets.symmetric(
-                                          vertical: 12.0, horizontal: 15.0)
-                                      ),
+                                          vertical: 12.0, horizontal: 15.0)),
                                   validator: _inputValidator.validatePassword,
                                   onSaved: (value) {
                                     controller.password.value = value ?? "";
@@ -207,16 +206,31 @@ class _LogInScreenState extends State<LogInScreen> {
                               ],
                             ),
                             SizedBox(height: 20.0),
+                            Obx(() {
+                              if (controller.errorMessage.isNotEmpty) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 20.0),
+                                  child: Text(
+                                    controller.errorMessage.value,
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.red,
+                                      fontSize: 14,
+                                      fontWeight: medium,
+                                    ),
+                                  ),
+                                );
+                              }
+                              return const SizedBox.shrink();
+                            }),
+                            SizedBox(height: 20.0),
                             ElevatedButton(
                               onPressed: () async {
                                 if (_formKey.currentState!.validate()) {
-                                  _formKey.currentState!
-                                      .save();
+                                  _formKey.currentState!.save();
                                   final success =
                                       await controller.loginAccount();
                                   if (success) {
-                                    Get.offAll(() =>
-                                        HomeScreen()); 
+                                    Get.offAll(() => HomeScreen());
                                   }
                                 }
                               },

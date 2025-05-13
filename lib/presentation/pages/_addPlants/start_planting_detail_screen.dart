@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kawan_tani/presentation/pages/plants/plants_tasks_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/_yourPlants/plants_tasks_screen.dart';
 import 'package:flutter_kawan_tani/presentation/widgets/navbar/navbar.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import "package:get/get.dart";

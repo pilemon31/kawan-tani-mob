@@ -149,7 +149,6 @@ class _ProfileUploadState extends State<ProfileUpload> {
                                             fontSize: 20, color: blackColor),
                                       ),
                                       SizedBox(height: 9.0),
-// Di bagian where you display the image, modify like this:
                                       Container(
                                         width: 150,
                                         height: 150,

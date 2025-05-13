@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kawan_tani/presentation/pages/dashboard/home_screen.dart';
-import 'package:flutter_kawan_tani/presentation/pages/plants/filter_plants_screen.dart';
-import 'package:flutter_kawan_tani/presentation/pages/plants/start_planting_detail_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/_addPlants/filter_plants_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/_addPlants/start_planting_detail_screen.dart';
 import 'package:flutter_kawan_tani/presentation/widgets/navbar/navbar.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import "package:get/get.dart";
@@ -16,6 +16,45 @@ class StartPlantingScreen extends StatefulWidget {
 }
 
 class _StartPlantingScreenState extends State<StartPlantingScreen> {
+  // Tambahkan list tanaman di bagian atas State class
+  final List<Map<String, dynamic>> plants = [
+    {
+      "name": "Cabai Rawit",
+      "image": "assets/chili.jpg",
+      "duration": "3 bulan",
+      "type": "Sayuran"
+    },
+    {
+      "name": "Tomat Ceri",
+      "image": "assets/tomato.jpg",
+      "duration": "2.5 bulan",
+      "type": "Buah"
+    },
+    {
+      "name": "Kangkung",
+      "image": "assets/kangkung.jpg",
+      "duration": "1 bulan",
+      "type": "Sayuran"
+    },
+    {
+      "name": "Stroberi",
+      "image": "assets/strawberry.jpg",
+      "duration": "4 bulan",
+      "type": "Buah"
+    },
+    {
+      "name": "Basil",
+      "image": "assets/basil.jpg",
+      "duration": "2 bulan",
+      "type": "Herbal"
+    },
+    {
+      "name": "Terong Ungu",
+      "image": "assets/eggplant.jpg",
+      "duration": "3.5 bulan",
+      "type": "Sayuran"
+    },
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,7 +96,7 @@ class _StartPlantingScreenState extends State<StartPlantingScreen> {
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
           child: GridView.builder(
-            itemCount: 4,
+            itemCount: plants.length,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               childAspectRatio: 0.8,
@@ -65,6 +104,7 @@ class _StartPlantingScreenState extends State<StartPlantingScreen> {
               mainAxisSpacing: 20,
             ),
             itemBuilder: (context, index) {
+              final plant = plants[index];
               return InkWell(
                 onTap: () {
                   Get.to(() => StartPlantingDetailScreen());
@@ -83,7 +123,7 @@ class _StartPlantingScreenState extends State<StartPlantingScreen> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           image: DecorationImage(
-                            image: AssetImage("assets/apple.jpg"),
+                            image: AssetImage(plant["image"]),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -95,7 +135,7 @@ class _StartPlantingScreenState extends State<StartPlantingScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Cabai',
+                                  plant["name"],
                                   style: GoogleFonts.poppins(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -108,7 +148,7 @@ class _StartPlantingScreenState extends State<StartPlantingScreen> {
                                         size: 17.0, color: blackColor),
                                     const SizedBox(width: 5),
                                     Text(
-                                      '6 bulan',
+                                      plant["duration"],
                                       style: GoogleFonts.poppins(
                                         fontSize: 14,
                                         color: blackColor,
@@ -116,6 +156,13 @@ class _StartPlantingScreenState extends State<StartPlantingScreen> {
                                     ),
                                   ],
                                 ),
+                                                                    Text(
+                                      plant["type"], // Jenis tanaman
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 12,
+                                        color: greyColor,
+                                      ),
+                                    ),
                               ])),
                       const SizedBox(
                         height: 5,

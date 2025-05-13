@@ -4,8 +4,8 @@ import 'package:flutter_kawan_tani/presentation/pages/dashboard/home_screen.dart
 import 'package:flutter_kawan_tani/presentation/pages/intro/splash_screen.dart';
 import 'package:flutter_kawan_tani/presentation/pages/login/login_screen.dart';
 import 'package:flutter_kawan_tani/presentation/pages/intro/onboarding_screen.dart';
-import 'package:flutter_kawan_tani/presentation/pages/plants/start_planting_screen.dart';
-import 'package:flutter_kawan_tani/presentation/pages/plants/your_plants_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/_addPlants/start_planting_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/_yourPlants/your_plants_screen.dart';
 import 'package:flutter_kawan_tani/presentation/pages/workshops/workshops_list.dart';
 import "package:get/get.dart";
 

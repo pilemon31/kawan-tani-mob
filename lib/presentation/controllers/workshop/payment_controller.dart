@@ -6,7 +6,7 @@ class PaymentController extends GetxController {
   
   // Informasi pembayaran
   final metode = "".obs;
-  final jumlah = "Rp. 100.000,00".obs; // Jumlah bisa di-hardcode atau dari API
+  final jumlah = "Rp. 100.000,00".obs;
   final status = "Belum Dibayar".obs;
 
   // Daftar metode pembayaran

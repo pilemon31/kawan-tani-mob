@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kawan_tani/presentation/pages/dashboard/home_screen.dart';
-import 'package:flutter_kawan_tani/presentation/pages/plants/filter_your_plants_screen.dart';
-import 'package:flutter_kawan_tani/presentation/pages/plants/your_plants_detail_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/_filterPlants/filter_your_plants_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/_yourPlants/your_plants_detail_screen.dart';
 import 'package:flutter_kawan_tani/presentation/widgets/navbar/navbar.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:get/get.dart';
