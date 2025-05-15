@@ -43,8 +43,8 @@ class ValidationService {
     return null;
   }
 
-  String? validateGender(String? value) {
-    if (value == null || value.isEmpty) {
+  String? validateGender(int? value) {
+    if (value == null) {
       return "Jenis kelamin harus diisi!";
     }
 

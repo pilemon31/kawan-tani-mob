@@ -16,6 +16,8 @@ class RegisterWorkshop extends StatefulWidget {
 }
 
 class _RegisterWorkshopState extends State<RegisterWorkshop> {
+  bool isMaleClicked = false;
+  bool isFemaleClicked = false;
   String warningMessage = "";
   final RegisterWorkshopController controller =
       Get.put(RegisterWorkshopController());
@@ -36,7 +38,6 @@ class _RegisterWorkshopState extends State<RegisterWorkshop> {
     _emailController.text = controller.emailAddress.value;
     _phoneNumberController.text = controller.phoneNumber.value;
     _birthDateController.text = controller.birthDate.value;
-    _genderController.text = controller.gender.value;
   }
 
   @override
@@ -54,6 +55,22 @@ class _RegisterWorkshopState extends State<RegisterWorkshop> {
       _formKey.currentState!.save();
       Get.to(() => RegisterWorkshopPayment());
     }
+  }
+
+  void clickedMale() {
+    controller.gender.value = 0;
+    setState(() {
+      isMaleClicked = true;
+      isFemaleClicked = false;
+    });
+  }
+
+  void clickedFemale() {
+    controller.gender.value = 1;
+    setState(() {
+      isMaleClicked = false;
+      isFemaleClicked = true;
+    });
   }
 
   @override
@@ -206,7 +223,7 @@ class _RegisterWorkshopState extends State<RegisterWorkshop> {
                           SizedBox(height: 8.0),
                           TextFormField(
                             controller: _birthDateController,
-                            readOnly: true, // Biar gak bisa diketik manual
+                            readOnly: true,
                             decoration: InputDecoration(
                               hintText: "08/08/2008",
                               hintStyle: GoogleFonts.poppins(
@@ -230,7 +247,6 @@ class _RegisterWorkshopState extends State<RegisterWorkshop> {
                             onTap: () async {
                               FocusScope.of(context)
                                   .requestFocus(FocusNode()); // close keyboard
-
                               final DateTime? pickedDate = await showDatePicker(
                                 context: context,
                                 initialDate: DateTime.now(),
@@ -258,7 +274,7 @@ class _RegisterWorkshopState extends State<RegisterWorkshop> {
 
                               if (pickedDate != null) {
                                 String formattedDate =
-                                    DateFormat('dd/MM/yyyy').format(pickedDate);
+                                    DateFormat('yyyy-MM-dd').format(pickedDate);
                                 _birthDateController.text = formattedDate;
                                 controller.birthDate.value = formattedDate;
                               }
@@ -312,6 +328,7 @@ class _RegisterWorkshopState extends State<RegisterWorkshop> {
                       ),
                       SizedBox(height: 20),
                       // Jenis Kelamin
+
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -321,34 +338,75 @@ class _RegisterWorkshopState extends State<RegisterWorkshop> {
                                 fontSize: 15, color: blackColor),
                           ),
                           SizedBox(height: 8.0),
-                          TextFormField(
-                            controller: _genderController,
-                            keyboardType: TextInputType.name,
-                            decoration: InputDecoration(
-                              hintText: "Laki-laki",
-                              hintStyle: GoogleFonts.poppins(
-                                  fontSize: 15.0, fontWeight: light),
-                              prefixIcon: PhosphorIcon(
-                                PhosphorIcons.genderNeuter(),
-                                size: 19.0,
-                                color: Color(0xff8594AC),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: clickedMale,
+                                  style: ElevatedButton.styleFrom(
+                                    elevation: 0.0,
+                                    backgroundColor: isMaleClicked
+                                        ? Color(0x00ffffff)
+                                        : Color(
+                                            0xffE7EFF2), // Button color based on selection
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    side: isMaleClicked
+                                        ? BorderSide(color: Color(0xffE7EFF2))
+                                        : BorderSide.none,
+                                  ),
+                                  child: Text(
+                                    "Laki-Laki",
+                                    style: GoogleFonts.poppins(
+                                        fontSize: 15, color: Color(0xff4993F8)),
+                                  ),
+                                ),
                               ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                                borderSide: BorderSide.none,
-                              ),
-                              fillColor: Color(0xffE7EFF2),
-                              filled: true,
-                              contentPadding: EdgeInsets.symmetric(
-                                  vertical: 12.0, horizontal: 15.0),
-                            ),
-                            validator: _inputValidator.validateGender,
-                            onSaved: (value) {
-                              controller.gender.value = value ?? "";
-                            },
+                              SizedBox(width: 18),
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: clickedFemale,
+                                  style: ElevatedButton.styleFrom(
+                                    elevation: 0.0,
+                                    backgroundColor: isFemaleClicked
+                                        ? Color(0x00ffffff)
+                                        : Color(
+                                            0xffE7EFF2), // Change this to handle the female button selection
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      side: isFemaleClicked
+                                          ? BorderSide(color: Color(0xffE7EFF2))
+                                          : BorderSide.none,
+                                    ),
+                                  ),
+                                  child: Text(
+                                    "Perempuan",
+                                    style: GoogleFonts.poppins(
+                                        fontSize: 15, color: Color(0xffF99D9D)),
+                                  ),
+                                ),
+                              )
+                            ],
                           ),
+                          if (warningMessage.isNotEmpty)
+                            Container(
+                              padding: EdgeInsets.only(left: 16),
+                              child: Align(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  warningMessage,
+                                  style: GoogleFonts.poppins(
+                                      fontSize: 11.5,
+                                      color: const Color.fromARGB(
+                                          255, 187, 53, 43)),
+                                ),
+                              ),
+                            )
                         ],
                       ),
+
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

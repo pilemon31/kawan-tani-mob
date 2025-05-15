@@ -156,13 +156,13 @@ class _StartPlantingScreenState extends State<StartPlantingScreen> {
                                     ),
                                   ],
                                 ),
-                                                                    Text(
-                                      plant["type"], // Jenis tanaman
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 12,
-                                        color: greyColor,
-                                      ),
-                                    ),
+                                Text(
+                                  plant["type"], // Jenis tanaman
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 12,
+                                    color: greyColor,
+                                  ),
+                                ),
                               ])),
                       const SizedBox(
                         height: 5,

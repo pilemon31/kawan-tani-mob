@@ -4,6 +4,7 @@ import 'package:flutter_kawan_tani/presentation/controllers/profile/edit_profile
 import 'package:flutter_kawan_tani/presentation/pages/dashboard/home_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
+import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import "package:get/get.dart";
 
@@ -85,38 +86,6 @@ class _ProfileEditState extends State<ProfileEdit> {
       isMaleClicked = false;
       isFemaleClicked = true;
     });
-  }
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
-      builder: (BuildContext context, Widget? child) {
-        return Theme(
-          data: ThemeData.light().copyWith(
-            colorScheme: ColorScheme.light(
-              primary: primaryColor, // Warna utama date picker
-              onPrimary: Colors.white, // Warna teks header
-              onSurface: Colors.black, // Warna teks tanggal
-            ),
-            dialogTheme: DialogTheme(
-              backgroundColor: Colors.white, // Ganti dengan DialogTheme
-            ), // Warna background
-          ),
-          child: child!,
-        );
-      },
-    );
-
-    if (picked != null && picked != DateTime.now()) {
-      setState(() {
-        // Format tanggal menjadi dd/MM/yyyy
-        _birthDateController.text =
-            "${picked.day}/${picked.month}/${picked.year}";
-      });
-    }
   }
 
   @override
@@ -317,7 +286,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                                   ],
                                 ),
                                 const SizedBox(height: 20),
-                                // Birth Date
+                                // Tanggal Lahir
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -326,15 +295,16 @@ class _ProfileEditState extends State<ProfileEdit> {
                                       style: GoogleFonts.poppins(
                                           fontSize: 15, color: blackColor),
                                     ),
-                                    const SizedBox(height: 8.0),
+                                    SizedBox(height: 8.0),
                                     TextFormField(
                                       controller: _birthDateController,
-                                      readOnly:
-                                          true, // Membuat field tidak bisa diketik manual
+                                      readOnly: true,
                                       decoration: InputDecoration(
                                         hintText: "08/08/2008",
                                         hintStyle: GoogleFonts.poppins(
-                                            fontSize: 15.0, fontWeight: light),
+                                          fontSize: 15.0,
+                                          fontWeight: light,
+                                        ),
                                         prefixIcon: PhosphorIcon(
                                           PhosphorIcons.calendar(),
                                           size: 19.0,
@@ -350,25 +320,51 @@ class _ProfileEditState extends State<ProfileEdit> {
                                         contentPadding: EdgeInsets.symmetric(
                                             vertical: 12.0, horizontal: 15.0),
                                       ),
-                                      onTap: () {
-                                        _selectDate(
-                                            context); // Panggil date picker saat field di-tap
+                                      onTap: () async {
+                                        FocusScope.of(context).requestFocus(
+                                            FocusNode()); // close keyboard
+                                        final DateTime? pickedDate =
+                                            await showDatePicker(
+                                          context: context,
+                                          initialDate: DateTime.now(),
+                                          firstDate: DateTime(1900),
+                                          lastDate: DateTime.now(),
+                                          builder: (context, child) {
+                                            return Theme(
+                                              data: Theme.of(context).copyWith(
+                                                colorScheme: ColorScheme.light(
+                                                  primary:
+                                                      blackColor, // warna utama date picker
+                                                  onPrimary: Colors.white,
+                                                  onSurface: Colors.black,
+                                                ),
+                                                textButtonTheme:
+                                                    TextButtonThemeData(
+                                                  style: TextButton.styleFrom(
+                                                    foregroundColor: blackColor,
+                                                  ),
+                                                ),
+                                              ),
+                                              child: child!,
+                                            );
+                                          },
+                                        );
+
+                                        if (pickedDate != null) {
+                                          String formattedDate =
+                                              DateFormat('yyyy-MM-dd')
+                                                  .format(pickedDate);
+                                          _birthDateController.text =
+                                              formattedDate;
+                                          controller.birthDate.value =
+                                              formattedDate;
+                                        }
                                       },
                                       validator:
                                           _inputValidator.validateBirthDate,
                                       onSaved: (value) {
-                                        if (value != null && value.isNotEmpty) {
-                                          final parts = value.split('/');
-                                          if (parts.length == 3) {
-                                            // Konversi dari dd/MM/yyyy ke yyyy-MM-dd
-                                            controller.birthDate.value =
-                                                "${parts[2]}-${parts[1]}-${parts[0]}";
-                                          } else {
-                                            controller.birthDate.value = value;
-                                          }
-                                        } else {
-                                          controller.birthDate.value = "";
-                                        }
+                                        controller.birthDate.value =
+                                            value ?? "";
                                       },
                                     ),
                                   ],

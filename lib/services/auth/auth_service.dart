@@ -44,4 +44,21 @@ class Authservice {
     );
     return response;
   }
+
+  //Register Workshop
+  static Future<http.Response> registerUserWorkshop(String attendeesName,
+      String email, String dateOfBirth, String phoneNumber, int gender) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/auth/register'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        "attendeesName": attendeesName,
+        "email": email,
+        "dateOfBirth": dateOfBirth,
+        "phoneNumber": phoneNumber,
+        "gender": gender,
+      }),
+    );
+    return response;
+  }
 }

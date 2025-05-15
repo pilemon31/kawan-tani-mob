@@ -65,15 +65,9 @@ class _SignUpScreenDetailState extends State<SignUpDetailScreen> {
   }
 
   void verifyData() {
-    if (isFemaleClicked == false && isMaleClicked == false) {
-      setState(() {
-        warningMessage = "Jenis kelamin harus dipilih!";
-      });
-    } else {
-      if (_formKey.currentState!.validate()) {
-        _formKey.currentState!.save();
-        Get.to(() => ProfileUpload());
-      }
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      Get.to(() => ProfileUpload());
     }
   }
 
@@ -347,8 +341,7 @@ class _SignUpScreenDetailState extends State<SignUpDetailScreen> {
                                     SizedBox(height: 8.0),
                                     TextFormField(
                                       controller: _birthDateController,
-                                      readOnly:
-                                          true, // Biar gak bisa diketik manual
+                                      readOnly: true,
                                       decoration: InputDecoration(
                                         hintText: "08/08/2008",
                                         hintStyle: GoogleFonts.poppins(

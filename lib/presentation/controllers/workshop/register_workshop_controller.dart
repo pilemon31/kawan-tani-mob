@@ -7,7 +7,7 @@ class RegisterWorkshopController extends GetxController {
   final emailAddress = "".obs;
   final phoneNumber = "".obs;
   final birthDate = "".obs;
-  final gender = "".obs;
+  final gender = 0.obs;
 
   //Function untuk mengirim ke backend
   Future<bool> submitRegistration() async {
@@ -31,6 +31,6 @@ class RegisterWorkshopController extends GetxController {
     emailAddress.value = '';
     phoneNumber.value = '';
     birthDate.value = '';
-    gender.value = '';
+    gender.value = 0;
   }
 }
