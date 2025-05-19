@@ -11,20 +11,22 @@ class LoginController extends GetxController {
   Future<bool> loginAccount() async {
     isLoading.value = true;
     errorMessage.value = "";
+
     try {
-      final response = await Authservice.loginUser(
-        email.value,
-        password.value,
+      final response = await AuthService.loginUser(
+        email: email.value,
+        password: password.value,
       );
 
       final Map<String, dynamic> responseBody = jsonDecode(response.body);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
+        email.value = responseBody['email'] ?? email.value;
         return true;
       } else {
         errorMessage.value = responseBody['message'] == "Credential invalid!"
             ? "Email atau password salah!"
-            : responseBody['message'];
+            : responseBody['message'] ?? "Gagal login.";
         return false;
       }
     } catch (error) {

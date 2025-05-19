@@ -10,7 +10,6 @@ class ArticleFilterController extends GetxController {
   var rating = 0.obs;
 
   void getFilter() {
-    print("Mengambil data di backend");
   }
 
   void changeRating(newRating) {

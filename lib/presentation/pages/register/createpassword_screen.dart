@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter_kawan_tani/presentation/pages/register/verification_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/register/verification_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -32,9 +32,6 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
   }
 
   String? confirmPasswordValidator(String? value) {
-    print("Confirm value: $value");
-    print("Password value: ${_passwordController.text}");
-
     if (value == null || value.isEmpty) {
       return "Konfirmasi password harus diisi!";
     }
@@ -265,10 +262,35 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                       Column(
                         children: [
                           ElevatedButton(
-                            onPressed: () {
+                            onPressed: () async {
                               if (_formKey.currentState!.validate()) {
                                 _formKey.currentState!.save();
-                                controller.registerAccount();
+                                
+                                // Tampilkan loading indicator
+                                Get.dialog(
+                                  const Center(child: CircularProgressIndicator()),
+                                  barrierDismissible: false,
+                                );
+
+                                try {
+                                  final success = await controller.registerAccount();
+                                  
+                                  if (success) {
+                                    // Navigasi ke halaman verifikasi
+                                    Get.off(() => const VerificationScreen());
+                                  }
+                                } catch (e) {
+                                  Get.back(); // Tutup loading dialog
+                                  Get.snackbar(
+                                    'Error',
+                                    'Terjadi kesalahan saat registrasi: ${e.toString()}',
+                                    snackPosition: SnackPosition.BOTTOM,
+                                    backgroundColor: Colors.red,
+                                    colorText: Colors.white,
+                                  );
+                                } finally {
+                                  if (Get.isDialogOpen!) Get.back(); // Pastikan loading dialog tertutup
+                                }
                               }
                             },
                             style: ElevatedButton.styleFrom(

@@ -1,20 +1,21 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class Authservice {
-  //Base URL
-  static String baseUrl = "http://localhost:2000/api";
+class AuthService {
+  // Ganti dengan IP kamu jika test di emulator
+  static const String baseUrl = "http://localhost:2000/api";
 
-  //Register User Service
-  static Future<http.Response> registerUser(
-      String firstName,
-      String lastName,
-      String email,
-      String phoneNumber,
-      String dateOfBirth,
-      int gender,
-      String password,
-      String confirmPassword) async {
+  // Register User
+  static Future<http.Response> registerUser({
+    required String firstName,
+    required String lastName,
+    required String email,
+    required String phoneNumber,
+    required String dateOfBirth,
+    required int gender,
+    required String password,
+    required String confirmPassword,
+  }) async {
     final response = await http.post(
       Uri.parse('$baseUrl/auth/register'),
       headers: {'Content-Type': 'application/json'},
@@ -26,14 +27,17 @@ class Authservice {
         "dateOfBirth": dateOfBirth,
         "gender": gender,
         "password": password,
-        "confirmPassword": confirmPassword
+        "confirmPassword": confirmPassword,
       }),
     );
     return response;
   }
 
-  // Login User Service
-  static Future<http.Response> loginUser(String email, String password) async {
+  // Login User
+  static Future<http.Response> loginUser({
+    required String email,
+    required String password,
+  }) async {
     final response = await http.post(
       Uri.parse('$baseUrl/auth/login'),
       headers: {'Content-Type': 'application/json'},
@@ -45,18 +49,59 @@ class Authservice {
     return response;
   }
 
-  //Register Workshop
-  static Future<http.Response> registerUserWorkshop(String attendeesName,
-      String email, String dateOfBirth, String phoneNumber, int gender) async {
+  // Get Me (Current User)
+  static Future<http.Response> getMe(String token) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/auth/me'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+    return response;
+  }
+
+  // Send Activation Code
+  static Future<http.Response> sendActivation(String token) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/auth/register'),
+      Uri.parse('$baseUrl/auth/sendcode'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+    return response;
+  }
+
+  // Verify Account
+  static Future<http.Response> verifyAccount({
+    required String token,
+    required String verificationCode,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/auth/verify'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({
+        "verificationCode": verificationCode,
+      }),
+    );
+    return response;
+  }
+
+  // Login Admin
+  static Future<http.Response> loginAdmin({
+    required String email,
+    required String password,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/auth/admin/login'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
-        "attendeesName": attendeesName,
         "email": email,
-        "dateOfBirth": dateOfBirth,
-        "phoneNumber": phoneNumber,
-        "gender": gender,
+        "password": password,
       }),
     );
     return response;

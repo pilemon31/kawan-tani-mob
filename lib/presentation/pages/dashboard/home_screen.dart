@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kawan_tani/presentation/controllers/auth/login_controller.dart';
 import 'package:flutter_kawan_tani/presentation/controllers/weather/weather_controller.dart';
 import 'package:flutter_kawan_tani/presentation/pages/profile/profile_screen.dart';
 import 'package:flutter_kawan_tani/presentation/widgets/navbar/navbar.dart';
@@ -16,6 +17,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final LoginController controller = Get.put(LoginController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -304,6 +306,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: GoogleFonts.poppins(
                             color: Colors.white, fontSize: 16),
                       ),
+                      Text(
+                        "Pilemon B. 👋",
+                        style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
+                      ),
                       InkWell(
                         onTap: () {
                           Get.to(() => ProfileScreen());
@@ -324,11 +333,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                   Text(
-                    "Pilemon B. 👋",
-                    style: GoogleFonts.poppins(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),
+                    controller.email.value,
+                    style:
+                        GoogleFonts.poppins(fontSize: 15.0, fontWeight: light),
                   ),
                   Text(
                     "Sabtu, 11 Januari 2025",

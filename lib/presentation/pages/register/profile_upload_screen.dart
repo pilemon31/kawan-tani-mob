@@ -30,7 +30,6 @@ class _ProfileUploadState extends State<ProfileUpload> {
         await _picker.pickImage(source: source, imageQuality: 75);
 
     if (pickedFile != null) {
-      print("File path: ${pickedFile.path}");
       setState(() {
         _imageFile = File(pickedFile.path);
       });

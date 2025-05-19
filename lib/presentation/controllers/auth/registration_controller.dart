@@ -12,24 +12,25 @@ class RegistrationController extends GetxController {
   final password = "".obs;
   final confirmPassword = "".obs;
   final dateOfBirth = "".obs;
+  final RxString token = ''.obs;
   var isLoading = false.obs;
 
-  Future<void> registerAccount() async {
+  Future<bool> registerAccount() async {
     isLoading.value = true;
 
     try {
-      final response = await Authservice.registerUser(
-          firstName.value,
-          lastName.value,
-          email.value,
-          phoneNumber.value,
-          dateOfBirth.value,
-          gender.value,
-          password.value,
-          confirmPassword.value);
+      final response = await AuthService.registerUser(
+        firstName: firstName.value,
+        lastName: lastName.value,
+        email: email.value,
+        phoneNumber: phoneNumber.value,
+        dateOfBirth: dateOfBirth.value,
+        gender: gender.value,
+        password: password.value,
+        confirmPassword: confirmPassword.value,
+      );
 
       isLoading.value = false;
-
       final Map<String, dynamic> responseBody = jsonDecode(response.body);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -41,6 +42,7 @@ class RegistrationController extends GetxController {
           colorText: whiteColor,
         );
         resetForm();
+        return true;
       } else {
         Get.snackbar(
           "Gagal",
@@ -49,6 +51,7 @@ class RegistrationController extends GetxController {
           backgroundColor: primaryColor,
           colorText: whiteColor,
         );
+        return false;
       }
     } catch (error) {
       isLoading.value = false;
@@ -59,6 +62,7 @@ class RegistrationController extends GetxController {
         backgroundColor: primaryColor,
         colorText: whiteColor,
       );
+      return false;
     }
   }
 
@@ -71,5 +75,9 @@ class RegistrationController extends GetxController {
     gender.value = 0;
     password.value = '';
     confirmPassword.value = '';
+  }
+
+  void setToken(String newToken) {
+    token.value = newToken;
   }
 }
