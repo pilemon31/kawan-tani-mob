@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kawan_tani/presentation/controllers/profile/profile_controller.dart';
 import 'package:flutter_kawan_tani/presentation/pages/article/article_list.dart';
 import 'package:flutter_kawan_tani/presentation/pages/dashboard/home_screen.dart';
 import 'package:flutter_kawan_tani/presentation/pages/intro/splash_screen.dart';
@@ -9,7 +10,10 @@ import 'package:flutter_kawan_tani/presentation/pages/_yourPlants/your_plants_sc
 import 'package:flutter_kawan_tani/presentation/pages/workshops/workshops_list.dart';
 import "package:get/get.dart";
 
-void main() => runApp(const MyApp());
+void main() {
+  Get.put(ProfileController());
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

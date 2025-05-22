@@ -25,6 +25,13 @@ class _LogInScreenState extends State<LogInScreen> {
   final ValidationService _inputValidator = ValidationService();
 
   @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF78D14D),
@@ -243,13 +250,15 @@ class _LogInScreenState extends State<LogInScreen> {
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                               ),
-                              child: Text(
-                                'Masuk',
-                                style: GoogleFonts.poppins(
-                                    color: whiteColor,
-                                    fontSize: 16,
-                                    fontWeight: bold),
-                              ),
+                              child: Obx(() => controller.isLoading.value
+                                  ? CircularProgressIndicator(color: whiteColor)
+                                  : Text(
+                                      'Masuk',
+                                      style: GoogleFonts.poppins(
+                                          color: whiteColor,
+                                          fontSize: 16,
+                                          fontWeight: bold),
+                                    )),
                             ),
                           ],
                         ),

@@ -1,604 +1,213 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kawan_tani/utils/validation_utils.dart';
-import 'package:flutter_kawan_tani/presentation/controllers/profile/edit_profile_controller.dart';
-import 'package:flutter_kawan_tani/presentation/pages/dashboard/home_screen.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:intl/intl.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
-import "package:get/get.dart";
+
+import 'package:flutter_kawan_tani/presentation/controllers/profile/profile_controller.dart';
 
 class ProfileEdit extends StatefulWidget {
-  const ProfileEdit({super.key});
-
   @override
   State<ProfileEdit> createState() => _ProfileEditState();
 }
 
 class _ProfileEditState extends State<ProfileEdit> {
-  String warningMessage = "";
-  bool isMaleClicked = false;
-  bool isFemaleClicked = false;
-  final EditprofileController controller = Get.put(EditprofileController());
+  final ProfileController _controller = Get.find();
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _lastNameController = TextEditingController();
-  final TextEditingController _birthDateController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _phoneNumberController = TextEditingController();
-  final TextEditingController _genderController = TextEditingController();
-  final ValidationService _inputValidator = ValidationService();
+
+  late final TextEditingController _firstNameController;
+  late final TextEditingController _lastNameController;
+  late final TextEditingController _emailController;
+  late final TextEditingController _phoneController;
+  late final TextEditingController _birthDateController;
+  late final TextEditingController _passwordController;
+  late final TextEditingController _confirmPasswordController;
+
+  int? _selectedGender;
 
   @override
   void initState() {
     super.initState();
+    final user = _controller.user;
 
-    _firstNameController.text = controller.firstName.value;
-    _lastNameController.text = controller.lastName.value;
-    if (controller.birthDate.value.isNotEmpty) {
-      final parts = controller.birthDate.value.split('-');
-      if (parts.length == 3) {
-        _birthDateController.text = "${parts[2]}/${parts[1]}/${parts[0]}";
-      } else {
-        _birthDateController.text = controller.birthDate.value;
-      }
-    }
-    _emailController.text = controller.emailAddress.value;
-    _phoneNumberController.text = controller.phoneNumber.value;
-    _genderController.text = controller.gender.value;
+    _firstNameController = TextEditingController(text: user['firstName'] ?? '');
+    _lastNameController = TextEditingController(text: user['lastName'] ?? '');
+    _emailController = TextEditingController(text: user['email'] ?? '');
+    _phoneController = TextEditingController(text: user['phoneNumber'] ?? '');
+    _birthDateController = TextEditingController(
+      text: user['dateOfBirth'] != null
+          ? DateFormat('yyyy-MM-dd').format(DateTime.parse(user['dateOfBirth']))
+          : '',
+    );
+    _passwordController = TextEditingController();
+    _confirmPasswordController = TextEditingController();
+
+    _selectedGender =
+        (user['gender'] == 1 || user['gender'] == 2) ? user['gender'] : 1;
   }
 
   @override
   void dispose() {
     _firstNameController.dispose();
     _lastNameController.dispose();
-    _birthDateController.dispose();
     _emailController.dispose();
-    _phoneNumberController.dispose();
-    _genderController.dispose();
+    _phoneController.dispose();
+    _birthDateController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
-  void verifyData() {
-    if (isFemaleClicked == false && isMaleClicked == false) {
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: _birthDateController.text.isNotEmpty
+          ? DateTime.parse(_birthDateController.text)
+          : DateTime(2000),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+
+    if (pickedDate != null) {
       setState(() {
-        warningMessage = "Jenis kelamin harus dipilih!";
+        _birthDateController.text = DateFormat('yyyy-MM-dd').format(pickedDate);
       });
-    } else {
-      if (_formKey.currentState!.validate()) {
-        _formKey.currentState!.save();
-        Get.to(() => HomeScreen());
-      }
     }
   }
 
-  void clickedMale() {
-    controller.gender.value = "Laki-Laki";
-    setState(() {
-      isMaleClicked = true;
-      isFemaleClicked = false;
-    });
-  }
+  Future<void> _saveProfile() async {
+    if (_formKey.currentState?.validate() != true) return;
 
-  void clickedFemale() {
-    controller.gender.value = "Perempuan";
-    setState(() {
-      isMaleClicked = false;
-      isFemaleClicked = true;
-    });
+    final updatedData = {
+      'firstName': _firstNameController.text.trim(),
+      'lastName': _lastNameController.text.trim(),
+      'email': _emailController.text.trim(),
+      'phoneNumber': _phoneController.text.trim(),
+      'dateOfBirth': _birthDateController.text.isNotEmpty
+          ? '${_birthDateController.text}T00:00:00.000Z'
+          : null,
+      'gender': _selectedGender,
+      'password': _passwordController.text.trim(),
+      'confirmPassword': _confirmPasswordController.text.trim(),
+    };
+
+    try {
+      await _controller.updateProfile(updatedData);
+      Get.back();
+    } catch (e) {
+      Get.snackbar(
+        'Gagal',
+        e.toString().replaceAll('Exception: ', ''),
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF78D14D),
-      resizeToAvoidBottomInset: false,
-      body: Stack(
-        children: [
-          Column(
+      appBar: AppBar(
+        title: Text('Edit Profil', style: GoogleFonts.poppins()),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Form(
+          key: _formKey,
+          child: Column(
             children: [
-              // Green top section
-              Container(
-                height: MediaQuery.of(context).size.height * 0.25 - 20,
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Color(0xFF78D14D),
-                      Color(0xFF349107),
-                    ],
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      top: 30.0, left: 20.0, right: 20.0, bottom: 54.0),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          Get.back();
-                        },
-                        icon: PhosphorIcon(
-                          PhosphorIconsBold.arrowLeft,
-                          size: 32.0,
-                          color: Colors.white,
-                        ),
-                      ),
-                      const SizedBox(width: 20),
-                      Text(
-                        "Pengaturan Akun",
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.poppins(
-                            fontSize: 25.0,
-                            fontWeight: bold,
-                            color: whiteColor),
-                      ),
-                    ],
-                  ),
-                ),
+              _buildTextField(_firstNameController, 'Nama Depan',
+                  validator: (value) => value == null || value.trim().isEmpty
+                      ? 'Nama depan wajib diisi'
+                      : null),
+              const SizedBox(height: 20),
+              _buildTextField(_lastNameController, 'Nama Belakang'),
+              const SizedBox(height: 20),
+              _buildTextField(_emailController, 'Email'),
+              const SizedBox(height: 20),
+              _buildTextField(
+                _phoneController,
+                'Nomor HP',
+                keyboardType: TextInputType.phone,
               ),
-              // White bottom section
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 38.0),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: whiteColor,
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(30.0),
-                      topRight: Radius.circular(30.0),
-                    ),
-                  ),
-                  child: ListView(
-                    shrinkWrap: true,
-                    physics: const ClampingScrollPhysics(),
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Form(
-                            key: _formKey,
-                            child: Column(
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    // AVATAR HERE
-                                    Center(
-                                      child: Stack(
-                                        children: [
-                                          Container(
-                                            width: 120,
-                                            height: 120,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              boxShadow: [
-                                                BoxShadow(
-                                                    color: blackColor,
-                                                    blurRadius: 6)
-                                              ],
-                                            ),
-                                            child: CircleAvatar(
-                                              backgroundImage: AssetImage(
-                                                  "assets/apple.jpg"),
-                                              backgroundColor: Colors.grey[200],
-                                            ),
-                                          ),
-                                          Positioned(
-                                            bottom: 0,
-                                            right: 0,
-                                            child: Container(
-                                              height: 35,
-                                              width: 35,
-                                              decoration: BoxDecoration(
-                                                color: primaryColor,
-                                                shape: BoxShape.circle,
-                                              ),
-                                              child: IconButton(
-                                                icon: Icon(Icons.edit,
-                                                    color: Colors.white,
-                                                    size: 20),
-                                                onPressed: () {},
-                                                padding: EdgeInsets.zero,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(height: 30),
-                                    // First Name
-                                    Text(
-                                      "Nama Depan",
-                                      style: GoogleFonts.poppins(
-                                          fontSize: 15, color: blackColor),
-                                    ),
-                                    const SizedBox(height: 8.0),
-                                    TextFormField(
-                                      controller: _firstNameController,
-                                      keyboardType: TextInputType.name,
-                                      decoration: InputDecoration(
-                                        hintText: "John",
-                                        hintStyle: GoogleFonts.poppins(
-                                            fontSize: 15.0, fontWeight: light),
-                                        prefixIcon: PhosphorIcon(
-                                          PhosphorIcons.user(),
-                                          size: 19.0,
-                                          color: Color(0xff8594AC),
-                                        ),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                          borderSide: BorderSide.none,
-                                        ),
-                                        fillColor: Color(0xffE7EFF2),
-                                        filled: true,
-                                        contentPadding: EdgeInsets.symmetric(
-                                            vertical: 12.0, horizontal: 15.0),
-                                      ),
-                                      validator: _inputValidator.validateName,
-                                      onSaved: (value) {
-                                        controller.firstName.value =
-                                            value ?? "";
-                                      },
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 20),
-                                // Last Name
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Nama Belakang",
-                                      style: GoogleFonts.poppins(
-                                          fontSize: 15, color: blackColor),
-                                    ),
-                                    const SizedBox(height: 8.0),
-                                    TextFormField(
-                                      controller: _lastNameController,
-                                      keyboardType: TextInputType.name,
-                                      decoration: InputDecoration(
-                                        hintText: "Doe",
-                                        hintStyle: GoogleFonts.poppins(
-                                            fontSize: 15.0, fontWeight: light),
-                                        prefixIcon: PhosphorIcon(
-                                          PhosphorIcons.user(),
-                                          size: 19.0,
-                                          color: Color(0xff8594AC),
-                                        ),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                          borderSide: BorderSide.none,
-                                        ),
-                                        fillColor: Color(0xffE7EFF2),
-                                        filled: true,
-                                        contentPadding: EdgeInsets.symmetric(
-                                            vertical: 12.0, horizontal: 15.0),
-                                      ),
-                                      validator: _inputValidator.validateName,
-                                      onSaved: (value) {
-                                        controller.lastName.value = value ?? "";
-                                      },
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 20),
-                                // Tanggal Lahir
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Tanggal Lahir",
-                                      style: GoogleFonts.poppins(
-                                          fontSize: 15, color: blackColor),
-                                    ),
-                                    SizedBox(height: 8.0),
-                                    TextFormField(
-                                      controller: _birthDateController,
-                                      readOnly: true,
-                                      decoration: InputDecoration(
-                                        hintText: "08/08/2008",
-                                        hintStyle: GoogleFonts.poppins(
-                                          fontSize: 15.0,
-                                          fontWeight: light,
-                                        ),
-                                        prefixIcon: PhosphorIcon(
-                                          PhosphorIcons.calendar(),
-                                          size: 19.0,
-                                          color: Color(0xff8594AC),
-                                        ),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                          borderSide: BorderSide.none,
-                                        ),
-                                        fillColor: Color(0xffE7EFF2),
-                                        filled: true,
-                                        contentPadding: EdgeInsets.symmetric(
-                                            vertical: 12.0, horizontal: 15.0),
-                                      ),
-                                      onTap: () async {
-                                        FocusScope.of(context).requestFocus(
-                                            FocusNode()); // close keyboard
-                                        final DateTime? pickedDate =
-                                            await showDatePicker(
-                                          context: context,
-                                          initialDate: DateTime.now(),
-                                          firstDate: DateTime(1900),
-                                          lastDate: DateTime.now(),
-                                          builder: (context, child) {
-                                            return Theme(
-                                              data: Theme.of(context).copyWith(
-                                                colorScheme: ColorScheme.light(
-                                                  primary:
-                                                      blackColor, // warna utama date picker
-                                                  onPrimary: Colors.white,
-                                                  onSurface: Colors.black,
-                                                ),
-                                                textButtonTheme:
-                                                    TextButtonThemeData(
-                                                  style: TextButton.styleFrom(
-                                                    foregroundColor: blackColor,
-                                                  ),
-                                                ),
-                                              ),
-                                              child: child!,
-                                            );
-                                          },
-                                        );
-
-                                        if (pickedDate != null) {
-                                          String formattedDate =
-                                              DateFormat('yyyy-MM-dd')
-                                                  .format(pickedDate);
-                                          _birthDateController.text =
-                                              formattedDate;
-                                          controller.birthDate.value =
-                                              formattedDate;
-                                        }
-                                      },
-                                      validator:
-                                          _inputValidator.validateBirthDate,
-                                      onSaved: (value) {
-                                        controller.birthDate.value =
-                                            value ?? "";
-                                      },
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 20),
-                                // Email
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Email",
-                                      style: GoogleFonts.poppins(
-                                          fontSize: 15, color: blackColor),
-                                    ),
-                                    const SizedBox(height: 8.0),
-                                    TextFormField(
-                                      controller: _emailController,
-                                      keyboardType: TextInputType.name,
-                                      decoration: InputDecoration(
-                                        hintText: "johndoe@examplemail.com",
-                                        hintStyle: GoogleFonts.poppins(
-                                            fontSize: 15.0, fontWeight: light),
-                                        prefixIcon: PhosphorIcon(
-                                          PhosphorIcons.envelope(),
-                                          size: 19.0,
-                                          color: Color(0xff8594AC),
-                                        ),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                          borderSide: BorderSide.none,
-                                        ),
-                                        fillColor: Color(0xffE7EFF2),
-                                        filled: true,
-                                        contentPadding: EdgeInsets.symmetric(
-                                            vertical: 12.0, horizontal: 15.0),
-                                      ),
-                                      validator: _inputValidator.validateEmail,
-                                      onSaved: (value) {
-                                        controller.emailAddress.value =
-                                            value ?? "";
-                                      },
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 20),
-                                // Phone Number
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Nomor Telepon",
-                                      style: GoogleFonts.poppins(
-                                          fontSize: 15, color: blackColor),
-                                    ),
-                                    const SizedBox(height: 8.0),
-                                    TextFormField(
-                                      controller: _phoneNumberController,
-                                      keyboardType: TextInputType.name,
-                                      decoration: InputDecoration(
-                                        hintText: "+628234569",
-                                        hintStyle: GoogleFonts.poppins(
-                                            fontSize: 15.0, fontWeight: light),
-                                        prefixIcon: PhosphorIcon(
-                                          PhosphorIcons.phone(),
-                                          size: 19.0,
-                                          color: Color(0xff8594AC),
-                                        ),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                          borderSide: BorderSide.none,
-                                        ),
-                                        fillColor: Color(0xffE7EFF2),
-                                        filled: true,
-                                        contentPadding: EdgeInsets.symmetric(
-                                            vertical: 12.0, horizontal: 15.0),
-                                      ),
-                                      validator:
-                                          _inputValidator.validatePhoneNumber,
-                                      onSaved: (value) {
-                                        controller.phoneNumber.value =
-                                            value ?? "";
-                                      },
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 20),
-                                // Gender
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Jenis Kelamin",
-                                      style: GoogleFonts.poppins(
-                                          fontSize: 15, color: blackColor),
-                                    ),
-                                    SizedBox(height: 8.0),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Expanded(
-                                          child: ElevatedButton(
-                                            onPressed: clickedMale,
-                                            style: ElevatedButton.styleFrom(
-                                              elevation: 0.0,
-                                              backgroundColor: isMaleClicked
-                                                  ? Color(0x00ffffff)
-                                                  : Color(
-                                                      0xffE7EFF2), // Button color based on selection
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                              ),
-                                              side: isMaleClicked
-                                                  ? BorderSide(
-                                                      color: Color(0xffE7EFF2))
-                                                  : BorderSide.none,
-                                            ),
-                                            child: Text(
-                                              "Laki-Laki",
-                                              style: GoogleFonts.poppins(
-                                                  fontSize: 15,
-                                                  color: Color(0xff4993F8)),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(width: 18),
-                                        Expanded(
-                                          child: ElevatedButton(
-                                            onPressed: clickedFemale,
-                                            style: ElevatedButton.styleFrom(
-                                              elevation: 0.0,
-                                              backgroundColor: isFemaleClicked
-                                                  ? Color(0x00ffffff)
-                                                  : Color(
-                                                      0xffE7EFF2), // Change this to handle the female button selection
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                                side: isFemaleClicked
-                                                    ? BorderSide(
-                                                        color:
-                                                            Color(0xffE7EFF2))
-                                                    : BorderSide.none,
-                                              ),
-                                            ),
-                                            child: Text(
-                                              "Perempuan",
-                                              style: GoogleFonts.poppins(
-                                                  fontSize: 15,
-                                                  color: Color(0xffF99D9D)),
-                                            ),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                    if (warningMessage.isNotEmpty)
-                                      Container(
-                                        padding: EdgeInsets.only(left: 16),
-                                        child: Align(
-                                          alignment: Alignment.topLeft,
-                                          child: Text(
-                                            warningMessage,
-                                            style: GoogleFonts.poppins(
-                                                fontSize: 11.5,
-                                                color: const Color.fromARGB(
-                                                    255, 187, 53, 43)),
-                                          ),
-                                        ),
-                                      )
-                                  ],
-                                ),
-                                const SizedBox(height: 56),
-                                // Save Button
-                                ElevatedButton(
-                                  onPressed: verifyData,
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: primaryColor,
-                                    elevation: 0.0,
-                                    shadowColor: Colors.transparent,
-                                    minimumSize:
-                                        const Size(double.infinity, 48),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    'Ubah Profil',
-                                    style: GoogleFonts.poppins(
-                                        color: whiteColor,
-                                        fontSize: 16,
-                                        fontWeight: bold),
-                                  ),
-                                ),
-                                const SizedBox(height: 18),
-                                // Cancel Button
-                                ElevatedButton(
-                                  onPressed: () {
-                                    _formKey.currentState?.save();
-                                    Get.back();
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: whiteColor,
-                                      elevation: 0.0,
-                                      shadowColor: Colors.transparent,
-                                      minimumSize:
-                                          const Size(double.infinity, 48),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      side: BorderSide(color: primaryColor)),
-                                  child: Text(
-                                    'Keluar',
-                                    style: GoogleFonts.poppins(
-                                        color: primaryColor,
-                                        fontSize: 16,
-                                        fontWeight: bold),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _birthDateController,
+                decoration: const InputDecoration(
+                  labelText: 'Tanggal Lahir',
+                  suffixIcon: Icon(Icons.calendar_today),
+                ),
+                readOnly: true,
+                onTap: () => _selectDate(context),
+              ),
+              const SizedBox(height: 20),
+              DropdownButtonFormField<int>(
+                value: _selectedGender,
+                decoration: const InputDecoration(labelText: 'Jenis Kelamin'),
+                items: const [
+                  DropdownMenuItem(value: 1, child: Text('Laki-laki')),
+                  DropdownMenuItem(value: 2, child: Text('Perempuan')),
+                ],
+                onChanged: (value) => setState(() {
+                  _selectedGender = value;
+                }),
+                validator: (value) =>
+                    value == null ? 'Pilih jenis kelamin' : null,
+              ),
+              const SizedBox(height: 20),
+              _buildTextField(
+                _passwordController,
+                'Password Baru',
+                hintText: 'Kosongkan jika tidak ingin mengubah',
+                obscureText: true,
+              ),
+              const SizedBox(height: 20),
+              _buildTextField(
+                _confirmPasswordController,
+                'Konfirmasi Password Baru',
+                hintText: 'Kosongkan jika tidak ingin mengubah',
+                obscureText: true,
+                validator: (value) {
+                  if (_passwordController.text.isNotEmpty &&
+                      value != _passwordController.text) {
+                    return 'Password tidak cocok';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 30),
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: _saveProfile,
+                  child: const Text('Simpan Perubahan'),
                 ),
               ),
             ],
           ),
-        ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildTextField(
+    TextEditingController controller,
+    String label, {
+    String? hintText,
+    TextInputType keyboardType = TextInputType.text,
+    bool obscureText = false,
+    String? Function(String?)? validator,
+  }) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hintText,
+      ),
+      keyboardType: keyboardType,
+      obscureText: obscureText,
+      validator: validator,
     );
   }
 }

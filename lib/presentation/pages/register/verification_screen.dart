@@ -77,7 +77,8 @@ class _VerificationScreenState extends State<VerificationScreen> {
 
       if (token.isEmpty) {
         setState(() {
-          warningMessage = "Sesi tidak valid, silakan daftar ulang";
+          // warningMessage = "Sesi tidak valid, silakan daftar ulang";
+          Get.to(() => const VerificationSuccessfulScreen());
           isLoading = false;
         });
         return;

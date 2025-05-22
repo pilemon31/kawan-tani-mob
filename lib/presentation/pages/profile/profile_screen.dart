@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kawan_tani/presentation/pages/login/login_screen.dart';
-import 'package:flutter_kawan_tani/presentation/pages/profile/profile_edit.dart';
+import 'package:flutter_kawan_tani/presentation/pages/profile/profile_view.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:flutter_kawan_tani/presentation/controllers/profile/profile_controller.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -13,198 +13,151 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  final ProfileController profileController = Get.put(ProfileController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(50),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 27),
-          child: AppBar(
-            backgroundColor: Colors.white,
-            toolbarHeight: 80,
-            leading: IconButton(
-                onPressed: () {
-                  Get.back();
-                },
-                icon: PhosphorIcon(
-                  PhosphorIconsBold.arrowLeft,
-                  size: 32.0,
-                )),
-          ),
+      backgroundColor: const Color(0xFFF9F9F9),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        toolbarHeight: 70,
+        title: Row(
+          children: [
+            IconButton(
+              onPressed: () {
+                Get.back();
+              },
+              icon: PhosphorIcon(
+                PhosphorIconsBold.arrowLeft,
+                size: 28,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              'Pengaturan',
+              style: GoogleFonts.poppins(
+                fontSize: 24,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
         ),
       ),
       body: SafeArea(
-          child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Judul utama
-              Text(
-                'Pengaturan',
-                style: GoogleFonts.poppins(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildSectionTitle('Akun'),
+                const SizedBox(height: 8),
+                Obx(() => _buildSettingItem(
+                      icon: PhosphorIconsBold.user,
+                      title: profileController.user.isNotEmpty
+                          ? '${profileController.user['firstName']} ${profileController.user['lastName']}'
+                          : 'Profil Saya',
+                      subtitle: 'Info Personal',
+                      onTap: () => Get.to(() => ProfileView()),
+                    )),
+                _buildSettingItem(
+                  icon: PhosphorIconsBold.clockCounterClockwise,
+                  title: 'Artikel',
+                  subtitle: 'Riwayat Artikel',
+                  onTap: () {},
                 ),
-              ),
-
-              const SizedBox(height: 32),
-
-              // Section: Akun
-              Text(
-                'Akun',
-                style: GoogleFonts.poppins(
-                    fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-
-              // Item: Info Personal
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: PhosphorIcon(
-                  PhosphorIconsBold.user,
-                  size: 28.0,
+                _buildSettingItem(
+                  icon: PhosphorIconsBold.clockCounterClockwise,
+                  title: 'Seminar',
+                  subtitle: 'Riwayat Seminar',
+                  onTap: () {},
                 ),
-                title: Text(
-                  'John Doe',
-                  style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.bold, fontSize: 18),
+                const SizedBox(height: 24),
+                _buildSectionTitle('Pengaturan'),
+                const SizedBox(height: 8),
+                _buildSettingItem(
+                  icon: PhosphorIconsBold.translate,
+                  title: 'Bahasa',
+                  subtitle: 'Bahasa Indonesia',
+                  onTap: () {},
                 ),
-                subtitle: Text(
-                  'Info Personal',
-                  style: GoogleFonts.poppins(),
+                _buildSettingItem(
+                  icon: PhosphorIconsBold.bell,
+                  title: 'Notifikasi',
+                  onTap: () {},
                 ),
-                trailing: Icon(PhosphorIcons.arrowRight(), size: 28),
-                onTap: () {
-                  Get.to(() => ProfileEdit());
-                },
-              ),
-
-              // Item: Riwayat Artikel
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: PhosphorIcon(
-                  PhosphorIconsBold.clockCounterClockwise,
-                  size: 28.0,
+                _buildSettingItem(
+                  icon: PhosphorIconsBold.info,
+                  title: 'Bantuan',
+                  onTap: () {},
                 ),
-                title: Text(
-                  'Artikel',
-                  style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.bold, fontSize: 18),
+                const Divider(height: 40),
+                _buildSettingItem(
+                  icon: PhosphorIconsBold.signOut,
+                  title: 'Keluar',
+                  iconColor: Colors.redAccent,
+                  textColor: Colors.redAccent,
+                  onTap: () => profileController.logout(),
                 ),
-                subtitle: Text(
-                  'Riwayat Artikel',
-                  style: GoogleFonts.poppins(),
-                ),
-                trailing: Icon(PhosphorIcons.arrowRight(), size: 28),
-                onTap: () {},
-              ),
-
-              // Item: Riwayat Seminar
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: PhosphorIcon(
-                  PhosphorIconsBold.clockCounterClockwise,
-                  size: 28.0,
-                ),
-                title: Text(
-                  'Seminar',
-                  style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.bold, fontSize: 18),
-                ),
-                subtitle: Text(
-                  'Riwayat Seminar',
-                  style: GoogleFonts.poppins(),
-                ),
-                trailing: Icon(PhosphorIcons.arrowRight(), size: 28),
-                onTap: () {},
-              ),
-
-              const SizedBox(height: 32),
-
-              // Section: Pengaturan
-              Text(
-                'Pengaturan',
-                style: GoogleFonts.poppins(
-                    fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-
-              // Item: Bahasa
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: PhosphorIcon(
-                  PhosphorIconsBold.translate,
-                  size: 28.0,
-                ),
-                title: Text(
-                  'Bahasa',
-                  style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.bold, fontSize: 18),
-                ),
-                subtitle: Text(
-                  'Bahasa Indonesia',
-                  style: GoogleFonts.poppins(),
-                ),
-                trailing: Icon(PhosphorIcons.arrowRight(), size: 28),
-                onTap: () {},
-              ),
-
-              // Item: Notifikasi
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: PhosphorIcon(
-                  PhosphorIconsBold.bell,
-                  size: 28.0,
-                ),
-                title: Text(
-                  'Notifikasi',
-                  style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.bold, fontSize: 18),
-                ),
-                trailing: Icon(PhosphorIcons.arrowRight(), size: 28),
-                onTap: () {},
-              ),
-
-              // Item: Bantuan
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: PhosphorIcon(
-                  PhosphorIconsBold.info,
-                  size: 28.0,
-                ),
-                title: Text(
-                  'Bantuan',
-                  style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.bold, fontSize: 18),
-                ),
-                trailing: Icon(PhosphorIcons.arrowRight(), size: 28),
-                onTap: () {},
-              ),
-
-              //Item: Keluar
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: PhosphorIcon(
-                  PhosphorIconsBold.signOut,
-                  size: 28.0,
-                ),
-                title: Text(
-                  'Keluar',
-                  style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.bold, fontSize: 18),
-                ),
-                trailing: Icon(PhosphorIcons.arrowRight(), size: 28),
-                onTap: () {
-                  Get.to(() => LogInScreen());
-                },
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      )),
+      ),
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Text(
+      title,
+      style: GoogleFonts.poppins(
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+        color: Colors.grey[800],
+      ),
+    );
+  }
+
+  Widget _buildSettingItem({
+    required IconData icon,
+    required String title,
+    String? subtitle,
+    Color? iconColor,
+    Color? textColor,
+    required VoidCallback onTap,
+  }) {
+    return Card(
+      color: Colors.white,
+      elevation: 0.5,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        leading: PhosphorIcon(
+          icon,
+          size: 26,
+          color: iconColor ?? Colors.black87,
+        ),
+        title: Text(
+          title,
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
+            color: textColor ?? Colors.black87,
+          ),
+        ),
+        subtitle: subtitle != null
+            ? Text(
+                subtitle,
+                style: GoogleFonts.poppins(fontSize: 13),
+              )
+            : null,
+        trailing: Icon(PhosphorIcons.arrowRight(), size: 22),
+        onTap: onTap,
+      ),
     );
   }
 }

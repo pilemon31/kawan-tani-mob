@@ -1,12 +1,13 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:io';
 
 class AuthService {
-  // Ganti dengan IP kamu jika test di emulator
+  // Ganti sesuai IP kamu kalau di emulator
   static const String baseUrl = "http://localhost:2000/api";
 
   // Register User
-  static Future<http.Response> registerUser({
+  static Future<http.StreamedResponse> registerUser({
     required String firstName,
     required String lastName,
     required String email,
@@ -15,22 +16,33 @@ class AuthService {
     required int gender,
     required String password,
     required String confirmPassword,
+    File? avatar,
   }) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/auth/register'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        "firstName": firstName,
-        "lastName": lastName,
-        "email": email,
-        "phoneNumber": phoneNumber,
-        "dateOfBirth": dateOfBirth,
-        "gender": gender,
-        "password": password,
-        "confirmPassword": confirmPassword,
-      }),
-    );
-    return response;
+    try {
+      final uri = Uri.parse('$baseUrl/auth/register');
+      final request = http.MultipartRequest('POST', uri);
+
+      // Tambahkan field biasa
+      request.fields['firstName'] = firstName;
+      request.fields['lastName'] = lastName;
+      request.fields['email'] = email;
+      request.fields['phoneNumber'] = phoneNumber;
+      request.fields['dateOfBirth'] = dateOfBirth;
+      request.fields['gender'] = gender.toString();
+      request.fields['password'] = password;
+      request.fields['confirmPassword'] = confirmPassword;
+
+      // Tambahkan file avatar jika ada
+      if (avatar != null) {
+        request.files
+            .add(await http.MultipartFile.fromPath('avatar', avatar.path));
+      }
+
+      // Kirim request
+      return await request.send();
+    } catch (e) {
+      throw Exception('Gagal register user: $e');
+    }
   }
 
   // Login User
@@ -38,57 +50,82 @@ class AuthService {
     required String email,
     required String password,
   }) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/auth/login'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        "email": email,
-        "password": password,
-      }),
-    );
-    return response;
+    try {
+      final response = await http
+          .post(
+            Uri.parse('$baseUrl/auth/login'),
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: jsonEncode({
+              'email': email,
+              'password': password,
+            }),
+          )
+          .timeout(const Duration(seconds: 10));
+
+      return response;
+    } catch (e) {
+      throw Exception('Gagal login user: $e');
+    }
   }
 
-  // Get Me (Current User)
+  // Get User Data
   static Future<http.Response> getMe(String token) async {
-    final response = await http.get(
-      Uri.parse('$baseUrl/auth/me'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-    );
-    return response;
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/auth/me'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      ).timeout(const Duration(seconds: 10));
+
+      return response;
+    } catch (e) {
+      throw Exception('Gagal mengambil data user: $e');
+    }
   }
 
-  // Send Activation Code
+  // Kirim Kode Aktivasi
   static Future<http.Response> sendActivation(String token) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/auth/sendcode'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-    );
-    return response;
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/auth/sendcode'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      ).timeout(const Duration(seconds: 10));
+      return response;
+    } catch (e) {
+      throw Exception('Gagal mengirim kode aktivasi: $e');
+    }
   }
 
-  // Verify Account
+  // Verifikasi Akun
   static Future<http.Response> verifyAccount({
     required String token,
     required String verificationCode,
   }) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/auth/verify'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-      body: jsonEncode({
-        "verificationCode": verificationCode,
-      }),
-    );
-    return response;
+    try {
+      final response = await http
+          .post(
+            Uri.parse('$baseUrl/auth/activate'),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $token',
+            },
+            body: jsonEncode({
+              "verificationCode": verificationCode,
+            }),
+          )
+          .timeout(const Duration(seconds: 10));
+      return response;
+    } catch (e) {
+      throw Exception('Gagal verifikasi akun: $e');
+    }
   }
 
   // Login Admin
@@ -96,14 +133,53 @@ class AuthService {
     required String email,
     required String password,
   }) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/auth/admin/login'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        "email": email,
-        "password": password,
-      }),
-    );
-    return response;
+    try {
+      final response = await http
+          .post(
+            Uri.parse('$baseUrl/auth/admin/login'),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({
+              "email": email,
+              "password": password,
+            }),
+          )
+          .timeout(const Duration(seconds: 10));
+      return response;
+    } catch (e) {
+      throw Exception('Gagal login admin: $e');
+    }
   }
+
+static Future<http.Response> updateProfile({
+  required String token,
+  required Map<String, dynamic> data,
+}) async {
+  try {
+    final url = Uri.parse('$baseUrl/users/me/update');
+
+    print('Sending update to: $url'); // Debug log
+    print('Payload: $data'); // Debug log
+
+    final response = await http.put(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(data),
+    ).timeout(const Duration(seconds: 10));
+
+    print('Response status: ${response.statusCode}'); // Debug log
+    print('Response body: ${response.body}'); // Debug log
+
+    if (response.statusCode >= 400) {
+      throw Exception('Server error: ${response.statusCode}');
+    }
+
+    return response;
+  } catch (e) {
+    print('Update profile error: $e'); // Debug log
+    throw Exception('Gagal update profil: $e');
+  }
+}
 }
