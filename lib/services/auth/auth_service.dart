@@ -1,6 +1,8 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
+import 'dart:async';
 
 class AuthService {
   // Ganti sesuai IP kamu kalau di emulator
@@ -150,36 +152,54 @@ class AuthService {
     }
   }
 
-static Future<http.Response> updateProfile({
-  required String token,
-  required Map<String, dynamic> data,
-}) async {
-  try {
-    final url = Uri.parse('$baseUrl/users/me/update');
+  static Future<http.Response> updateProfile({
+    required String token,
+    required Map<String, dynamic> data,
+  }) async {
+    try {
+      final url = Uri.parse('$baseUrl/users/me/update');
 
-    print('Sending update to: $url'); // Debug log
-    print('Payload: $data'); // Debug log
+      // Debug log
+      debugPrint('Update Profile Request:');
+      debugPrint('URL: $url');
+      debugPrint('Data: ${jsonEncode(data)}');
 
-    final response = await http.put(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-      body: jsonEncode(data),
-    ).timeout(const Duration(seconds: 10));
+      // Filter out empty password fields
+      final cleanData = Map<String, dynamic>.from(data)
+        ..removeWhere((key, value) =>
+            (key == 'password' || key == 'confirmPassword') &&
+            (value == null || value.toString().isEmpty));
 
-    print('Response status: ${response.statusCode}'); // Debug log
-    print('Response body: ${response.body}'); // Debug log
+      final response = await http
+          .put(
+            url,
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $token',
+            },
+            body: jsonEncode(cleanData),
+          )
+          .timeout(const Duration(seconds: 15));
 
-    if (response.statusCode >= 400) {
-      throw Exception('Server error: ${response.statusCode}');
+      // Debug log
+      debugPrint('Update Profile Response:');
+      debugPrint('Status: ${response.statusCode}');
+      debugPrint('Body: ${response.body}');
+
+      if (response.statusCode >= 400) {
+        final errorBody = jsonDecode(response.body);
+        throw Exception(errorBody['message'] ?? 'Gagal memperbarui profil');
+      }
+
+      return response;
+    } on SocketException {
+      throw Exception('Tidak ada koneksi internet');
+    } on TimeoutException {
+      throw Exception('Waktu permintaan habis');
+    } on FormatException {
+      throw Exception('Format respons tidak valid');
+    } catch (e) {
+      throw Exception('Gagal update profil: ${e.toString()}');
     }
-
-    return response;
-  } catch (e) {
-    print('Update profile error: $e'); // Debug log
-    throw Exception('Gagal update profil: $e');
   }
-}
 }

@@ -23,6 +23,7 @@ class _ProfileEditState extends State<ProfileEdit> {
   late final TextEditingController _confirmPasswordController;
 
   int? _selectedGender;
+  bool _isSubmitting = false;
 
   @override
   void initState() {
@@ -76,6 +77,11 @@ class _ProfileEditState extends State<ProfileEdit> {
 
   Future<void> _saveProfile() async {
     if (_formKey.currentState?.validate() != true) return;
+    if (_isSubmitting) return;
+
+    setState(() {
+      _isSubmitting = true;
+    });
 
     final updatedData = {
       'firstName': _firstNameController.text.trim(),
@@ -90,17 +96,50 @@ class _ProfileEditState extends State<ProfileEdit> {
       'confirmPassword': _confirmPasswordController.text.trim(),
     };
 
+    print('🚀 Submitting profile update: $updatedData');
+
     try {
-      await _controller.updateProfile(updatedData);
-      Get.back();
+      // Update profile
+      final success = await _controller.updateProfile(updatedData);
+
+      if (success) {
+        print('✅ Profile update successful, showing success message');
+
+        // Show success message
+        Get.snackbar(
+          'Berhasil',
+          'Profil berhasil diperbarui',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 2),
+        );
+
+        // Wait a moment then go back
+        await Future.delayed(const Duration(milliseconds: 800));
+        Get.offAllNamed('/home');
+
+        // Trigger manual refresh pada controller sebelum kembali
+        await _controller.refreshProfile();
+
+        print('🔙 Going back to previous screen');
+        Get.back(
+            result: 'updated'); // Pass result to indicate update was successful
+      }
     } catch (e) {
+      print('❌ Profile update failed: $e');
       Get.snackbar(
         'Gagal',
         e.toString().replaceAll('Exception: ', ''),
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red,
         colorText: Colors.white,
+        duration: const Duration(seconds: 3),
       );
+    } finally {
+      setState(() {
+        _isSubmitting = false;
+      });
     }
   }
 
@@ -180,8 +219,18 @@ class _ProfileEditState extends State<ProfileEdit> {
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: _saveProfile,
-                  child: const Text('Simpan Perubahan'),
+                  onPressed: _isSubmitting ? null : _saveProfile,
+                  child: _isSubmitting
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        )
+                      : const Text('Simpan Perubahan'),
                 ),
               ),
             ],

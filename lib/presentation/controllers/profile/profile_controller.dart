@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:flutter_kawan_tani/presentation/pages/login/login_screen.dart';
 import 'package:flutter_kawan_tani/services/auth/auth_service.dart';
 import 'package:get/get.dart';
@@ -21,13 +20,22 @@ class ProfileController extends GetxController {
       isLoading(true);
       errorMessage('');
 
+      print('🔄 Loading initial data...');
+
       final prefs = await SharedPreferences.getInstance();
       final userJson = prefs.getString('user');
 
       if (userJson != null) {
-        user.assignAll(Map<String, dynamic>.from(jsonDecode(userJson)));
+        final localUser = Map<String, dynamic>.from(jsonDecode(userJson));
+        user.assignAll(localUser);
+        print('📱 Loaded from local storage: ${user.toString()}');
       }
+
+      // Skip server fetch since /api/auth/me endpoint doesn't work
+      // We'll rely on local data and update responses
+      print('ℹ️ Using local data only (server /api/auth/me not available)');
     } catch (e) {
+      print('❌ Error loading initial data: $e');
       errorMessage('Gagal memuat data: ${e.toString()}');
     } finally {
       isLoading(false);
@@ -36,30 +44,22 @@ class ProfileController extends GetxController {
 
   Future<void> fetchUserData() async {
     try {
-      isLoading(true);
-      errorMessage('');
+      print('🌐 Fetching user data from server...');
 
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token');
 
-      if (token == null) throw Exception('Token tidak tersedia');
-
-      final response = await AuthService.getMe(token);
-      final responseBody = jsonDecode(response.body);
-
-      if (response.statusCode == 200 && responseBody['success'] == true) {
-        final userData =
-            Map<String, dynamic>.from(responseBody['data']['user'] ?? {});
-        user.assignAll(userData);
-        await prefs.setString('user', jsonEncode(user));
-      } else {
-        throw Exception(responseBody['message'] ?? 'Gagal mengambil data');
+      if (token == null) {
+        print('⚠️ No token found, skipping fetch');
+        return;
       }
+
+      // Skip fetching from server since /api/auth/me endpoint doesn't exist
+      // We'll rely on the data we get from update response
+      print('⚠️ Skipping server fetch since /api/auth/me endpoint returns 404');
+      return;
     } catch (e) {
-      errorMessage('Gagal memuat data pengguna: ${e.toString()}');
-      rethrow;
-    } finally {
-      isLoading(false);
+      print('❌ Error fetching user data: $e');
     }
   }
 
@@ -68,6 +68,8 @@ class ProfileController extends GetxController {
       isLoading(true);
       errorMessage('');
 
+      print('🔄 Updating profile with data: $newData');
+
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token');
 
@@ -75,66 +77,95 @@ class ProfileController extends GetxController {
         throw Exception('Token tidak tersedia. Silakan login kembali.');
       }
 
-      // Prepare the complete data to be sent
-      final dataToSend = {
-        'firstName': newData['firstName'],
-        'lastName': newData['lastName'],
-        'phoneNumber': newData['phoneNumber'],
-        'email': newData['email'],
-        'dateOfBirth': newData['dateOfBirth'],
-        'gender': newData['gender'],
-        'password':
-            newData['password'] ?? '', // Add empty string if not provided
-        'confirmPassword': newData['confirmPassword'] ??
-            '', // Add empty string if not provided
-      };
-
-      // Send update to server
+      // Kirim permintaan update
       final response = await AuthService.updateProfile(
         token: token,
-        data: dataToSend,
+        data: newData,
       );
 
-      // Handle HTML responses that might come from server errors
-      if (response.body.trim().startsWith('<!DOCTYPE')) {
-        throw Exception('Server mengalami masalah. Silakan coba lagi nanti.');
-      }
+      print('📡 Update response status: ${response.statusCode}');
+      print('📡 Update response body: ${response.body}');
 
+      // Parse response
       final responseBody = jsonDecode(response.body);
 
-      if (response.statusCode == 200 && responseBody['success'] == true) {
-        // Update local user data (excluding password fields)
-        final updatedUser = Map<String, dynamic>.from(user)
-          ..addAll({
-            'firstName': newData['firstName'],
-            'lastName': newData['lastName'],
-            'phoneNumber': newData['phoneNumber'],
-            'email': newData['email'],
-            'dateOfBirth': newData['dateOfBirth'],
-            'gender': newData['gender'],
-          });
+      if (response.statusCode == 200) {
+        print('✅ Profile updated successfully on server');
 
-        user.assignAll(updatedUser);
-        await prefs.setString('user', jsonEncode(updatedUser));
+        // Extract user data from response - check both possible locations
+        Map<String, dynamic>? updatedUser;
 
-        Get.snackbar(
-          'Sukses',
-          'Profil berhasil diperbarui',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
+        if (responseBody['data'] != null) {
+          // Try data.pengguna first (based on your server response)
+          if (responseBody['data']['pengguna'] != null) {
+            updatedUser =
+                Map<String, dynamic>.from(responseBody['data']['pengguna']);
+            print('📦 Found user data in data.pengguna: $updatedUser');
+          }
+          // Fallback to data.user
+          else if (responseBody['data']['user'] != null) {
+            updatedUser =
+                Map<String, dynamic>.from(responseBody['data']['user']);
+            print('📦 Found user data in data.user: $updatedUser');
+          }
+          // Fallback to data directly
+          else {
+            updatedUser = Map<String, dynamic>.from(responseBody['data']);
+            print('📦 Using data directly: $updatedUser');
+          }
+        }
+
+        if (updatedUser != null) {
+          // Fix the typo in server response if it exists
+          if (updatedUser.containsKey('fistName') &&
+              !updatedUser.containsKey('firstName')) {
+            updatedUser['firstName'] = updatedUser['fistName'];
+            updatedUser.remove('fistName');
+            print('🔧 Fixed firstName typo from server response');
+          }
+
+          // Merge with existing data to preserve fields not returned by server
+          final mergedData = Map<String, dynamic>.from(user);
+          mergedData.addAll(updatedUser);
+
+          // Update user data
+          user.clear();
+          user.assignAll(mergedData);
+          print('✅ User data updated locally: ${user.toString()}');
+
+          // Save to SharedPreferences
+          await prefs.setString('user', jsonEncode(mergedData));
+          print('💾 Saved updated data to SharedPreferences');
+
+          // Force UI refresh
+          user.refresh();
+        }
 
         return true;
       } else {
         throw Exception(responseBody['message'] ?? 'Gagal memperbarui profil');
       }
-    } on FormatException {
-      throw Exception('Format respons server tidak valid');
     } catch (e) {
-      throw Exception('Gagal memperbarui profil: ${e.toString()}');
+      print('❌ Error updating profile: $e');
+      errorMessage(e.toString());
+      rethrow;
     } finally {
       isLoading(false);
+    }
+  }
+
+  // Method untuk manual refresh (hanya refresh dari local storage)
+  Future<void> refreshProfile() async {
+    print('🔄 Manual refresh triggered');
+    final prefs = await SharedPreferences.getInstance();
+    final userJson = prefs.getString('user');
+
+    if (userJson != null) {
+      final localUser = Map<String, dynamic>.from(jsonDecode(userJson));
+      user.clear();
+      user.assignAll(localUser);
+      user.refresh();
+      print('✅ Profile refreshed from local storage: ${user.toString()}');
     }
   }
 
@@ -144,6 +175,7 @@ class ProfileController extends GetxController {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove('token');
       await prefs.remove('user');
+      user.clear();
       Get.offAll(() => LogInScreen());
     } finally {
       isLoading(false);
