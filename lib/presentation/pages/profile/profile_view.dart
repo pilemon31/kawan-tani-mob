@@ -10,11 +10,27 @@ class ProfileView extends StatelessWidget {
 
   final ProfileController _controller = Get.find();
 
+  Future<void> _goToEdit() async {
+    print('🚀 Navigating to ProfileEdit');
+
+    // Navigate to edit page and wait for result
+    final result = await Get.to(() => ProfileEdit());
+
+    // If edit was successful, refresh data
+    if (result == 'updated') {
+      print('🔄 Edit was successful, refreshing profile data');
+      await _controller.refreshProfile();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (_controller.user.isEmpty && !_controller.isLoading.value) {
-      _controller.loadInitialData();
-    }
+    // Load fresh data when this screen is opened
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_controller.user.isEmpty && !_controller.isLoading.value) {
+        _controller.loadInitialData();
+      }
+    });
 
     return Scaffold(
       backgroundColor: const Color(0xFFF9F9F9),
@@ -32,11 +48,21 @@ class ProfileView extends StatelessWidget {
         actions: [
           IconButton(
             icon: PhosphorIcon(PhosphorIcons.pencil()),
-            onPressed: () => Get.to(() => ProfileEdit()),
+            onPressed: _goToEdit,
+          ),
+          // Add refresh button for manual refresh
+          IconButton(
+            icon: PhosphorIcon(PhosphorIcons.arrowClockwise()),
+            onPressed: () {
+              print('🔄 Manual refresh triggered');
+              _controller.refreshProfile();
+            },
           ),
         ],
       ),
       body: Obx(() {
+        print('🖼️ ProfileView rebuilding with user data: ${_controller.user}');
+
         if (_controller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
         }
@@ -59,35 +85,90 @@ class ProfileView extends StatelessWidget {
 
         final user = _controller.user;
 
-        return SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-          child: Column(
-            children: [
-              CircleAvatar(
-                radius: 55,
-                backgroundColor: Colors.grey.shade300,
-                child: const Icon(Icons.person, size: 60, color: Colors.white),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                '${user['firstName'] ?? ''} ${user['lastName'] ?? ''}',
-                style: GoogleFonts.poppins(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
+        return RefreshIndicator(
+          onRefresh: () async {
+            print('📱 Pull to refresh triggered');
+            await _controller.refreshProfile();
+          },
+          child: SingleChildScrollView(
+            physics:
+                const AlwaysScrollableScrollPhysics(), // Enable pull to refresh
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+            child: Column(
+              children: [
+                CircleAvatar(
+                  radius: 55,
+                  backgroundColor: Colors.grey.shade300,
+                  child:
+                      const Icon(Icons.person, size: 60, color: Colors.white),
                 ),
-              ),
-              const SizedBox(height: 24),
-              _buildInfoCard('Email', user['email']),
-              _buildInfoCard('No HP', user['phoneNumber']),
-              _buildInfoCard(
-                'Tanggal Lahir',
-                (user['dateOfBirth']?.toString().split('T')[0]) ?? '-',
-              ),
-              _buildInfoCard(
-                'Jenis Kelamin',
-                _getGenderText(user['gender']),
-              ),
-            ],
+                const SizedBox(height: 16),
+                Text(
+                  '${user['firstName'] ?? ''} ${user['lastName'] ?? ''}',
+                  style: GoogleFonts.poppins(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Terakhir diperbarui: ${DateTime.now().toString().split('.')[0]}',
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    color: Colors.grey[600],
+                  ),
+                ),
+                const SizedBox(height: 24),
+                _buildInfoCard('Email', user['email']),
+                _buildInfoCard('No HP', user['phoneNumber']),
+                _buildInfoCard(
+                  'Tanggal Lahir',
+                  (user['dateOfBirth']?.toString().split('T')[0]) ?? '-',
+                ),
+                _buildInfoCard(
+                  'Jenis Kelamin',
+                  _getGenderText(user['gender']),
+                ),
+
+                // Debug info (you can remove this in production)
+                Container(
+                  margin: const EdgeInsets.only(top: 20),
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Debug Info:',
+                        style: GoogleFonts.poppins(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'User ID: ${user['id'] ?? 'N/A'}',
+                        style: GoogleFonts.poppins(
+                          fontSize: 10,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                      Text(
+                        'Data keys: ${user.keys.toList()}',
+                        style: GoogleFonts.poppins(
+                          fontSize: 10,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       }),
@@ -119,8 +200,8 @@ class ProfileView extends StatelessWidget {
   }
 
   String _getGenderText(dynamic gender) {
-    if (gender == 0) return 'Laki-laki';
-    if (gender == 1) return 'Perempuan';
+    if (gender == 1) return 'Laki-laki';
+    if (gender == 2) return 'Perempuan';
     return 'Tidak diketahui';
   }
 }
