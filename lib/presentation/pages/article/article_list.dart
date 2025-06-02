@@ -6,6 +6,7 @@ import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import "package:get/get.dart";
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:flutter_kawan_tani/presentation/controllers/articles/article_controller.dart';
 
 class ArticleList extends StatefulWidget {
   const ArticleList({super.key});
@@ -16,6 +17,7 @@ class ArticleList extends StatefulWidget {
 
 class _ArticleListState extends State<ArticleList> {
   final TextEditingController _searchController = TextEditingController();
+  final ArticleController _articleController = Get.put(ArticleController());
 
   @override
   Widget build(BuildContext context) {
@@ -74,121 +76,150 @@ class _ArticleListState extends State<ArticleList> {
                   contentPadding:
                       EdgeInsets.symmetric(vertical: 12.0, horizontal: 13.0),
                 ),
+                onChanged: (value) {
+                  // Implement search functionality
+                },
               ),
               SizedBox(
                 height: 15,
               ),
               Expanded(
-                  child: ListView.separated(
-                itemCount: 10,
-                separatorBuilder: (BuildContext context, int index) {
-                  return SizedBox(height: 10);
-                },
-                itemBuilder: (BuildContext context, int index) {
-                  return InkWell(
-                    onTap: () {
-                      Get.to(() => ArticleDetail());
+                child: Obx(() {
+                  if (_articleController.isLoading.value) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  return ListView.separated(
+                    itemCount: _articleController.articles.length,
+                    separatorBuilder: (BuildContext context, int index) {
+                      return SizedBox(height: 10);
                     },
-                    borderRadius: BorderRadius.circular(10),
-                    child: Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Color(0xffC3C6D4)),
+                    itemBuilder: (BuildContext context, int index) {
+                      final article = _articleController.articles[index];
+                      return InkWell(
+                        onTap: () {
+                          Get.to(() => ArticleDetail(), arguments: article.id);
+                        },
                         borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.25,
-                            height: 100,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage("assets/apple.jpg"),
-                                fit: BoxFit.cover,
-                              ),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 18, vertical: 10),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Color(0xffC3C6D4)),
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                          SizedBox(width: 20),
-                          Expanded(
-                            child: Column(
-                              children: [
-                                Text(
-                                  "Mencegah Hama yang Baik pada Tanaman Apel",
-                                  style: GoogleFonts.poppins(fontSize: 12),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.25,
+                                height: 100,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: NetworkImage(article.imageUrl),
+                                    fit: BoxFit.cover,
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
-                                SizedBox(height: 10),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.start,
+                              ),
+                              SizedBox(width: 20),
+                              Expanded(
+                                child: Column(
                                   children: [
-                                    Container(
-                                      width: 27,
-                                      height: 27,
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image:
-                                              AssetImage("assets/farmer2.jpg"),
-                                          fit: BoxFit.cover,
-                                        ),
-                                        shape: BoxShape.circle,
-                                      ),
-                                    ),
-                                    SizedBox(width: 4.5),
                                     Text(
-                                      "Pak Darmono",
+                                      article.title,
                                       style: GoogleFonts.poppins(fontSize: 12),
                                     ),
-                                  ],
-                                ),
-                                SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "Feb 20, 2025",
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w300,
-                                        color:
-                                            greyColor, // Pastikan greyColor sudah didefinisikan
-                                      ),
-                                    ),
+                                    SizedBox(height: 10),
                                     Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       children: [
-                                        PhosphorIcon(
-                                          PhosphorIconsFill.star,
-                                          size: 17.0,
-                                          color: Colors.yellow,
+                                        Container(
+                                          width: 27,
+                                          height: 27,
+                                          decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                              image: NetworkImage(
+                                                  article.authorImage),
+                                              fit: BoxFit.cover,
+                                            ),
+                                            shape: BoxShape.circle,
+                                          ),
                                         ),
-                                        SizedBox(width: 3),
+                                        SizedBox(width: 4.5),
                                         Text(
-                                          "4.7/5",
+                                          article.author,
+                                          style:
+                                              GoogleFonts.poppins(fontSize: 12),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 10),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "${article.createdAt.day} ${_getMonthName(article.createdAt.month)}, ${article.createdAt.year}",
                                           style: GoogleFonts.poppins(
                                             fontSize: 12,
                                             fontWeight: FontWeight.w300,
-                                            color:
-                                                greyColor, // Pastikan greyColor sudah didefinisikan
+                                            color: greyColor,
                                           ),
+                                        ),
+                                        Row(
+                                          children: [
+                                            PhosphorIcon(
+                                              PhosphorIconsFill.star,
+                                              size: 17.0,
+                                              color: Colors.yellow,
+                                            ),
+                                            SizedBox(width: 3),
+                                            Text(
+                                              "${article.rating}/5",
+                                              style: GoogleFonts.poppins(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w300,
+                                                color: greyColor,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
                                   ],
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
+                        ),
+                      );
+                    },
                   );
-                },
-              ))
+                }),
+              )
             ],
           ),
         )),
         bottomNavigationBar: Navbar());
+  }
+
+  String _getMonthName(int month) {
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
+    ];
+    return months[month - 1];
   }
 }

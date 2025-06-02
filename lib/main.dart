@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kawan_tani/presentation/controllers/articles/article_controller.dart';
 import 'package:flutter_kawan_tani/presentation/pages/article/article_list.dart';
 import 'package:flutter_kawan_tani/presentation/pages/dashboard/home_screen.dart';
 import 'package:flutter_kawan_tani/presentation/pages/intro/splash_screen.dart';
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Get.put(ArticleController());
     return GetMaterialApp(
       title: "KawanTani",
       theme: ThemeData(scaffoldBackgroundColor: Colors.white),
@@ -29,7 +31,7 @@ class MyApp extends StatelessWidget {
         GetPage(name: "/login", page: () => const LogInScreen()),
         GetPage(name: "/home", page: () => const HomeScreen()),
         GetPage(name: "/plants", page: () => const YourPlantsScreen()),
-        GetPage(name: "/articles", page: () => const ArticleList()),
+        GetPage(name: "/articles", page: () => ArticleList()),
         GetPage(name: "/workshops", page: () => const WorkshopsList()),
         GetPage(name: "/add", page: () => const StartPlantingScreen())
       ],
