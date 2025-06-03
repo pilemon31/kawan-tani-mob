@@ -84,10 +84,10 @@ class AuthService {
   }
 
   // Get User Data
-  static Future<http.Response> getMe(String token) async {
+  static Future<http.Response> getUserData({required String token}) async {
     try {
       final response = await http.get(
-        Uri.parse('$baseUrl/auth/me'),
+        Uri.parse('$baseUrl/users/me'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',

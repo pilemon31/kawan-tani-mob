@@ -20,22 +20,16 @@ class ProfileController extends GetxController {
       isLoading(true);
       errorMessage('');
 
-      print('🔄 Loading initial data...');
-
       final prefs = await SharedPreferences.getInstance();
       final userJson = prefs.getString('user');
 
       if (userJson != null) {
         final localUser = Map<String, dynamic>.from(jsonDecode(userJson));
         user.assignAll(localUser);
-        print('📱 Loaded from local storage: ${user.toString()}');
       }
 
-      // Skip server fetch since /api/auth/me endpoint doesn't work
-      // We'll rely on local data and update responses
-      print('ℹ️ Using local data only (server /api/auth/me not available)');
+      await fetchUserData();
     } catch (e) {
-      print('❌ Error loading initial data: $e');
       errorMessage('Gagal memuat data: ${e.toString()}');
     } finally {
       isLoading(false);
@@ -44,22 +38,45 @@ class ProfileController extends GetxController {
 
   Future<void> fetchUserData() async {
     try {
-      print('🌐 Fetching user data from server...');
-
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token');
 
       if (token == null) {
-        print('⚠️ No token found, skipping fetch');
         return;
       }
 
-      // Skip fetching from server since /api/auth/me endpoint doesn't exist
-      // We'll rely on the data we get from update response
-      print('⚠️ Skipping server fetch since /api/auth/me endpoint returns 404');
-      return;
+      final response = await AuthService.getUserData(token: token);
+
+      if (response.statusCode == 200) {
+        final responseBody = jsonDecode(response.body);
+
+        if (responseBody['success'] == true && responseBody['data'] != null) {
+          final userData = responseBody['data']['user'];
+
+          // Map data dari API ke format yang digunakan app
+          final mappedUser = {
+            'id': userData['id_pengguna'],
+            'firstName': userData['nama_depan_pengguna'],
+            'lastName': userData['nama_belakang_pengguna'],
+            'email': userData['email_pengguna'],
+            'phoneNumber': userData['nomor_telepon_pengguna'],
+            'gender': userData['jenisKelamin'],
+            'avatar': userData['avatar'],
+            'dateOfBirth': userData['tanggal_lahir_pengguna'],
+            'status_verifikasi': userData['status_verfikasi'],
+          };
+
+          // Update user data
+          user.clear();
+          user.assignAll(mappedUser);
+
+          // Simpan ke SharedPreferences
+          await prefs.setString('user', jsonEncode(mappedUser));
+          user.refresh();
+        }
+      }
     } catch (e) {
-      print('❌ Error fetching user data: $e');
+      print('Error fetching user data: $e');
     }
   }
 
@@ -67,8 +84,6 @@ class ProfileController extends GetxController {
     try {
       isLoading(true);
       errorMessage('');
-
-      print('🔄 Updating profile with data: $newData');
 
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token');
@@ -82,71 +97,45 @@ class ProfileController extends GetxController {
         token: token,
         data: newData,
       );
-
-      print('📡 Update response status: ${response.statusCode}');
-      print('📡 Update response body: ${response.body}');
-
-      // Parse response
       final responseBody = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-        print('✅ Profile updated successfully on server');
-
-        // Extract user data from response - check both possible locations
         Map<String, dynamic>? updatedUser;
 
         if (responseBody['data'] != null) {
-          // Try data.pengguna first (based on your server response)
           if (responseBody['data']['pengguna'] != null) {
             updatedUser =
                 Map<String, dynamic>.from(responseBody['data']['pengguna']);
-            print('📦 Found user data in data.pengguna: $updatedUser');
-          }
-          // Fallback to data.user
-          else if (responseBody['data']['user'] != null) {
+          } else if (responseBody['data']['user'] != null) {
             updatedUser =
                 Map<String, dynamic>.from(responseBody['data']['user']);
-            print('📦 Found user data in data.user: $updatedUser');
-          }
-          // Fallback to data directly
-          else {
+          } else {
             updatedUser = Map<String, dynamic>.from(responseBody['data']);
-            print('📦 Using data directly: $updatedUser');
           }
         }
 
         if (updatedUser != null) {
-          // Fix the typo in server response if it exists
           if (updatedUser.containsKey('fistName') &&
               !updatedUser.containsKey('firstName')) {
             updatedUser['firstName'] = updatedUser['fistName'];
             updatedUser.remove('fistName');
-            print('🔧 Fixed firstName typo from server response');
           }
 
-          // Merge with existing data to preserve fields not returned by server
           final mergedData = Map<String, dynamic>.from(user);
           mergedData.addAll(updatedUser);
 
-          // Update user data
           user.clear();
           user.assignAll(mergedData);
-          print('✅ User data updated locally: ${user.toString()}');
 
-          // Save to SharedPreferences
           await prefs.setString('user', jsonEncode(mergedData));
-          print('💾 Saved updated data to SharedPreferences');
-
-          // Force UI refresh
           user.refresh();
         }
-
+        await fetchUserData();
         return true;
       } else {
         throw Exception(responseBody['message'] ?? 'Gagal memperbarui profil');
       }
     } catch (e) {
-      print('❌ Error updating profile: $e');
       errorMessage(e.toString());
       rethrow;
     } finally {
@@ -154,19 +143,38 @@ class ProfileController extends GetxController {
     }
   }
 
-  // Method untuk manual refresh (hanya refresh dari local storage)
   Future<void> refreshProfile() async {
-    print('🔄 Manual refresh triggered');
-    final prefs = await SharedPreferences.getInstance();
-    final userJson = prefs.getString('user');
+    try {
+      isLoading(true);
 
-    if (userJson != null) {
-      final localUser = Map<String, dynamic>.from(jsonDecode(userJson));
-      user.clear();
-      user.assignAll(localUser);
-      user.refresh();
-      print('✅ Profile refreshed from local storage: ${user.toString()}');
+      // Coba ambil data terbaru dari API terlebih dahulu
+      await fetchUserData();
+
+      // Jika API gagal, fallback ke data lokal
+      if (user.isEmpty) {
+        final prefs = await SharedPreferences.getInstance();
+        final userJson = prefs.getString('user');
+
+        if (userJson != null) {
+          final localUser = Map<String, dynamic>.from(jsonDecode(userJson));
+          user.clear();
+          user.assignAll(localUser);
+          user.refresh();
+        }
+      }
+    } catch (e) {
+      print('Error refreshing profile: $e');
+    } finally {
+      isLoading(false);
     }
+  }
+
+  String getAvatarUrl() {
+    final avatar = user['avatar'];
+    if (avatar != null && avatar.toString().isNotEmpty) {
+      return 'http://localhost:2000/uploads/users/$avatar';
+    }
+    return '';
   }
 
   Future<void> logout() async {

@@ -114,17 +114,15 @@ class _ProfileEditState extends State<ProfileEdit> {
           colorText: Colors.white,
           duration: const Duration(seconds: 2),
         );
-
-        // Wait a moment then go back
+        
         await Future.delayed(const Duration(milliseconds: 800));
         Get.offAllNamed('/home');
 
-        // Trigger manual refresh pada controller sebelum kembali
         await _controller.refreshProfile();
 
         print('🔙 Going back to previous screen');
         Get.back(
-            result: 'updated'); // Pass result to indicate update was successful
+            result: 'updated');
       }
     } catch (e) {
       print('❌ Profile update failed: $e');
