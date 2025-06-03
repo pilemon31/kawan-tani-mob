@@ -122,8 +122,9 @@ class _WorkshopsListState extends State<WorkshopsList> {
                       final workshop =
                           _workshopController.activeWorkshops[index];
                       return InkWell(
-                        onTap: () {
-                          _workshopController.selectedWorkshop.value = workshop;
+                        onTap: () async {
+                          await _workshopController
+                              .fetchWorkshopById(workshop.idWorkshop);
                           Get.to(() => const WorkshopDetail());
                         },
                         borderRadius: BorderRadius.circular(10),

@@ -20,20 +20,7 @@ class WorkshopController extends GetxController {
     waktuBerakhir: '',
     statusVerifikasi: false,
     statusAktif: false,
-    gambarWorkshop: '',
-  ).obs;
-
-    var selectedWorkshopById = Workshop(
-    idWorkshop: '',
-    judulWorkshop: '',
-    deskripsiWorkshop: '',
-    tanggalWorkshop: '',
-    alamatLengkapWorkshop: '',
-    waktuMulai: '',
-    waktuBerakhir: '',
-    statusVerifikasi: false,
-    statusAktif: false,
-    gambarWorkshop: '',
+    gambarWorkshop: ''
   ).obs;
 
   // Error handling
