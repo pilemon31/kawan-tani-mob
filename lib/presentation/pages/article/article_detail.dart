@@ -6,7 +6,6 @@ import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import "package:get/get.dart";
-import 'package:flutter_kawan_tani/presentation/controllers/articles/article_controller.dart';
 
 class ArticleDetail extends StatefulWidget {
   const ArticleDetail({super.key});
@@ -17,18 +16,6 @@ class ArticleDetail extends StatefulWidget {
 
 class _ArticleDetailState extends State<ArticleDetail> {
   bool isBookmarked = false;
-  final ArticleController _articleController = Get.find();
-
-  @override
-  void initState() {
-    super.initState();
-
-    // Ambil article ID dari arguments dan set selected article
-    final articleId = Get.arguments;
-    if (articleId != null) {
-      _articleController.setSelectedArticle(articleId.toString());
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -160,7 +147,7 @@ class _ArticleDetailState extends State<ArticleDetail> {
                           });
                         } else {
                           showCustomToast(
-                              context, "Berhasil menghapus artikel!");
+                              context, "Berhasil mennghapus artikel!");
                           setState(() {
                             isBookmarked = false;
                           });
@@ -182,147 +169,89 @@ class _ArticleDetailState extends State<ArticleDetail> {
                     ),
                   ],
                 ))),
-        body: Obx(() {
-          if (_articleController.isLoading.value) {
-            return Center(child: CircularProgressIndicator());
-          }
-
-          final article = _articleController.selectedArticle.value;
-
-          // Cek apakah article kosong (tidak ada data)
-          if (article.id.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+        body: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 27),
+          child: ListView(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: Image.asset(
+                  "assets/apple.jpg",
+                  width: double.infinity,
+                  height: 200,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              SizedBox(
+                height: 18,
+              ),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  "Tips Hasil Panen Apel Dengan Baik",
+                  textAlign: TextAlign.start,
+                  style: GoogleFonts.poppins(fontSize: 24, fontWeight: bold),
+                ),
+              ),
+              SizedBox(
+                height: 24,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  PhosphorIcon(
-                    PhosphorIconsBold.article,
-                    size: 64,
-                    color: Colors.grey,
+                  Row(
+                    children: [
+                      Container(
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: AssetImage("assets/farmer2.jpg"),
+                              fit: BoxFit.cover),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        "Pak Darmono",
+                        style: GoogleFonts.poppins(
+                            fontSize: 14, fontWeight: light),
+                      )
+                    ],
                   ),
-                  SizedBox(height: 16),
                   Text(
-                    "Artikel tidak ditemukan",
+                    "Feb 20, 2025",
                     style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      color: Colors.grey,
-                    ),
+                        fontSize: 14, color: greyColor, fontWeight: light),
+                  )
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Column(
+                children: [
+                  Text(
+                    "Panen jagung merupakan tahap akhir yang krusial dalam siklus pertanian, dan untuk menghasilkan jagung berkualitas tinggi, perhatian yang cermat pada beberapa aspek sangat penting. Salah satu hal pertama yang perlu diperhatikan adalah pemilihan waktu panen yang tepat. Jagung sebaiknya dipanen ketika bijinya sudah cukup keras dan matang, dengan ciri-ciri seperti sisik tongkol yang mengering dan biji yang berwarna kuning atau sesuai dengan varietasnya. Pemilihan waktu yang tepat akan menghindari kerugian akibat pemanenan terlalu dini atau terlambat, yang dapat mempengaruhi kualitas jagung secara signifikan.",
+                    style: GoogleFonts.poppins(fontSize: 14),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    "Setelah dipanen, langkah penting berikutnya adalah pengeringan jagung. Pengeringan harus dilakukan dengan hati-hati untuk mencegah biji jagung rusak akibat kelembaban berlebih. Jagung yang baru dipanen sebaiknya dijemur di bawah sinar matahari langsung selama 2-3 hari, namun harus dihindarkan dari hujan agar biji tetap kering dan tidak mengalami pembusukan.  Bila cuaca tidak mendukung, penggunaan alat pengering khusus untuk jagung bisa ",
+                    style: GoogleFonts.poppins(fontSize: 14),
                   ),
                 ],
               ),
-            );
-          }
-
-          return Padding(
-            padding: EdgeInsets.symmetric(horizontal: 27),
-            child: ListView(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
-                  child: Image.network(
-                    article.imageUrl,
-                    width: double.infinity,
-                    height: 200,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        width: double.infinity,
-                        height: 200,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          color: Colors.grey[200],
-                        ),
-                        child: Icon(
-                          Icons.image_not_supported,
-                          size: 50,
-                          color: Colors.grey,
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                SizedBox(
-                  height: 18,
-                ),
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    article.title,
-                    textAlign: TextAlign.start,
-                    style: GoogleFonts.poppins(fontSize: 24, fontWeight: bold),
-                  ),
-                ),
-                SizedBox(
-                  height: 24,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          width: 30,
-                          height: 30,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: NetworkImage(article.authorImage),
-                                fit: BoxFit.cover),
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          article.author,
-                          style: GoogleFonts.poppins(
-                              fontSize: 14, fontWeight: light),
-                        )
-                      ],
-                    ),
-                    Text(
-                      "${article.createdAt.day} ${_getMonthName(article.createdAt.month)}, ${article.createdAt.year}",
-                      style: GoogleFonts.poppins(
-                          fontSize: 14, color: greyColor, fontWeight: light),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Column(
-                  children: [
-                    Text(
-                      article.content,
-                      style: GoogleFonts.poppins(fontSize: 14),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 50,
-                )
-              ],
-            ),
-          );
-        }),
+              SizedBox(
+                height: 50,
+              )
+            ],
+          ),
+        ),
         bottomNavigationBar: Navbar());
-  }
-
-  String _getMonthName(int month) {
-    const months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec'
-    ];
-    return months[month - 1];
   }
 }

@@ -265,22 +265,23 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                             onPressed: () async {
                               if (_formKey.currentState!.validate()) {
                                 _formKey.currentState!.save();
-                                
-                                // Tampilkan loading indicator
+
                                 Get.dialog(
-                                  const Center(child: CircularProgressIndicator()),
+                                  const Center(
+                                      child: CircularProgressIndicator()),
                                   barrierDismissible: false,
                                 );
 
                                 try {
-                                  final success = await controller.registerAccount();
-                                  
+                                  final success =
+                                      await controller.registerAccount();
+
                                   if (success) {
-                                    // Navigasi ke halaman verifikasi
-                                    Get.off(() => const SuccessfulRegistration());
+                                    Get.off(
+                                        () => const SuccessfulRegistration());
                                   }
                                 } catch (e) {
-                                  Get.back(); // Tutup loading dialog
+                                  Get.back();
                                   Get.snackbar(
                                     'Error',
                                     'Terjadi kesalahan saat registrasi: ${e.toString()}',
@@ -289,7 +290,7 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                                     colorText: Colors.white,
                                   );
                                 } finally {
-                                  if (Get.isDialogOpen!) Get.back(); // Pastikan loading dialog tertutup
+                                  if (Get.isDialogOpen!) Get.back();
                                 }
                               }
                             },

@@ -24,7 +24,7 @@ class AuthService {
       final uri = Uri.parse('$baseUrl/auth/register');
       final request = http.MultipartRequest('POST', uri);
 
-      // Tambahkan field biasa
+      // Add text fields
       request.fields['firstName'] = firstName;
       request.fields['lastName'] = lastName;
       request.fields['email'] = email;
@@ -34,16 +34,26 @@ class AuthService {
       request.fields['password'] = password;
       request.fields['confirmPassword'] = confirmPassword;
 
-      // Tambahkan file avatar jika ada
+      // Add avatar file if exists
       if (avatar != null) {
-        request.files
-            .add(await http.MultipartFile.fromPath('avatar', avatar.path));
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'avatar',
+            avatar.path,
+            filename: 'profile_${DateTime.now().millisecondsSinceEpoch}.jpg',
+          ),
+        );
       }
 
-      // Kirim request
+      // Add headers if needed
+      request.headers.addAll({
+        'Accept': 'application/json',
+      });
+
+      // Send request
       return await request.send();
     } catch (e) {
-      throw Exception('Gagal register user: $e');
+      throw Exception('Failed to register user: $e');
     }
   }
 

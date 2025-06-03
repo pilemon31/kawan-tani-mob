@@ -1,5 +1,3 @@
-import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_kawan_tani/presentation/pages/register/sign_up_confirmation_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -17,36 +15,15 @@ class ProfileUpload extends StatefulWidget {
 }
 
 class _ProfileUploadState extends State<ProfileUpload> {
-  final RegistrationController controller = Get.put(RegistrationController());
+  final RegistrationController controller = Get.find<RegistrationController>();
   final _formKey = GlobalKey<FormState>();
-
-  File? _imageFile;
-  Uint8List? _webImage; // Tambahan untuk Flutter Web
-  final ImagePicker _picker = ImagePicker();
 
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
 
   Future<void> _pickImage(ImageSource source) async {
-    final pickedFile =
-        await _picker.pickImage(source: source, imageQuality: 75);
-
-    if (pickedFile != null) {
-      if (kIsWeb) {
-        // Web: pakai memory
-        final bytes = await pickedFile.readAsBytes();
-        setState(() {
-          _webImage = bytes;
-          _imageFile = null;
-        });
-      } else {
-        // Android/iOS/Desktop: pakai File
-        setState(() {
-          _imageFile = File(pickedFile.path);
-          _webImage = null;
-        });
-      }
-    }
+    await controller.pickImage(source);
+    setState(() {});
   }
 
   @override
@@ -155,41 +132,44 @@ class _ProfileUploadState extends State<ProfileUpload> {
                                         fontSize: 20, color: blackColor),
                                   ),
                                   SizedBox(height: 9.0),
-                                  Container(
-                                    width: 150,
-                                    height: 150,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: (_imageFile == null &&
-                                              _webImage == null)
-                                          ? Colors.grey[200]
-                                          : null,
-                                      border: Border.all(color: Colors.grey),
-                                    ),
-                                    child: ClipOval(
-                                      child: _webImage != null
-                                          ? Image.memory(
-                                              _webImage!,
-                                              fit: BoxFit.cover,
-                                              width: 150,
-                                              height: 150,
-                                            )
-                                          : _imageFile != null
-                                              ? Image.file(
-                                                  _imageFile!,
+                                  Obx(() => Container(
+                                        width: 150,
+                                        height: 150,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: !controller.hasSelectedAvatar
+                                              ? Colors.grey[200]
+                                              : null,
+                                          border:
+                                              Border.all(color: Colors.grey),
+                                        ),
+                                        child: ClipOval(
+                                          child: controller.webAvatar.value !=
+                                                  null
+                                              ? Image.memory(
+                                                  controller.webAvatar.value!,
                                                   fit: BoxFit.cover,
                                                   width: 150,
                                                   height: 150,
                                                 )
-                                              : Center(
-                                                  child: PhosphorIcon(
-                                                    PhosphorIconsRegular.upload,
-                                                    size: 41.0,
-                                                    color: Color(0xff8594AC),
-                                                  ),
-                                                ),
-                                    ),
-                                  ),
+                                              : controller.avatar.value != null
+                                                  ? Image.file(
+                                                      controller.avatar.value!,
+                                                      fit: BoxFit.cover,
+                                                      width: 150,
+                                                      height: 150,
+                                                    )
+                                                  : Center(
+                                                      child: PhosphorIcon(
+                                                        PhosphorIconsRegular
+                                                            .upload,
+                                                        size: 41.0,
+                                                        color:
+                                                            Color(0xff8594AC),
+                                                      ),
+                                                    ),
+                                        ),
+                                      )),
                                 ],
                               ),
                               SizedBox(height: 42),
