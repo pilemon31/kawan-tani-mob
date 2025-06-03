@@ -69,8 +69,7 @@ class _ArticleListState extends State<ArticleList> {
               TextFormField(
                 controller: _searchController,
                 keyboardType: TextInputType.name,
-                onChanged: (value) {
-                },
+                onChanged: (value) {},
                 decoration: InputDecoration(
                   hintText: "Cari artikel pertanian....",
                   hintStyle: GoogleFonts.poppins(
@@ -170,19 +169,10 @@ class _ArticleListState extends State<ArticleList> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
                                       children: [
-                                        Container(
-                                          width: 27,
-                                          height: 27,
-                                          decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                              image: NetworkImage(article
-                                                      .authorImage.isNotEmpty
-                                                  ? 'http://localhost:2000/uploads/${article.authorImage}'
-                                                  : 'https://via.placeholder.com/150'),
-                                              fit: BoxFit.cover,
-                                            ),
-                                            shape: BoxShape.circle,
-                                          ),
+                                        Text(
+                                          'Oleh',
+                                          style:
+                                              GoogleFonts.poppins(fontSize: 12),
                                         ),
                                         const SizedBox(width: 4.5),
                                         Text(
