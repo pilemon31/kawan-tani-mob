@@ -70,7 +70,6 @@ class _ArticleListState extends State<ArticleList> {
                 controller: _searchController,
                 keyboardType: TextInputType.name,
                 onChanged: (value) {
-                  // Implement search functionality if needed
                 },
                 decoration: InputDecoration(
                   hintText: "Cari artikel pertanian....",
@@ -144,7 +143,7 @@ class _ArticleListState extends State<ArticleList> {
                                   image: DecorationImage(
                                     image: NetworkImage(article
                                             .imageUrl.isNotEmpty
-                                        ? article.imageUrl
+                                        ? 'http://localhost:2000/uploads/articles/${article.imageUrl}'
                                         : 'https://via.placeholder.com/150'),
                                     fit: BoxFit.cover,
                                   ),
@@ -178,7 +177,7 @@ class _ArticleListState extends State<ArticleList> {
                                             image: DecorationImage(
                                               image: NetworkImage(article
                                                       .authorImage.isNotEmpty
-                                                  ? article.authorImage
+                                                  ? 'http://localhost:2000/uploads/${article.authorImage}'
                                                   : 'https://via.placeholder.com/150'),
                                               fit: BoxFit.cover,
                                             ),

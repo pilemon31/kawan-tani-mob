@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StorageService {
-  static const String _tokenKey = 'auth_token';
+  static const String _tokenKey = 'token';
   static const String _refreshTokenKey = 'refresh_token';
   static const String _userDataKey = 'user_data';
 

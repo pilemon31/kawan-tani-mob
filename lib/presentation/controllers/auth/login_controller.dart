@@ -30,7 +30,7 @@ class LoginController extends GetxController {
           await prefs.setString(
               'user', jsonEncode(responseBody['data']['user']));
 
-          print('Token dan user data disimpan'); // Debug log
+          print('Token dan user data disimpan');
           return true;
         } else {
           errorMessage.value = responseBody['message'] ?? "Gagal login";

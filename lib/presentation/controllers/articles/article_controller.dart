@@ -198,45 +198,82 @@ class ArticleController extends GetxController {
 
   Future<bool> saveArticle(String articleId) async {
     try {
-      final success = await _articleService.saveArticle(articleId);
+      isUpdating(true);
+      bool success = await _articleService.saveArticle(articleId);
       if (success) {
-        articles.firstWhere((a) => a.id == articleId).isSaved = true;
-        await fetchSavedArticles();
+        // Update local data
+        var updatedArticle = selectedArticle.value;
+        updatedArticle.isSaved = true;
+        selectedArticle.value = updatedArticle;
+        selectedArticle.refresh();
+
+        // Update di list juga jika ada
+        int index = articles.indexWhere((article) => article.id == articleId);
+        if (index != -1) {
+          articles[index].isSaved = true;
+          articles.refresh();
+        }
       }
       return success;
     } catch (e) {
       Get.snackbar('Error', 'Failed to save article: $e');
       return false;
+    } finally {
+      isUpdating(false);
     }
   }
 
   Future<bool> unsaveArticle(String articleId) async {
     try {
-      final success = await _articleService.unsaveArticle(articleId);
+      isUpdating(true);
+      bool success = await _articleService.unsaveArticle(articleId);
       if (success) {
-        articles.firstWhere((a) => a.id == articleId).isSaved = false;
-        savedArticles.removeWhere((a) => a.id == articleId);
+        // Update local data
+        var updatedArticle = selectedArticle.value;
+        updatedArticle.isSaved = false;
+        selectedArticle.value = updatedArticle;
+        selectedArticle.refresh();
+
+        // Update di list juga jika ada
+        int index = articles.indexWhere((article) => article.id == articleId);
+        if (index != -1) {
+          articles[index].isSaved = false;
+          articles.refresh();
+        }
       }
       return success;
     } catch (e) {
       Get.snackbar('Error', 'Failed to unsave article: $e');
       return false;
+    } finally {
+      isUpdating(false);
     }
   }
 
   Future<bool> likeArticle(String articleId, double rating) async {
     try {
-      final success = await _articleService.likeArticle(articleId, rating);
+      isUpdating(true);
+      bool success = await _articleService.likeArticle(articleId, rating);
       if (success) {
-        articles.firstWhere((a) => a.id == articleId).isLiked = true;
-        selectedArticle.update((article) {
-          article?.isLiked = true;
-        });
+        // Update local data
+        var updatedArticle = selectedArticle.value;
+        updatedArticle.isLiked = true;
+        selectedArticle.value = updatedArticle;
+        selectedArticle.refresh();
+
+        // Update di list juga jika ada
+        int index = articles.indexWhere((article) => article.id == articleId);
+        if (index != -1) {
+          articles[index].isLiked = true;
+          articles.refresh();
+        }
       }
       return success;
     } catch (e) {
       Get.snackbar('Error', 'Failed to like article: $e');
       return false;
+    } finally {
+      isUpdating(false);
     }
   }
 
@@ -257,6 +294,27 @@ class ArticleController extends GetxController {
   }
 
   void setSelectedArticle(Article article) {
+    getArticleById(article.id);
     selectedArticle.value = article;
+  }
+
+  void searchArticles(String query) {
+    if (query.isEmpty) {
+      fetchArticles();
+      return;
+    }
+
+    var filteredArticles = articles.where((article) {
+      return article.title.toLowerCase().contains(query.toLowerCase()) ||
+          article.author.toLowerCase().contains(query.toLowerCase()) ||
+          article.category.toLowerCase().contains(query.toLowerCase());
+    }).toList();
+
+    articles.assignAll(filteredArticles);
+  }
+
+  // Method untuk reset search
+  void resetSearch() {
+    fetchArticles();
   }
 }
