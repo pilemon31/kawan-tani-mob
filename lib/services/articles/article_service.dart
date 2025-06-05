@@ -247,13 +247,33 @@ class ArticleService {
         },
         body: jsonEncode({'content': content}),
       );
-      if (response.statusCode == 200) {
+
+      print('Add Comment Response Status: ${response.statusCode}');
+      print('Add Comment Response Body: ${response.body}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
         final jsonResponse = jsonDecode(response.body);
-        return Comment.fromJson(jsonResponse['data']);
+
+        // Buat object comment dengan data minimal yang diperlukan
+        // karena response mungkin tidak memiliki data pengguna lengkap
+        final commentData = jsonResponse['data'];
+
+        // Untuk sementara, kita buat comment object dengan data yang ada
+        // Nanti akan di-refresh dari getArticleById untuk mendapat data lengkap
+        return Comment(
+          id: commentData['id_komentar']?.toString() ?? '',
+          content: commentData['komentar'] ?? content,
+          author: 'Anda', // Placeholder, akan di-update saat refresh
+          authorImage: '', // Placeholder, akan di-update saat refresh
+          createdAt: commentData['tanggal_komentar'] != null
+              ? DateTime.parse(commentData['tanggal_komentar'])
+              : DateTime.now(),
+        );
       } else {
-        throw Exception('Failed to add comment');
+        throw Exception('Failed to add comment: ${response.statusCode}');
       }
     } catch (e) {
+      print('Error adding comment: $e');
       throw Exception('Error: $e');
     }
   }

@@ -3,6 +3,8 @@ import "package:google_fonts/google_fonts.dart";
 import "package:flutter_kawan_tani/shared/theme.dart";
 import "package:phosphor_flutter/phosphor_flutter.dart";
 import "package:get/get.dart";
+import 'package:flutter_kawan_tani/presentation/controllers/articles/article_controller.dart';
+import 'package:flutter_kawan_tani/presentation/widgets/toast/custom_toast.dart';
 
 class ArticleComments extends StatefulWidget {
   const ArticleComments({super.key});
@@ -12,6 +14,25 @@ class ArticleComments extends StatefulWidget {
 }
 
 class _ArticleCommentsState extends State<ArticleComments> {
+  final ArticleController _articleController = Get.find<ArticleController>();
+  final TextEditingController _commentController = TextEditingController();
+
+  @override
+  void dispose() {
+    _commentController.dispose();
+    super.dispose();
+  }
+
+  String _formatDate(DateTime date) {
+    List<String> months = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
+      'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'
+    ];
+    
+    return '${date.day + 1} ${months[date.month - 1]} ${date.year}';
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,58 +75,101 @@ class _ArticleCommentsState extends State<ArticleComments> {
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(color: greyColor)),
-                  child: ListView.builder(
-                      itemCount: 4,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Padding(
-                          padding: EdgeInsets.only(bottom: 20),
-                          child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.1,
-                                  height: 45,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: AssetImage("assets/apple.jpg"),
-                                      fit: BoxFit.cover,
+                  child: Obx(() {
+                    final article = _articleController.selectedArticle.value;
+                    final comments = article.comments;
+
+                    if (comments.isEmpty) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            PhosphorIcon(
+                              PhosphorIconsBold.chatCircle,
+                              size: 48,
+                              color: greyColor,
+                            ),
+                            SizedBox(height: 16),
+                            Text(
+                              'Belum ada komentar',
+                              style: GoogleFonts.poppins(
+                                color: greyColor,
+                                fontSize: 16,
+                              ),
+                            ),
+                            Text(
+                              'Jadilah yang pertama berkomentar!',
+                              style: GoogleFonts.poppins(
+                                color: greyColor,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+
+                    return ListView.builder(
+                        itemCount: comments.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final comment = comments[index];
+                          return Padding(
+                            padding: EdgeInsets.only(bottom: 20),
+                            child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.1,
+                                    height: 45,
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: comment.authorImage.isNotEmpty
+                                            ? NetworkImage(
+                                                'http://localhost:2000/uploads/users/${comment.authorImage}')
+                                            : AssetImage("assets/apple.jpg")
+                                                as ImageProvider,
+                                        fit: BoxFit.cover,
+                                      ),
+                                      shape: BoxShape.circle,
                                     ),
-                                    shape: BoxShape.circle,
                                   ),
-                                ),
-                                SizedBox(width: 13),
-                                Expanded(
-                                    child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Bu Susi Marsinah",
-                                      style:
-                                          GoogleFonts.poppins(fontWeight: bold),
-                                    ),
-                                    Text(
-                                      "Terima kasih artikelnya, Pak Darmono! Saya ingin bertanya, Pak. Cabai yang saya tanam sudah melewati masa panen, tetapi masih terlihat hijau. Apakah itu normal, Pak?",
-                                      style: GoogleFonts.poppins(),
-                                    ),
-                                    TextButton(
-                                        style: TextButton.styleFrom(
-                                          splashFactory: NoSplash.splashFactory,
-                                          padding: EdgeInsets.zero,
-                                        ),
-                                        onPressed: () {},
-                                        child: Text(
-                                          "Balas",
-                                          textAlign: TextAlign.start,
-                                          style: GoogleFonts.poppins(
-                                              color: primaryColor),
-                                        ))
-                                  ],
-                                ))
-                              ]),
-                        );
-                      }),
+                                  SizedBox(width: 13),
+                                  Expanded(
+                                      child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            comment.author,
+                                            style: GoogleFonts.poppins(
+                                                fontWeight: bold),
+                                          ),
+                                          Text(
+                                            _formatDate(comment.createdAt),
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 12,
+                                              color: greyColor,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 4),
+                                      Text(
+                                        comment.content,
+                                        style: GoogleFonts.poppins(),
+                                      ),
+                                    ],
+                                  ))
+                                ]),
+                          );
+                        });
+                  }),
                 ),
               ),
               Flexible(
@@ -113,6 +177,7 @@ class _ArticleCommentsState extends State<ArticleComments> {
                 child: Container(
                   margin: EdgeInsets.only(bottom: 10),
                   child: TextField(
+                    controller: _commentController,
                     maxLines: 5,
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
@@ -132,19 +197,53 @@ class _ArticleCommentsState extends State<ArticleComments> {
               Container(
                 width: double.infinity,
                 margin: EdgeInsets.only(bottom: 20),
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: primaryColor,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      padding: EdgeInsets.symmetric(vertical: 12)),
-                  child: Text(
-                    "Tambah Komentar",
-                    style: GoogleFonts.poppins(
-                        color: Colors.white, fontWeight: bold, fontSize: 15),
-                  ),
-                ),
+                child: Obx(() => ElevatedButton(
+                      onPressed: _articleController.isLoading.value
+                          ? null
+                          : () async {
+                              final content = _commentController.text.trim();
+                              if (content.isEmpty) {
+                                showCustomToast(
+                                    context, 'Komentar tidak boleh kosong!');
+                                return;
+                              }
+
+                              final article =
+                                  _articleController.selectedArticle.value;
+                              final success = await _articleController
+                                  .addComment(article.id, content);
+
+                              if (success) {
+                                _commentController.clear();
+                                showCustomToast(
+                                    context, 'Komentar berhasil ditambahkan!');
+                                // Refresh artikel untuk mendapatkan komentar terbaru
+                                await _articleController
+                                    .getArticleById(article.id);
+                              }
+                            },
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: primaryColor,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          padding: EdgeInsets.symmetric(vertical: 12)),
+                      child: _articleController.isLoading.value
+                          ? SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            )
+                          : Text(
+                              "Tambah Komentar",
+                              style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                  fontWeight: bold,
+                                  fontSize: 15),
+                            ),
+                    )),
               )
             ],
           ),

@@ -47,7 +47,7 @@ class Article {
       imageUrl: json['gambar_artikel'] ?? '',
       category: json['kategori']?['nama_kategori_artikel'] ?? '',
       author: '${json['pengguna']?['nama_depan_pengguna'] ?? ''} ${json['pengguna']?['nama_belakang_pengguna'] ?? ''}'.trim(),
-      authorImage: json['pengguna']?['foto_profil'] ?? '',
+      authorImage: json['pengguna']?['avatar'] ?? '',
       createdAt: json['tanggal_artikel'] != null 
           ? DateTime.parse(json['tanggal_artikel']) 
           : DateTime.now(),
@@ -98,10 +98,10 @@ class Comment {
 
   factory Comment.fromJson(Map<String, dynamic> json) {
     return Comment(
-      id: json['id_komentar'] ?? '',
+      id: json['id_komentar']?.toString() ?? '', // Convert int to String
       content: json['komentar'] ?? '',
       author: '${json['pengguna']?['nama_depan_pengguna'] ?? ''} ${json['pengguna']?['nama_belakang_pengguna'] ?? ''}'.trim(),
-      authorImage: json['pengguna']?['foto_profil'] ?? '',
+      authorImage: json['pengguna']?['avatar'] ?? '', // Menggunakan 'avatar' bukan 'foto_profil'
       createdAt: json['tanggal_komentar'] != null 
           ? DateTime.parse(json['tanggal_komentar']) 
           : DateTime.now(),
@@ -132,7 +132,7 @@ class ArticleLike {
 
   factory ArticleLike.fromJson(Map<String, dynamic> json) {
     return ArticleLike(
-      id: json['id'] ?? '',
+      id: json['id']?.toString() ?? '',
       userId: json['id_pengguna'] ?? '',
       articleId: json['id_artikel'] ?? '',
       createdAt: json['created_at'] != null 

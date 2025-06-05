@@ -253,7 +253,7 @@ class _ArticleDetailState extends State<ArticleDetail> {
                           image: DecorationImage(
                             image: article.authorImage.isNotEmpty
                                 ? NetworkImage(
-                                    'http://localhost:2000/uploads/${article.authorImage}')
+                                    'http://localhost:2000/uploads/users/${article.authorImage}')
                                 : AssetImage("assets/farmer2.jpg")
                                     as ImageProvider,
                             fit: BoxFit.cover,
