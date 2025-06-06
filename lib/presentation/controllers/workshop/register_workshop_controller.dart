@@ -3,7 +3,8 @@ import 'package:flutter/foundation.dart';
 
 class RegisterWorkshopController extends GetxController {
   //Insialisasi data user
-  final attendeesName = "".obs;
+  final firstName = "".obs;
+  final lastName = "".obs;
   final emailAddress = "".obs;
   final phoneNumber = "".obs;
   final birthDate = "".obs;
@@ -12,8 +13,8 @@ class RegisterWorkshopController extends GetxController {
   //Function untuk mengirim ke backend
   Future<bool> submitRegistration() async {
     final userData = {
-      'Nama': attendeesName.value,
-      'Email': emailAddress.value,
+      'Nama Depan': firstName.value,
+      'Nama Belakang': lastName.value,
       'Nomor Telepon': phoneNumber.value,
       'Tanggal Lahir': birthDate.value,
       'Jenis Kelamin': gender.value,
@@ -27,7 +28,8 @@ class RegisterWorkshopController extends GetxController {
   }
 
   void resetForm() {
-    attendeesName.value = '';
+    firstName.value = '';
+    lastName.value = '';
     emailAddress.value = '';
     phoneNumber.value = '';
     birthDate.value = '';

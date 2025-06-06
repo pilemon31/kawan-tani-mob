@@ -81,11 +81,25 @@ class _RegisterWorkshopConfirmationState
                   children: [
                     SizedBox(
                       width: 130,
-                      child: Text('Nama',
+                      child: Text('Nama Depan',
                           style: blackTextStyle.copyWith(
                               fontSize: 14, fontWeight: medium)),
                     ),
-                    Text(': ${controller.attendeesName.value}',
+                    Text(': ${controller.firstName.value}',
+                        style: blackTextStyle.copyWith(
+                            fontSize: 14, fontWeight: medium)),
+                  ],
+                )),
+            const SizedBox(height: 12),
+            Obx(() => Row(
+                  children: [
+                    SizedBox(
+                      width: 130,
+                      child: Text('Nama Belakang',
+                          style: blackTextStyle.copyWith(
+                              fontSize: 14, fontWeight: medium)),
+                    ),
+                    Text(': ${controller.lastName.value}',
                         style: blackTextStyle.copyWith(
                             fontSize: 14, fontWeight: medium)),
                   ],

@@ -6,7 +6,6 @@ import 'package:flutter_kawan_tani/utils/validation_utils.dart';
 import "package:get/get.dart";
 import 'package:google_fonts/google_fonts.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:intl/intl.dart';
 
 class RegisterWorkshop extends StatefulWidget {
   const RegisterWorkshop({super.key});
@@ -22,8 +21,8 @@ class _RegisterWorkshopState extends State<RegisterWorkshop> {
   final RegisterWorkshopController controller =
       Get.put(RegisterWorkshopController());
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _attendeesNameController =
-      TextEditingController();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _birthDateController = TextEditingController();
@@ -34,7 +33,8 @@ class _RegisterWorkshopState extends State<RegisterWorkshop> {
   void initState() {
     super.initState();
 
-    _attendeesNameController.text = controller.attendeesName.value;
+    _firstNameController.text = controller.firstName.value;
+    _lastNameController.text = controller.lastName.value;
     _emailController.text = controller.emailAddress.value;
     _phoneNumberController.text = controller.phoneNumber.value;
     _birthDateController.text = controller.birthDate.value;
@@ -42,7 +42,8 @@ class _RegisterWorkshopState extends State<RegisterWorkshop> {
 
   @override
   void dispose() {
-    _attendeesNameController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
     _emailController.dispose();
     _phoneNumberController.dispose();
     _birthDateController.dispose();
@@ -136,13 +137,13 @@ class _RegisterWorkshopState extends State<RegisterWorkshop> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Nama Peserta",
+                            "Nama Depan",
                             style: GoogleFonts.poppins(
                                 fontSize: 15, color: blackColor),
                           ),
                           SizedBox(height: 8.0),
                           TextFormField(
-                            controller: _attendeesNameController,
+                            controller: _firstNameController,
                             keyboardType: TextInputType.name,
                             decoration: InputDecoration(
                               hintText: "John",
@@ -164,7 +165,47 @@ class _RegisterWorkshopState extends State<RegisterWorkshop> {
                             ),
                             validator: _inputValidator.validateName,
                             onSaved: (value) {
-                              controller.attendeesName.value = value ?? "";
+                              controller.firstName.value = value ?? "";
+                            },
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 20),
+
+                      // Nama Belakang
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Nama Belakang",
+                            style: GoogleFonts.poppins(
+                                fontSize: 15, color: blackColor),
+                          ),
+                          SizedBox(height: 8.0),
+                          TextFormField(
+                            controller: _lastNameController,
+                            keyboardType: TextInputType.name,
+                            decoration: InputDecoration(
+                              hintText: "Doe",
+                              hintStyle: GoogleFonts.poppins(
+                                  fontSize: 15.0, fontWeight: light),
+                              prefixIcon: PhosphorIcon(
+                                PhosphorIcons.user(),
+                                size: 19.0,
+                                color: Color(0xff8594AC),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                                borderSide: BorderSide.none,
+                              ),
+                              fillColor: Color(0xffE7EFF2),
+                              filled: true,
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 12.0, horizontal: 15.0),
+                            ),
+                            validator: _inputValidator.validateName,
+                            onSaved: (value) {
+                              controller.lastName.value = value ?? "";
                             },
                           ),
                         ],
@@ -211,83 +252,6 @@ class _RegisterWorkshopState extends State<RegisterWorkshop> {
                       ),
                       SizedBox(height: 20),
 
-                      // Tanggal Lahir
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Tanggal Lahir",
-                            style: GoogleFonts.poppins(
-                                fontSize: 15, color: blackColor),
-                          ),
-                          SizedBox(height: 8.0),
-                          TextFormField(
-                            controller: _birthDateController,
-                            readOnly: true,
-                            decoration: InputDecoration(
-                              hintText: "08/08/2008",
-                              hintStyle: GoogleFonts.poppins(
-                                fontSize: 15.0,
-                                fontWeight: light,
-                              ),
-                              prefixIcon: PhosphorIcon(
-                                PhosphorIcons.calendar(),
-                                size: 19.0,
-                                color: Color(0xff8594AC),
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                                borderSide: BorderSide.none,
-                              ),
-                              fillColor: Color(0xffE7EFF2),
-                              filled: true,
-                              contentPadding: EdgeInsets.symmetric(
-                                  vertical: 12.0, horizontal: 15.0),
-                            ),
-                            onTap: () async {
-                              FocusScope.of(context)
-                                  .requestFocus(FocusNode()); // close keyboard
-                              final DateTime? pickedDate = await showDatePicker(
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime(1900),
-                                lastDate: DateTime.now(),
-                                builder: (context, child) {
-                                  return Theme(
-                                    data: Theme.of(context).copyWith(
-                                      colorScheme: ColorScheme.light(
-                                        primary:
-                                            blackColor, // warna utama date picker
-                                        onPrimary: Colors.white,
-                                        onSurface: Colors.black,
-                                      ),
-                                      textButtonTheme: TextButtonThemeData(
-                                        style: TextButton.styleFrom(
-                                          foregroundColor: blackColor,
-                                        ),
-                                      ),
-                                    ),
-                                    child: child!,
-                                  );
-                                },
-                              );
-
-                              if (pickedDate != null) {
-                                String formattedDate =
-                                    DateFormat('yyyy-MM-dd').format(pickedDate);
-                                _birthDateController.text = formattedDate;
-                                controller.birthDate.value = formattedDate;
-                              }
-                            },
-                            validator: _inputValidator.validateBirthDate,
-                            onSaved: (value) {
-                              controller.birthDate.value = value ?? "";
-                            },
-                          ),
-                        ],
-                      ),
-
-                      SizedBox(height: 20),
                       // Nomor Telepon
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
