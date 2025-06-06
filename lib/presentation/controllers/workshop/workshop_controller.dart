@@ -137,50 +137,50 @@ class WorkshopController extends GetxController {
     }
   }
 
-  Future<void> registerForWorkshop({
-    required String workshopId,
-    required String firstName,
-    required String lastName,
-    required String email,
-    required String phoneNumber,
-    required int gender,
-    required int paymentMethod,
-  }) async {
-    try {
-      isLoading(true);
-      final request = RegisterWorkshopRequest(
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        phoneNumber: phoneNumber,
-        gender: gender,
-        paymentMethod: paymentMethod,
-      );
+  // Future<void> registerForWorkshop({
+  //   required String workshopId,
+  //   required String firstName,
+  //   required String lastName,
+  //   required String email,
+  //   required String phoneNumber,
+  //   required int gender,
+  //   required int paymentMethod,
+  // }) async {
+  //   try {
+  //     isLoading(true);
+  //     final request = RegisterWorkshopRequest(
+  //       firstName: firstName,
+  //       lastName: lastName,
+  //       email: email,
+  //       phoneNumber: phoneNumber,
+  //       gender: gender,
+  //       paymentMethod: paymentMethod,
+  //     );
 
-      await workshopService.registerWorkshop(workshopId, request);
-      Get.back();
-      Get.snackbar('Success', 'Registered for workshop successfully');
-    } catch (e) {
-      errorMessage(e.toString());
-      Get.snackbar('Error', 'Failed to register for workshop');
-    } finally {
-      isLoading(false);
-    }
-  }
+  //     await workshopService.registerWorkshop(workshopId, request);
+  //     Get.back();
+  //     Get.snackbar('Success', 'Registered for workshop successfully');
+  //   } catch (e) {
+  //     errorMessage(e.toString());
+  //     Get.snackbar('Error', 'Failed to register for workshop');
+  //   } finally {
+  //     isLoading(false);
+  //   }
+  // }
 
-  Future<void> payForRegistration(String ticketNumber) async {
-    try {
-      isLoading(true);
-      await workshopService.payRegistration(ticketNumber);
-      await fetchWorkshopParticipants();
-      Get.snackbar('Success', 'Payment processed successfully');
-    } catch (e) {
-      errorMessage(e.toString());
-      Get.snackbar('Error', 'Failed to process payment');
-    } finally {
-      isLoading(false);
-    }
-  }
+  // Future<void> payForRegistration(String ticketNumber) async {
+  //   try {
+  //     isLoading(true);
+  //     await workshopService.payRegistration(ticketNumber);
+  //     await fetchWorkshopParticipants();
+  //     Get.snackbar('Success', 'Payment processed successfully');
+  //   } catch (e) {
+  //     errorMessage(e.toString());
+  //     Get.snackbar('Error', 'Failed to process payment');
+  //   } finally {
+  //     isLoading(false);
+  //   }
+  // }
 
   Future<void> fetchWorkshopParticipants() async {
     try {

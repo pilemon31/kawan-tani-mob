@@ -178,29 +178,29 @@ class WorkshopService {
     }
   }
 
-  Future<WorkshopRegistration> payRegistration(String ticketNumber) async {
-    try {
-      final token = await _getToken();
-      final response = await http.patch(
-        Uri.parse('$baseUrl/workshops/payment'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-        body: json.encode({'ticketNumber': ticketNumber}),
-      );
+  // Future<WorkshopRegistration> payRegistration(String ticketNumber) async {
+  //   try {
+  //     final token = await _getToken();
+  //     final response = await http.patch(
+  //       Uri.parse('$baseUrl/workshops/payment'),
+  //       headers: {
+  //         'Authorization': 'Bearer $token',
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: json.encode({'ticketNumber': ticketNumber}),
+  //     );
 
-      if (response.statusCode == 200) {
-        return WorkshopRegistration.fromJson(
-            json.decode(response.body)['data']);
-      } else {
-        throw Exception('HTTP ${response.statusCode}: ${response.body}');
-      }
-    } catch (e) {
-      print('Error in payRegistration: $e');
-      throw Exception('Failed to process payment: $e');
-    }
-  }
+  //     if (response.statusCode == 200) {
+  //       return WorkshopRegistration.fromJson(
+  //           json.decode(response.body)['data']);
+  //     } else {
+  //       throw Exception('HTTP ${response.statusCode}: ${response.body}');
+  //     }
+  //   } catch (e) {
+  //     print('Error in payRegistration: $e');
+  //     throw Exception('Failed to process payment: $e');
+  //   }
+  // }
 
   Future<List<WorkshopRegistration>> getWorkshopParticipants() async {
     try {

@@ -25,7 +25,6 @@ class _RegisterWorkshopState extends State<RegisterWorkshop> {
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
-  final TextEditingController _birthDateController = TextEditingController();
   final TextEditingController _genderController = TextEditingController();
   final ValidationService _inputValidator = ValidationService();
 
@@ -37,7 +36,6 @@ class _RegisterWorkshopState extends State<RegisterWorkshop> {
     _lastNameController.text = controller.lastName.value;
     _emailController.text = controller.emailAddress.value;
     _phoneNumberController.text = controller.phoneNumber.value;
-    _birthDateController.text = controller.birthDate.value;
   }
 
   @override
@@ -46,7 +44,6 @@ class _RegisterWorkshopState extends State<RegisterWorkshop> {
     _lastNameController.dispose();
     _emailController.dispose();
     _phoneNumberController.dispose();
-    _birthDateController.dispose();
     _genderController.dispose();
     super.dispose();
   }

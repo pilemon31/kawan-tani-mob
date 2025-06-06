@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kawan_tani/presentation/controllers/workshop/payment_controller.dart';
+import 'package:flutter_kawan_tani/presentation/controllers/workshop/register_workshop_controller.dart';
 import 'package:flutter_kawan_tani/presentation/pages/workshops/register_workshop_confirmation.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:get/get.dart';
@@ -16,7 +16,7 @@ class RegisterWorkshopPayment extends StatefulWidget {
 
 class _RegisterWorkshopPaymentState extends State<RegisterWorkshopPayment> {
   int selectedIndex = -1;
-  final PaymentController paymentController = Get.put(PaymentController());
+  final RegisterWorkshopController registerWorkshopController = Get.put(RegisterWorkshopController());
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +73,7 @@ class _RegisterWorkshopPaymentState extends State<RegisterWorkshopPayment> {
 
             // GoPay
             GestureDetector(
-              onTap: () => {setState(() => paymentController.selectMethod(0))},
+              onTap: () => {setState(() => registerWorkshopController.paymentMethod(0))},
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeInOut,
@@ -81,13 +81,13 @@ class _RegisterWorkshopPaymentState extends State<RegisterWorkshopPayment> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 height: 80,
                 decoration: BoxDecoration(
-                  color: paymentController.selectedMethod.value == 0
+                  color: registerWorkshopController.paymentMethod.value == 0
                       ? primaryColor
                       : const Color(0xFFF2F2F2),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color:
-                        paymentController.selectedMethod.value == 0 ? primaryColor : Colors.transparent,
+                        registerWorkshopController.paymentMethod.value == 0 ? primaryColor : Colors.transparent,
                     width: 2,
                   ),
                   boxShadow: [
@@ -104,14 +104,6 @@ class _RegisterWorkshopPaymentState extends State<RegisterWorkshopPayment> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Image.asset('assets/gopay.png', width: 120, height: 120),
-                      Text(
-                        paymentController.jumlah.value,
-                        style: GoogleFonts.poppins(
-                          fontSize: 16,
-                          fontWeight: bold,
-                          color: paymentController.selectedMethod.value == 0 ? Colors.white : blackColor,
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -120,7 +112,7 @@ class _RegisterWorkshopPaymentState extends State<RegisterWorkshopPayment> {
 
             // Dana
             GestureDetector(
-              onTap: () => {setState(() => paymentController.selectMethod(1))},
+              onTap: () => {setState(() => registerWorkshopController.paymentMethod(1))},
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeInOut,
@@ -128,13 +120,13 @@ class _RegisterWorkshopPaymentState extends State<RegisterWorkshopPayment> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 height: 80,
                 decoration: BoxDecoration(
-                  color: paymentController.selectedMethod.value == 1
+                  color: registerWorkshopController.paymentMethod.value == 1
                       ? primaryColor
                       : const Color(0xFFF2F2F2),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color:
-                        paymentController.selectedMethod.value == 1 ? primaryColor : Colors.transparent,
+                        registerWorkshopController.paymentMethod.value == 1 ? primaryColor : Colors.transparent,
                     width: 2,
                   ),
                   boxShadow: [
@@ -151,14 +143,6 @@ class _RegisterWorkshopPaymentState extends State<RegisterWorkshopPayment> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Image.asset('assets/dana.png', width: 120, height: 120),
-                      Text(
-                        paymentController.jumlah.value,
-                        style: GoogleFonts.poppins(
-                          fontSize: 16,
-                          fontWeight: bold,
-                          color: paymentController.selectedMethod.value == 1 ? Colors.white : blackColor,
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -167,7 +151,7 @@ class _RegisterWorkshopPaymentState extends State<RegisterWorkshopPayment> {
 
             // OVO
             GestureDetector(
-              onTap: () => {setState(() => paymentController.selectMethod(2))},
+              onTap: () => {setState(() => registerWorkshopController.paymentMethod(2))},
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeInOut,
@@ -175,13 +159,13 @@ class _RegisterWorkshopPaymentState extends State<RegisterWorkshopPayment> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 height: 80,
                 decoration: BoxDecoration(
-                  color: paymentController.selectedMethod.value == 2
+                  color: registerWorkshopController.paymentMethod.value == 2
                       ? primaryColor
                       : const Color(0xFFF2F2F2),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color:
-                        paymentController.selectedMethod.value == 2 ? primaryColor : Colors.transparent,
+                        registerWorkshopController.paymentMethod.value == 2 ? primaryColor : Colors.transparent,
                     width: 2,
                   ),
                   boxShadow: [
@@ -198,14 +182,6 @@ class _RegisterWorkshopPaymentState extends State<RegisterWorkshopPayment> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Image.asset('assets/ovo.png', width: 120, height: 120),
-                      Text(
-                        paymentController.jumlah.value,
-                        style: GoogleFonts.poppins(
-                          fontSize: 16,
-                          fontWeight: bold,
-                          color: paymentController.selectedMethod.value == 2 ? Colors.white : blackColor,
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -214,7 +190,7 @@ class _RegisterWorkshopPaymentState extends State<RegisterWorkshopPayment> {
 
             // QRIS
             GestureDetector(
-              onTap: () => {setState(() => paymentController.selectMethod(3))},
+              onTap: () => {setState(() => registerWorkshopController.paymentMethod(3))},
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeInOut,
@@ -222,13 +198,13 @@ class _RegisterWorkshopPaymentState extends State<RegisterWorkshopPayment> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 height: 80,
                 decoration: BoxDecoration(
-                  color: paymentController.selectedMethod.value == 3
+                  color: registerWorkshopController.paymentMethod.value == 3
                       ? primaryColor
                       : const Color(0xFFF2F2F2),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color:
-                        paymentController.selectedMethod.value == 3 ? primaryColor : Colors.transparent,
+                        registerWorkshopController.paymentMethod.value == 3 ? primaryColor : Colors.transparent,
                     width: 2,
                   ),
                   boxShadow: [
@@ -245,14 +221,6 @@ class _RegisterWorkshopPaymentState extends State<RegisterWorkshopPayment> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Image.asset('assets/qris.png', width: 120, height: 120),
-                      Text(
-                        paymentController.jumlah.value,
-                        style: GoogleFonts.poppins(
-                          fontSize: 16,
-                          fontWeight: bold,
-                          color: paymentController.selectedMethod.value == 3 ? Colors.white : blackColor,
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -262,7 +230,7 @@ class _RegisterWorkshopPaymentState extends State<RegisterWorkshopPayment> {
             const SizedBox(height: 12),
 
             ElevatedButton(
-              onPressed: paymentController.selectedMethod.value != -1
+              onPressed: registerWorkshopController.paymentMethod.value != -1
                   ? () => Get.to(() => const RegisterWorkshopConfirmation())
                   : null,
               style: ElevatedButton.styleFrom(

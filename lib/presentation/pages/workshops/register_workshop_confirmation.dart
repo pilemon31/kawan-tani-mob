@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kawan_tani/presentation/controllers/workshop/payment_controller.dart';
 import 'package:flutter_kawan_tani/presentation/controllers/workshop/register_workshop_controller.dart';
 import 'package:flutter_kawan_tani/presentation/pages/workshops/workshops_list.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
@@ -18,7 +17,6 @@ class RegisterWorkshopConfirmation extends StatefulWidget {
 class _RegisterWorkshopConfirmationState
     extends State<RegisterWorkshopConfirmation> {
   final controller = Get.put(RegisterWorkshopController());
-  final paymentController = Get.put(PaymentController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -133,20 +131,7 @@ class _RegisterWorkshopConfirmationState
                   ],
                 )),
             const SizedBox(height: 12),
-            Obx(() => Row(
-                  children: [
-                    SizedBox(
-                      width: 130,
-                      child: Text('Tanggal Lahir',
-                          style: blackTextStyle.copyWith(
-                              fontSize: 14, fontWeight: medium)),
-                    ),
-                    Text(': ${controller.birthDate.value}',
-                        style: blackTextStyle.copyWith(
-                            fontSize: 14, fontWeight: medium)),
-                  ],
-                )),
-            const SizedBox(height: 12),
+
             Obx(() => Row(
                   children: [
                     SizedBox(
@@ -155,7 +140,8 @@ class _RegisterWorkshopConfirmationState
                           style: blackTextStyle.copyWith(
                               fontSize: 14, fontWeight: medium)),
                     ),
-                    Text(': ${controller.gender.value}',
+                    Text(
+                        ': ${controller.gender.value == 0 ? "Laki-laki" : "Perempuan"}',
                         style: blackTextStyle.copyWith(
                             fontSize: 14, fontWeight: medium)),
                   ],
@@ -177,39 +163,39 @@ class _RegisterWorkshopConfirmationState
                           style: blackTextStyle.copyWith(
                               fontSize: 14, fontWeight: medium)),
                     ),
-                    Text(': ${paymentController.metode.value}',
+                    Text(': ${controller.paymentMethodText}',
                         style: blackTextStyle.copyWith(
                             fontSize: 14, fontWeight: medium)),
                   ],
                 )),
             const SizedBox(height: 12),
-            Obx(() => Row(
-                  children: [
-                    SizedBox(
-                      width: 130,
-                      child: Text('Jumlah',
-                          style: blackTextStyle.copyWith(
-                              fontSize: 14, fontWeight: medium)),
-                    ),
-                    Text(': ${paymentController.jumlah.value}',
-                        style: blackTextStyle.copyWith(
-                            fontSize: 14, fontWeight: medium)),
-                  ],
-                )),
-            const SizedBox(height: 12),
-            Obx(() => Row(
-                  children: [
-                    SizedBox(
-                      width: 130,
-                      child: Text('Status',
-                          style: blackTextStyle.copyWith(
-                              fontSize: 14, fontWeight: medium)),
-                    ),
-                    Text(': ${paymentController.status.value}',
-                        style: blackTextStyle.copyWith(
-                            fontSize: 14, fontWeight: medium)),
-                  ],
-                )),
+            // Obx(() => Row(
+            //       children: [
+            //         SizedBox(
+            //           width: 130,
+            //           child: Text('Jumlah',
+            //               style: blackTextStyle.copyWith(
+            //                   fontSize: 14, fontWeight: medium)),
+            //         ),
+            //         Text(': ${paymentController.jumlah.value}',
+            //             style: blackTextStyle.copyWith(
+            //                 fontSize: 14, fontWeight: medium)),
+            //       ],
+            //     )),
+            // const SizedBox(height: 12),
+            // Obx(() => Row(
+            //       children: [
+            //         SizedBox(
+            //           width: 130,
+            //           child: Text('Status',
+            //               style: blackTextStyle.copyWith(
+            //                   fontSize: 14, fontWeight: medium)),
+            //         ),
+            //         Text(': ${paymentController.status.value}',
+            //             style: blackTextStyle.copyWith(
+            //                 fontSize: 14, fontWeight: medium)),
+            //       ],
+            //     )),
             const SizedBox(height: 64),
             ElevatedButton(
               onPressed: () {

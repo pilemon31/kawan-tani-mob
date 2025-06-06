@@ -1,30 +1,46 @@
+import "package:flutter_kawan_tani/models/workshop_model.dart";
+import 'package:flutter_kawan_tani/services/workshops/workshop_service.dart';
 import "package:get/get.dart";
-import 'package:flutter/foundation.dart';
 
 class RegisterWorkshopController extends GetxController {
-  //Insialisasi data user
+  final WorkshopService workshopService = WorkshopService();
+  var isLoading = false.obs;
   final firstName = "".obs;
   final lastName = "".obs;
   final emailAddress = "".obs;
   final phoneNumber = "".obs;
-  final birthDate = "".obs;
   final gender = 0.obs;
+  final paymentMethod = 0.obs;
 
-  //Function untuk mengirim ke backend
-  Future<bool> submitRegistration() async {
-    final userData = {
-      'Nama Depan': firstName.value,
-      'Nama Belakang': lastName.value,
-      'Nomor Telepon': phoneNumber.value,
-      'Tanggal Lahir': birthDate.value,
-      'Jenis Kelamin': gender.value,
-    };
+  Future<void> registerForWorkshop({
+    required String workshopId,
+    required String firstName,
+    required String lastName,
+    required String email,
+    required String phoneNumber,
+    required int gender,
+    required int paymentMethod,
+  }) async {
+    try {
+      isLoading(true);
+      final request = RegisterWorkshopRequest(
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        phoneNumber: phoneNumber,
+        gender: gender,
+        paymentMethod: paymentMethod,
+      );
 
-    debugPrint('Mengirim data ke backend: $userData');
-
-    await Future.delayed(Duration(seconds: 2));
-
-    return true;
+      await workshopService.registerWorkshop(workshopId, request);
+      Get.back();
+      Get.snackbar('Success', 'Registered for workshop successfully');
+    } catch (e) {
+      // errorMessage(e.toString());
+      Get.snackbar('Error', 'Failed to register for workshop');
+    } finally {
+      isLoading(false);
+    }
   }
 
   void resetForm() {
@@ -32,7 +48,22 @@ class RegisterWorkshopController extends GetxController {
     lastName.value = '';
     emailAddress.value = '';
     phoneNumber.value = '';
-    birthDate.value = '';
     gender.value = 0;
+    paymentMethod.value = 0;
+  }
+
+  String get paymentMethodText {
+    switch (paymentMethod.value) {
+      case 0:
+        return 'Gopay';
+      case 1:
+        return 'Dana';
+      case 2:
+        return 'Ovo';
+      case 3:
+        return 'Qris';
+      default:
+        return 'Metode tidak dikenal';
+    }
   }
 }
