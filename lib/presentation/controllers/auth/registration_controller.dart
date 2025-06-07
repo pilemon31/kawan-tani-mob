@@ -7,7 +7,7 @@ import 'package:flutter_kawan_tani/services/auth/auth_service.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http_parser/http_parser.dart';
-import 'package:mime/mime.dart'; // Tambahkan dependency ini
+import 'package:mime/mime.dart';
 
 class RegistrationController extends GetxController {
   var firstName = ''.obs;
@@ -20,7 +20,7 @@ class RegistrationController extends GetxController {
   var confirmPassword = ''.obs;
   var avatar = Rx<File?>(null);
   var webAvatar = Rx<Uint8List?>(null);
-  var avatarFileName = ''.obs; // Tambahan untuk menyimpan nama file
+  var avatarFileName = ''.obs;
   var token = ''.obs;
   var isLoading = false.obs;
   final ImagePicker _picker = ImagePicker();
