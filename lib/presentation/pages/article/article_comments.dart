@@ -25,19 +25,28 @@ class _ArticleCommentsState extends State<ArticleComments> {
 
   String _formatDate(DateTime date) {
     List<String> months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
-      'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'Mei',
+      'Jun',
+      'Jul',
+      'Agu',
+      'Sep',
+      'Okt',
+      'Nov',
+      'Des'
     ];
-    
+
     return '${date.day + 1} ${months[date.month - 1]} ${date.year}';
   }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-          preferredSize: Size.fromHeight(80.0), // Reduced from 100 to 80
+          preferredSize: Size.fromHeight(80.0),
           child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 27),
               child: AppBar(

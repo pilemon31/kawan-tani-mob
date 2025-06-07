@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kawan_tani/presentation/controllers/workshop/register_workshop_controller.dart';
+import 'package:flutter_kawan_tani/presentation/controllers/workshop/workshop_controller.dart';
+import 'package:flutter_kawan_tani/presentation/pages/dashboard/home_screen.dart';
 import 'package:flutter_kawan_tani/presentation/pages/workshops/workshops_list.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:get/get.dart';
@@ -17,8 +19,31 @@ class RegisterWorkshopConfirmation extends StatefulWidget {
 class _RegisterWorkshopConfirmationState
     extends State<RegisterWorkshopConfirmation> {
   final controller = Get.put(RegisterWorkshopController());
+  final WorkshopController _workshopController = Get.find();
+
   @override
   Widget build(BuildContext context) {
+    final workshop = _workshopController.selectedWorkshop.value;
+    Future<void> _handlePayment() async {
+      try {
+        await controller.registerForWorkshop(
+          workshopId: workshop.idWorkshop,
+          firstName: controller.firstName.value,
+          lastName: controller.lastName.value,
+          email: controller.emailAddress.value,
+          phoneNumber: controller.phoneNumber.value,
+          gender: controller.gender.value,
+          paymentMethod: controller.paymentMethod.value,
+        );
+
+        controller.resetForm();
+
+        Get.offAll(() => const HomeScreen());
+      } catch (e) {
+        // Error handling sudah ada di controller
+      }
+    }
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(100.0),
@@ -198,9 +223,7 @@ class _RegisterWorkshopConfirmationState
             //     )),
             const SizedBox(height: 64),
             ElevatedButton(
-              onPressed: () {
-                // aksi pembayaran
-              },
+              onPressed: _handlePayment,
               style: ElevatedButton.styleFrom(
                 backgroundColor: primaryColor,
                 minimumSize: const Size(double.infinity, 48),
