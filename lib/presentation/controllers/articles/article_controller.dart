@@ -20,7 +20,7 @@ class ArticleController extends GetxController {
     createdAt: DateTime.now(),
     isActive: true,
     status: '',
-    isVerified: false,
+    isVerified: '',
   ).obs;
   var isLoading = false.obs;
   var isCreating = false.obs;

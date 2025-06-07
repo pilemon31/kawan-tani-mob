@@ -18,7 +18,7 @@ class WorkshopController extends GetxController {
     alamatLengkapWorkshop: '',
     waktuMulai: '',
     waktuBerakhir: '',
-    statusVerifikasi: false,
+    statusVerifikasi: '',
     statusAktif: false,
     gambarWorkshop: ''
   ).obs;

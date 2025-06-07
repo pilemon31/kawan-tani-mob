@@ -8,6 +8,7 @@ import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:flutter_kawan_tani/presentation/controllers/profile/profile_controller.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,6 +19,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final LoginController controller = Get.put(LoginController());
+  final ProfileController profileController = Get.put(ProfileController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -302,16 +304,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Selamat Pagi",
+                        "Selamat Pagi, ",
                         style: GoogleFonts.poppins(
                             color: Colors.white, fontSize: 16),
-                      ),
-                      Text(
-                        "Pilemon B. 👋",
-                        style: GoogleFonts.poppins(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold),
                       ),
                       InkWell(
                         onTap: () {
@@ -332,13 +327,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
-                  Text(
-                    controller.email.value,
-                    style:
-                        GoogleFonts.poppins(fontSize: 15.0, fontWeight: light),
+                  Obx(
+                    () => Text(
+                      '${profileController.user['firstName']} ${profileController.user['lastName']}👋',
+                      style: GoogleFonts.poppins(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                   Text(
-                    "Sabtu, 11 Januari 2025",
+                    "Bagaimana kondisi tanamanmu hari ini 😊? ",
                     style: GoogleFonts.poppins(
                         color: Colors.white70, fontSize: 14),
                   ),

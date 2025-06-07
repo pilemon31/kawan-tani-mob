@@ -2,7 +2,7 @@ class Workshop {
   final String idWorkshop;
   final String judulWorkshop;
   final String tanggalWorkshop;
-  final bool statusVerifikasi;
+  final String statusVerifikasi;
   final bool statusAktif;
   final String gambarWorkshop;
   final String alamatLengkapWorkshop;

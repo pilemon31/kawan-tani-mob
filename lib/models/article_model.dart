@@ -11,7 +11,7 @@ class Article {
   final DateTime createdAt;
   final bool isActive;
   final String status;
-  final bool isVerified;
+  final String isVerified;
   final double rating;
   final List<Comment> comments;
   final List<ArticleLike> likes;
@@ -53,7 +53,7 @@ class Article {
           : DateTime.now(),
       isActive: json['status_aktif'] ?? false,
       status: json['status_artikel'] ?? '',
-      isVerified: json['status_verifikasi'] ?? false,
+      isVerified: json['status_verifikasi'] ?? '',
       rating: (json['rating'] ?? 0.0).toDouble(),
       comments: (json['komentar_artikel'] as List<dynamic>?)
               ?.map((comment) => Comment.fromJson(comment))

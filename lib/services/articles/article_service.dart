@@ -28,9 +28,6 @@ class ArticleService {
   Future<List<Article>> getAllArticles() async {
     try {
       final token = await storageService.getToken();
-      // Add debugging
-      print('Token: $token');
-      print('URL: $baseUrl/articles');
 
       if (token == null || token.isEmpty) {
         throw Exception('No authentication token found');
@@ -53,9 +50,8 @@ class ArticleService {
 
   Future<Article> getArticleById(String id) async {
     try {
-      // Ambil token langsung pakai key yang sama dengan login
       final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('token'); // pakai key 'token'
+      final token = prefs.getString('token');
 
       print('Token: $token');
       print('URL: $baseUrl/articles/$id');
@@ -253,18 +249,14 @@ class ArticleService {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final jsonResponse = jsonDecode(response.body);
-
-        // Buat object comment dengan data minimal yang diperlukan
-        // karena response mungkin tidak memiliki data pengguna lengkap
+        
         final commentData = jsonResponse['data'];
 
-        // Untuk sementara, kita buat comment object dengan data yang ada
-        // Nanti akan di-refresh dari getArticleById untuk mendapat data lengkap
         return Comment(
           id: commentData['id_komentar']?.toString() ?? '',
           content: commentData['komentar'] ?? content,
-          author: 'Anda', // Placeholder, akan di-update saat refresh
-          authorImage: '', // Placeholder, akan di-update saat refresh
+          author: 'Anda',
+          authorImage: '',
           createdAt: commentData['tanggal_komentar'] != null
               ? DateTime.parse(commentData['tanggal_komentar'])
               : DateTime.now(),
