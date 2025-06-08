@@ -31,6 +31,154 @@ class _ArticleDetailState extends State<ArticleDetail> {
     }
   }
 
+  void _handleStarTap(bool isLiked, String articleId) {
+    if (isLiked) {
+      // Jika sudah liked, tampilkan dialog konfirmasi untuk unlike
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(
+            "Batalkan Rating",
+            style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+          ),
+          content: Text(
+            "Apakah Anda yakin ingin membatalkan rating untuk artikel ini?",
+            style: GoogleFonts.poppins(),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Get.back(),
+              child: Text(
+                "Batal",
+                style: GoogleFonts.poppins(color: Colors.grey),
+              ),
+            ),
+            TextButton(
+              onPressed: () async {
+                Get.back(); // Tutup dialog
+                final success =
+                    await _articleController.unlikeArticle(articleId);
+                if (success) {
+                  showCustomToast(context, "Rating berhasil dibatalkan!");
+                } else {
+                  showCustomToast(context, "Gagal membatalkan rating!");
+                }
+              },
+              child: Text(
+                "Ya, Batalkan",
+                style: GoogleFonts.poppins(color: Colors.red),
+              ),
+            ),
+          ],
+        ),
+      );
+    } else {
+      // Reset rating sebelum menampilkan dialog
+      selectedRating = 0;
+
+      // Jika belum liked, tampilkan dialog rating
+      showDialog(
+        context: context,
+        builder: (context) => StatefulBuilder(
+          builder: (context, setDialogState) => Dialog(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: whiteColor,
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: IconButton(
+                        onPressed: () {
+                          Get.back();
+                        },
+                        icon: PhosphorIcon(
+                          PhosphorIconsBold.x,
+                          size: 25.0,
+                          color: blackColor,
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Text("Beri Rating Artikel",
+                          textAlign: TextAlign.left,
+                          style: GoogleFonts.poppins(
+                              fontSize: 20, fontWeight: bold)),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      "Berikan rating Anda untuk artikel ini dan bantu kami meningkatkan kualitas konten yang disajikan.",
+                      style: GoogleFonts.poppins(fontSize: 12),
+                    ),
+                    SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(
+                        5,
+                        (index) => IconButton(
+                          onPressed: () {
+                            setDialogState(() {
+                              selectedRating = (index + 1).toDouble();
+                            });
+                          },
+                          icon: PhosphorIcon(
+                            index < selectedRating
+                                ? PhosphorIconsFill.star
+                                : PhosphorIconsBold.star,
+                            size: 30.0,
+                            color: Colors.yellow,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () async {
+                        if (selectedRating > 0) {
+                          final success = await _articleController.likeArticle(
+                              articleId, selectedRating);
+                          if (success) {
+                            showCustomToast(
+                                context, "Rating berhasil diberikan!");
+                            Get.back();
+                          } else {
+                            showCustomToast(
+                                context, "Gagal memberikan rating!");
+                          }
+                        } else {
+                          showCustomToast(
+                              context, "Pilih rating terlebih dahulu!");
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryColor,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                        elevation: 0.0,
+                        minimumSize: Size(double.infinity, 42),
+                      ),
+                      child: Text(
+                        "Beri Rating",
+                        style: GoogleFonts.poppins(
+                            color: whiteColor, fontSize: 15, fontWeight: bold),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Obx(() {
@@ -66,107 +214,7 @@ class _ArticleDetailState extends State<ArticleDetail> {
                   ),
                 ),
                 IconButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => Dialog(
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 30, vertical: 15),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: whiteColor,
-                          ),
-                          child: SingleChildScrollView(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Align(
-                                  alignment: Alignment.topRight,
-                                  child: IconButton(
-                                    onPressed: () {
-                                      Get.back();
-                                    },
-                                    icon: PhosphorIcon(
-                                      PhosphorIconsBold.x,
-                                      size: 25.0,
-                                      color: blackColor,
-                                    ),
-                                  ),
-                                ),
-                                Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Text("Beri Rating Artikel",
-                                      textAlign: TextAlign.left,
-                                      style: GoogleFonts.poppins(
-                                          fontSize: 20, fontWeight: bold)),
-                                ),
-                                SizedBox(height: 8),
-                                Text(
-                                  "Berikan rating Anda untuk artikel ini dan bantu kami meningkatkan kualitas konten yang disajikan.",
-                                  style: GoogleFonts.poppins(fontSize: 12),
-                                ),
-                                SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: List.generate(
-                                    5,
-                                    (index) => IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          selectedRating =
-                                              (index + 1).toDouble();
-                                        });
-                                      },
-                                      icon: PhosphorIcon(
-                                        index < selectedRating
-                                            ? PhosphorIconsFill.star
-                                            : PhosphorIconsBold.star,
-                                        size: 30.0,
-                                        color: Colors.yellow,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 10),
-                                ElevatedButton(
-                                  onPressed: () async {
-                                    if (selectedRating > 0) {
-                                      final success =
-                                          await _articleController.likeArticle(
-                                              article.id, selectedRating);
-                                      if (success) {
-                                        showCustomToast(context,
-                                            "Rating berhasil diberikan!");
-                                        Get.back();
-                                      }
-                                    } else {
-                                      showCustomToast(context,
-                                          "Pilih rating terlebih dahulu!");
-                                    }
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: primaryColor,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8)),
-                                    elevation: 0.0,
-                                    minimumSize: Size(double.infinity, 42),
-                                  ),
-                                  child: Text(
-                                    "Beri Rating",
-                                    style: GoogleFonts.poppins(
-                                        color: whiteColor,
-                                        fontSize: 15,
-                                        fontWeight: bold),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
+                  onPressed: () => _handleStarTap(isLiked, article.id),
                   icon: PhosphorIcon(
                     isLiked ? PhosphorIconsFill.star : PhosphorIconsBold.star,
                     size: 32.0,

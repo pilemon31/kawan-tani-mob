@@ -317,7 +317,7 @@ class ArticleService {
     try {
       final token = await storageService.getToken();
       final response = await http.delete(
-        Uri.parse('$baseUrl/articles/$articleId/unlike'),
+        Uri.parse('$baseUrl/articles/$articleId/like'),
         headers: {'Authorization': 'Bearer $token'},
       );
       return response.statusCode == 200;
