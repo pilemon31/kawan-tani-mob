@@ -48,7 +48,7 @@ class PlantCategoryService {
 
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
-        return PlantCategory.fromJson(jsonResponse['data']['provinces']);
+        return PlantCategory.fromJson(jsonResponse['data']);
       } else {
         throw Exception('Failed to load plant category');
       }

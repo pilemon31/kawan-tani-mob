@@ -130,9 +130,11 @@ class _StartPlantingScreenState extends State<StartPlantingScreen> {
             itemBuilder: (context, index) {
               final Plant plant = plantController.plants[index];
               return InkWell(
-                onTap: () {
+                onTap: () async {
                   // Pass the plant data to detail screen
-                  Get.to(() => StartPlantingDetailScreen(), arguments: plant);
+                  await plantController.getPlantById(plant.id);
+                  Get.to(() => StartPlantingDetailScreen(),
+                      arguments: plantController.selectedPlant.value);
                 },
                 child: Container(
                   decoration: BoxDecoration(

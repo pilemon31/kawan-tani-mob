@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kawan_tani/presentation/pages/_yourPlants/plants_tasks_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/_addPlants/start_planting_tasks_screen.dart';
 import 'package:flutter_kawan_tani/presentation/widgets/navbar/navbar.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:flutter_kawan_tani/models/plant_model.dart';
@@ -21,13 +21,11 @@ class _StartPlantingDetailScreenState extends State<StartPlantingDetailScreen> {
   @override
   void initState() {
     super.initState();
-    // Get the plant data passed from the previous screen
     plant = Get.arguments as Plant?;
   }
 
   @override
   Widget build(BuildContext context) {
-    // If no plant data is passed, show error screen
     if (plant == null) {
       return Scaffold(
         appBar: AppBar(
@@ -253,25 +251,10 @@ class _StartPlantingDetailScreenState extends State<StartPlantingDetailScreen> {
                     "Instruksi Penanaman",
                     style: GoogleFonts.poppins(fontSize: 22, fontWeight: bold),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      // You can navigate to a detailed instructions screen here
-                      // Get.to(() => PlantInstructionsScreen(), arguments: plant);
-                    },
-                    child: Text(
-                      "Lihat Semua",
-                      style: GoogleFonts.poppins(
-                        fontSize: 12,
-                        fontWeight: light,
-                        color: primaryColor,
-                      ),
-                    ),
-                  ),
                 ],
               ),
               SizedBox(height: 10),
               ...plant!.instructions
-                  .take(3)
                   .map((instruction) => Container(
                         padding:
                             EdgeInsets.symmetric(vertical: 15, horizontal: 15),
@@ -344,7 +327,8 @@ class _StartPlantingDetailScreenState extends State<StartPlantingDetailScreen> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Get.to(() => const PlantsTasksScreen(), arguments: plant);
+                    Get.to(() => const StartPlantingTasksScreen(),
+                        arguments: plant);
                   },
                   child: Text(
                     "Lihat Detail",

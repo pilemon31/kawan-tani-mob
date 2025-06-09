@@ -12,14 +12,14 @@ class Task {
   Task(this.title, {this.isDone = false});
 }
 
-class PlantsTasksScreen extends StatefulWidget {
-  const PlantsTasksScreen({super.key});
+class YourPlantsTasksScreen extends StatefulWidget {
+  const YourPlantsTasksScreen({super.key});
 
   @override
-  State<PlantsTasksScreen> createState() => _PlantTasksScreenState();
+  State<YourPlantsTasksScreen> createState() => _YourPlantsTaskScreenState();
 }
 
-class _PlantTasksScreenState extends State<PlantsTasksScreen> {
+class _YourPlantsTaskScreenState extends State<YourPlantsTasksScreen> {
   int selectedDay = 1;
 
   Map<int, List<Task>> tasksPerDay = {

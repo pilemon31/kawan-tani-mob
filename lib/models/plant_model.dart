@@ -28,15 +28,17 @@ class Plant {
       description: json['deskripsi_tanaman'] ?? '',
       imageUrl: json['gambar_tanaman'],
       plantingDuration: json['durasi_penanaman'] ?? 0,
-      category: json['kategori'] != null 
-          ? PlantCategory.fromJson(json['kategori']) 
+      category: json['kategori'] != null
+          ? PlantCategory.fromJson(json['kategori'])
           : null,
       instructions: (json['instruksi_tanaman'] as List<dynamic>?)
-          ?.map((instruction) => PlantInstruction.fromJson(instruction))
-          .toList() ?? [],
+              ?.map((instruction) => PlantInstruction.fromJson(instruction))
+              .toList() ??
+          [],
       plantingDays: (json['hari_penanaman'] as List<dynamic>?)
-          ?.map((day) => PlantingDay.fromJson(day))
-          .toList() ?? [],
+              ?.map((day) => PlantingDay.fromJson(day))
+              .toList() ??
+          [],
     );
   }
 }
@@ -57,8 +59,8 @@ class PlantInstruction {
   factory PlantInstruction.fromJson(Map<String, dynamic> json) {
     return PlantInstruction(
       id: json['id_instruksi'] ?? 0,
-      title: json['judul_instruksi'] ?? '',
-      content: json['isi_instruksi'] ?? '',
+      title: json['instruksi'] ?? '',
+      content: json['instruksi'] ?? '',
       order: json['urutan'] ?? 0,
     );
   }
@@ -79,12 +81,13 @@ class PlantingDay {
 
   factory PlantingDay.fromJson(Map<String, dynamic> json) {
     return PlantingDay(
-      id: json['id_hari'] ?? 0,
+      id: json['id_hari_penanaman'] ?? 0,
       day: json['hari_ke'] ?? 0,
       phase: json['nama_fase'] ?? '',
       tasks: (json['tugas_penanaman'] as List<dynamic>?)
-          ?.map((task) => PlantingTask.fromJson(task))
-          .toList() ?? [],
+              ?.map((task) => PlantingTask.fromJson(task))
+              .toList() ??
+          [],
     );
   }
 }

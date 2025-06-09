@@ -11,7 +11,7 @@ class PlantService {
   Future<List<Plant>> getAllPlants() async {
     try {
       final response = await http.get(Uri.parse('$baseUrl/plants'));
-      
+
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
         List<dynamic> data = jsonResponse['data']['categories'];
