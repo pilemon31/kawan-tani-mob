@@ -91,6 +91,36 @@ class UserPlantController extends GetxController {
     }
   }
 
+  // NEW METHOD: Fetch daily tasks dan update selectedUserPlant
+  Future<void> fetchDailyTasksAndUpdate(String userPlantId) async {
+    try {
+      isLoading(true);
+
+      // Fetch daily tasks dengan detail lengkap
+      var result = await _userPlantService.getDailyTasks(
+        userPlantId: userPlantId,
+      );
+      dailyTasks.assignAll(result);
+
+      // Update selectedUserPlant.plantingDays dengan data terbaru
+      // Agar UI bisa mengakses tasks dari selectedUserPlant.plantingDays
+      if (selectedUserPlant.value.id == userPlantId) {
+        selectedUserPlant.update((plant) {
+          if (plant != null) {
+            // Clear existing planting days
+            plant.plantingDays.clear();
+            // Add new data from API
+            plant.plantingDays.addAll(result);
+          }
+        });
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to load daily tasks: $e');
+    } finally {
+      isLoading(false);
+    }
+  }
+
   Future<void> fetchTodayTasks() async {
     try {
       isLoading(true);
@@ -115,18 +145,11 @@ class UserPlantController extends GetxController {
         taskId: taskId,
         doneStatus: doneStatus,
       );
-      
-      // Update the task in the local state
-      for (var day in dailyTasks) {
-        for (var task in day.tasks) {
-          if (task.id == taskId) {
-            task.isCompleted = doneStatus;
-            task.completedDate = doneStatus ? DateTime.now() : null;
-            break;
-          }
-        }
-      }
-      
+
+      // Refresh data setelah update
+      await fetchDailyTasksAndUpdate(userPlantId);
+      await getUserPlantDetail(userPlantId);
+
       Get.snackbar('Success', 'Task updated successfully');
     } catch (e) {
       Get.snackbar('Error', 'Failed to update task: $e');
@@ -139,13 +162,13 @@ class UserPlantController extends GetxController {
     try {
       isLoading(true);
       var result = await _userPlantService.finishPlant(userPlantId);
-      
+
       // Update the plant in the local state
       final index = userPlants.indexWhere((plant) => plant.id == userPlantId);
       if (index != -1) {
         userPlants[index] = result;
       }
-      
+
       Get.snackbar('Success', 'Plant finished successfully');
     } catch (e) {
       Get.snackbar('Error', 'Failed to finish plant: $e');

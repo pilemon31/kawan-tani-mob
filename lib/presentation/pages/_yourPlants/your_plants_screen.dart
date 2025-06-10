@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kawan_tani/presentation/controllers/plants/user_plant_controller.dart';
+import 'package:flutter_kawan_tani/presentation/pages/_yourPlants/your_plants_tasks_screen.dart';
 import 'package:flutter_kawan_tani/presentation/pages/dashboard/home_screen.dart';
 import 'package:flutter_kawan_tani/presentation/pages/_filterPlants/filter_your_plants_screen.dart';
-import 'package:flutter_kawan_tani/presentation/pages/_yourPlants/your_plants_detail_screen.dart';
 import 'package:flutter_kawan_tani/presentation/widgets/navbar/navbar.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:get/get.dart';
@@ -80,8 +80,8 @@ class _YourPlantsScreenState extends State<YourPlantsScreen> {
               final userPlant = userPlantController.userPlants[index];
               return InkWell(
                 onTap: () {
-                  Get.to(() => YourPlantsDetailScreen(),
-                      arguments: userPlant.id);
+                  Get.to(() => YourPlantsTasksScreen(),
+                      arguments: userPlant);
                 },
                 borderRadius: BorderRadius.circular(10),
                 child: Container(
@@ -143,8 +143,8 @@ class _YourPlantsScreenState extends State<YourPlantsScreen> {
                           SizedBox(height: 4),
                           ElevatedButton(
                             onPressed: () {
-                              Get.to(() => YourPlantsDetailScreen(),
-                                  arguments: userPlant.id);
+                              Get.to(() => YourPlantsTasksScreen(),
+                                  arguments: userPlant);
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Color(0xFF78D14D),
