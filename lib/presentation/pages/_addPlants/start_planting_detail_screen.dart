@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kawan_tani/presentation/controllers/plants/user_plant_controller.dart';
 import 'package:flutter_kawan_tani/presentation/pages/_addPlants/start_planting_tasks_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/_yourPlants/your_plants_screen.dart';
 import 'package:flutter_kawan_tani/presentation/widgets/navbar/navbar.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:flutter_kawan_tani/models/plant_model.dart';
@@ -438,16 +440,24 @@ class _StartPlantingDetailScreenState extends State<StartPlantingDetailScreen> {
               ),
             ),
             SizedBox(height: 10),
+// In StartPlantingDetailScreen
             ElevatedButton(
               onPressed: () {
-                // Start planting - you can navigate to a planting journey screen
-                Get.snackbar(
-                  'Berhasil',
-                  'Memulai penanaman ${plant!.name}',
-                  backgroundColor: primaryColor,
-                  colorText: whiteColor,
-                );
-                // Get.to(() => PlantingJourneyScreen(), arguments: plant);
+                final userPlantController = Get.find<UserPlantController>();
+                userPlantController
+                    .createUserPlant(
+                  plantId: plant!.id,
+                  customName: plant!.name,
+                )
+                    .then((_) {
+                  Get.offAll(() => YourPlantsScreen());
+                  Get.snackbar(
+                    'Berhasil',
+                    'Memulai penanaman ${plant!.name}',
+                    backgroundColor: primaryColor,
+                    colorText: whiteColor,
+                  );
+                });
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: primaryColor,

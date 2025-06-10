@@ -33,9 +33,6 @@ class PlantController extends GetxController {
       isLoading(true);
       var result = await _plantService.getPlantById(id);
       selectedPlant.value = result;
-      print('Plant loaded: ${result.name}');
-      print('Planting days count: ${result.plantingDays.length}');
-      print('Instructions count: ${result.instructions.length}');
     } catch (e) {
       Get.snackbar('Error', 'Failed to load plant: $e');
     } finally {

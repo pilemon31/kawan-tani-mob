@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kawan_tani/presentation/controllers/plants/user_plant_controller.dart';
 import 'package:flutter_kawan_tani/presentation/pages/dashboard/home_screen.dart';
 import 'package:flutter_kawan_tani/presentation/pages/_filterPlants/filter_your_plants_screen.dart';
 import 'package:flutter_kawan_tani/presentation/pages/_yourPlants/your_plants_detail_screen.dart';
@@ -16,129 +17,164 @@ class YourPlantsScreen extends StatefulWidget {
 }
 
 class _YourPlantsScreenState extends State<YourPlantsScreen> {
+  final UserPlantController userPlantController =
+      Get.put(UserPlantController());
+
+  @override
+  void initState() {
+    super.initState();
+    userPlantController.fetchUserPlants();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: PreferredSize(
-            preferredSize: Size.fromHeight(100.0),
-            child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 27),
-                child: AppBar(
-                  backgroundColor: Colors.white,
-                  toolbarHeight: 80.0,
-                  leading: IconButton(
+      appBar: PreferredSize(
+          preferredSize: Size.fromHeight(100.0),
+          child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 27),
+              child: AppBar(
+                backgroundColor: Colors.white,
+                toolbarHeight: 80.0,
+                leading: IconButton(
+                  onPressed: () {
+                    Get.to(() => const HomeScreen());
+                  },
+                  icon: PhosphorIcon(
+                    PhosphorIconsBold.arrowLeft,
+                    size: 32.0,
+                  ),
+                ),
+                title: Padding(
+                    padding: EdgeInsets.all(0),
+                    child: Text(
+                      'Tanaman Saya',
+                      style: GoogleFonts.poppins(
+                          fontSize: 20, color: blackColor, fontWeight: bold),
+                    )),
+                actions: [
+                  IconButton(
                     onPressed: () {
-                      Get.to(() => const HomeScreen());
+                      Get.to(() => FilterYourPlantsScreen());
                     },
                     icon: PhosphorIcon(
-                      PhosphorIconsBold.arrowLeft,
+                      PhosphorIconsFill.dotsThreeOutlineVertical,
                       size: 32.0,
                     ),
                   ),
-                  title: Padding(
-                      padding: EdgeInsets.all(0),
-                      child: Text(
-                        'Mulai Bertanam',
-                        style: GoogleFonts.poppins(
-                            fontSize: 20, color: blackColor, fontWeight: bold),
-                      )),
-                  actions: [
-                    IconButton(
-                      onPressed: () {
-                        Get.to(() => FilterYourPlantsScreen());
-                      },
-                      icon: PhosphorIcon(
-                        PhosphorIconsFill.dotsThreeOutlineVertical,
-                        size: 32.0,
-                      ),
-                    ),
-                  ],
-                ))),
-        body: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 27),
-            child: ListView.separated(
-              separatorBuilder: (BuildContext context, int index) {
-                return SizedBox(height: 21);
-              },
-              itemCount: 5,
-              itemBuilder: (BuildContext context, int index) {
-                return InkWell(
-                  onTap: () {
-                    Get.to(() => YourPlantsDetailScreen());
-                  },
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Color(0xffC3C6D4)),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Column(
-                      children: [
-                        Container(
-                          height: 100,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              image: DecorationImage(
-                                  image: AssetImage("assets/apple.jpg"),
-                                  fit: BoxFit.cover)),
-                        ),
-                        SizedBox(height: 10),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Cabaiku Tani (60%)",
-                              style: GoogleFonts.poppins(
-                                  fontSize: 20, fontWeight: bold),
-                            ),
-                            SizedBox(
-                              height: 4,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                PhosphorIcon(
-                                  PhosphorIconsRegular.clock,
-                                  size: 17.0,
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  "32 Hari hingga panen",
-                                  style: GoogleFonts.poppins(fontSize: 12),
-                                )
-                              ],
-                            ),
-                            SizedBox(height: 4),
-                            ElevatedButton(
-                              onPressed: () {
-                                Get.to(() => const YourPlantsDetailScreen());
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xFF78D14D),
-                                minimumSize: Size(double.infinity, 30),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10)),
-                              ),
-                              child: Text(
-                                "Selesaikan Tugas Harian",
-                                style: GoogleFonts.poppins(
-                                    fontSize: 14,
-                                    fontWeight: semiBold,
-                                    color: Colors.white),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                ],
+              ))),
+      body: Obx(() {
+        if (userPlantController.isLoading.value) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        return Padding(
+          padding: EdgeInsets.symmetric(horizontal: 27),
+          child: ListView.separated(
+            separatorBuilder: (BuildContext context, int index) {
+              return SizedBox(height: 21);
+            },
+            itemCount: userPlantController.userPlants.length,
+            itemBuilder: (BuildContext context, int index) {
+              final userPlant = userPlantController.userPlants[index];
+              return InkWell(
+                onTap: () {
+                  Get.to(() => YourPlantsDetailScreen(),
+                      arguments: userPlant.id);
+                },
+                borderRadius: BorderRadius.circular(10),
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Color(0xffC3C6D4)),
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                );
-              },
-            )),
-        bottomNavigationBar: Navbar());
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 100,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: greyColor.withOpacity(0.2),
+                          image: userPlant.plant.imageUrl != null
+                              ? DecorationImage(
+                                  image: NetworkImage(
+                                      'http://localhost:2000/uploads/plants/${userPlant.plant.imageUrl}'),
+                                  fit: BoxFit.cover,
+                                )
+                              : null,
+                        ),
+                        child: userPlant.plant.imageUrl == null
+                            ? Center(
+                                child: PhosphorIcon(
+                                  PhosphorIcons.plant(),
+                                  size: 32,
+                                  color: greyColor,
+                                ),
+                              )
+                            : null,
+                      ),
+                      SizedBox(height: 10),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "${userPlant.customName} (${userPlant.progress.toStringAsFixed(0)}%)",
+                            style: GoogleFonts.poppins(
+                                fontSize: 20, fontWeight: bold),
+                          ),
+                          SizedBox(height: 4),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              PhosphorIcon(
+                                PhosphorIconsRegular.clock,
+                                size: 17.0,
+                              ),
+                              SizedBox(width: 5),
+                              Text(
+                                "${_formatDuration(userPlant.targetHarvestDate.difference(userPlant.plantingDate).inDays)} Hari hingga panen",
+                                style: GoogleFonts.poppins(fontSize: 12),
+                              )
+                            ],
+                          ),
+                          SizedBox(height: 4),
+                          ElevatedButton(
+                            onPressed: () {
+                              Get.to(() => YourPlantsDetailScreen(),
+                                  arguments: userPlant.id);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFF78D14D),
+                              minimumSize: Size(double.infinity, 30),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                            ),
+                            child: Text(
+                              "Selesaikan Tugas Harian",
+                              style: GoogleFonts.poppins(
+                                  fontSize: 14,
+                                  fontWeight: semiBold,
+                                  color: Colors.white),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      }),
+      bottomNavigationBar: Navbar(),
+    );
+  }
+
+  String _formatDuration(int days) {
+    return days.toString();
   }
 }
