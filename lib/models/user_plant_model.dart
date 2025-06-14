@@ -31,8 +31,9 @@ class UserPlant {
       status: json['status_penanaman'] ?? '',
       plant: Plant.fromJson(json['tanaman']),
       plantingDays: (json['hari_tanaman'] as List<dynamic>?)
-          ?.map((day) => UserPlantingDay.fromJson(day))
-          .toList() ?? [],
+              ?.map((day) => UserPlantingDay.fromJson(day))
+              .toList() ??
+          [],
     );
   }
 }
@@ -71,8 +72,9 @@ class UserPlantingDay {
       dayProgress: (json['progress_hari_persen'] ?? 0.0).toDouble(),
       dayStatus: json['status_hari'] ?? '',
       tasks: (json['tugas_penanaman'] as List<dynamic>?)
-          ?.map((task) => UserPlantingTask.fromJson(task))
-          .toList() ?? [],
+              ?.map((task) => UserPlantingTask.fromJson(task))
+              .toList() ??
+          [],
     );
   }
 }
@@ -101,8 +103,8 @@ class UserPlantingTask {
       type: json['jenis_tugas'] ?? '',
       estimatedTime: json['estimasi_waktu'] ?? 0,
       isCompleted: json['status_selesai'] ?? false,
-      completedDate: json['tanggal_selesai'] != null 
-          ? DateTime.parse(json['tanggal_selesai']) 
+      completedDate: json['tanggal_selesai'] != null
+          ? DateTime.parse(json['tanggal_selesai'])
           : null,
     );
   }

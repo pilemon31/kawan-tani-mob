@@ -102,9 +102,14 @@ class UserPlantService {
         throw Exception('No authentication token found');
       }
 
-      final response = await http.get(
-        Uri.parse('$baseUrl/user-plants/$userPlantId/daily-tasks${date != null ? '?date=$date' : ''}'),
-        headers: {'Authorization': 'Bearer $token'},
+      // Perbaikan: gunakan POST dengan body
+      final response = await http.post(
+        Uri.parse('$baseUrl/user-plants/$userPlantId/daily-tasks'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: date != null ? jsonEncode({'date': date}) : null,
       );
 
       if (response.statusCode == 200) {
@@ -191,7 +196,7 @@ class UserPlantService {
 
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
-        return UserPlant.fromJson(jsonResponse['data']);
+        return UserPlant.fromJson(jsonResponse['data']['data']);
       } else {
         throw Exception('Failed to finish plant');
       }

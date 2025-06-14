@@ -81,7 +81,7 @@ class _YourPlantsScreenState extends State<YourPlantsScreen> {
               return InkWell(
                 onTap: () {
                   Get.to(() => YourPlantsTasksScreen(),
-                      arguments: userPlant);
+                      arguments: userPlant.id);
                 },
                 borderRadius: BorderRadius.circular(10),
                 child: Container(
@@ -144,7 +144,7 @@ class _YourPlantsScreenState extends State<YourPlantsScreen> {
                           ElevatedButton(
                             onPressed: () {
                               Get.to(() => YourPlantsTasksScreen(),
-                                  arguments: userPlant);
+                                  arguments: userPlant.id);
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Color(0xFF78D14D),

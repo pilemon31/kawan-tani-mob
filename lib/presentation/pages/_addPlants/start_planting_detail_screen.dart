@@ -440,7 +440,6 @@ class _StartPlantingDetailScreenState extends State<StartPlantingDetailScreen> {
               ),
             ),
             SizedBox(height: 10),
-// In StartPlantingDetailScreen
             ElevatedButton(
               onPressed: () {
                 final userPlantController = Get.find<UserPlantController>();
