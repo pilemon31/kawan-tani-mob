@@ -1,210 +1,69 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kawan_tani/models/user_plant_model.dart';
+import 'package:flutter_kawan_tani/presentation/controllers/plants/user_plant_controller.dart';
 import 'package:flutter_kawan_tani/presentation/widgets/navbar/navbar.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
-import "package:get/get.dart";
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-
-class TaskStatus {
-  final UserPlantingTask task;
-  bool isDone;
-
-  TaskStatus(this.task, {this.isDone = false});
-}
 
 class YourPlantsTasksScreen extends StatefulWidget {
   const YourPlantsTasksScreen({super.key});
 
   @override
-  State<YourPlantsTasksScreen> createState() =>
-      _YourPlantsTasksScreenState();
+  State<YourPlantsTasksScreen> createState() => _YourPlantsTasksScreenState();
 }
 
 class _YourPlantsTasksScreenState extends State<YourPlantsTasksScreen> {
-  UserPlant? plant;
+  final UserPlantController userPlantController =
+      Get.find<UserPlantController>();
+  late String userPlantId;
   int selectedDay = 1;
-  Map<int, List<TaskStatus>> tasksPerDay = {};
-  Map<int, String> phasePerDay = {};
 
   @override
   void initState() {
     super.initState();
-    // Get the plant data passed from the previous screen
-    plant = Get.arguments as UserPlant?;
+    // Get the userPlantId from arguments
+    userPlantId = Get.arguments as String;
 
-    if (plant != null) {
-      _initializeTasks();
-      // Set initial selected day to the first available day
-      if (tasksPerDay.isNotEmpty) {
-        selectedDay = tasksPerDay.keys.first;
-      }
+    // Fetch user plant detail and daily tasks
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    await userPlantController.getUserPlantDetail(userPlantId);
+    await userPlantController.fetchDailyTasksAndUpdate(userPlantId);
+
+    // Set initial selected day to the first available day
+    if (userPlantController.selectedUserPlant.value.plantingDays.isNotEmpty) {
+      setState(() {
+        selectedDay =
+            userPlantController.selectedUserPlant.value.plantingDays.first.day;
+      });
     }
   }
 
-  void _initializeTasks() {
-    if (plant == null) return;
-
-    // Clear existing data
-    tasksPerDay.clear();
-    phasePerDay.clear();
-
-    // Group tasks by day from plant data
-    for (UserPlantingDay plantingDay in plant!.plantingDays) {
-      List<TaskStatus> dayTasks =
-          plantingDay.tasks.map((task) => TaskStatus(task)).toList();
-
-      tasksPerDay[plantingDay.day] = dayTasks;
-      phasePerDay[plantingDay.day] = plantingDay.phase;
-    }
+  double calculateProgress() {
+    final selectedUserPlant = userPlantController.selectedUserPlant.value;
+    return selectedUserPlant.progress / 100.0; // Convert percentage to decimal
   }
 
-  double calculateProgress(List<TaskStatus> tasks) {
-    if (tasks.isEmpty) return 0.0;
-    int doneCount = tasks.where((task) => task.isDone).length;
-    return doneCount / tasks.length;
+  double calculateDayProgress(int day) {
+    final plantingDay = userPlantController.selectedUserPlant.value.plantingDays
+        .firstWhereOrNull((d) => d.day == day);
+
+    if (plantingDay == null) return 0.0;
+    return plantingDay.dayProgress / 100.0; // Convert percentage to decimal
   }
 
-  double calculateOverallProgress() {
-    if (tasksPerDay.isEmpty) return 0.0;
-
-    int totalTasks = 0;
-    int completedTasks = 0;
-
-    tasksPerDay.values.forEach((dayTasks) {
-      totalTasks += dayTasks.length;
-      completedTasks += dayTasks.where((task) => task.isDone).length;
-    });
-
-    return totalTasks > 0 ? completedTasks / totalTasks : 0.0;
-  }
-
-  PhosphorIconData _getTaskIcon(String taskType) {
-    switch (taskType.toLowerCase()) {
-      case 'watering':
-      case 'siram':
-      case 'penyiraman':
-        return PhosphorIconsBold.drop;
-      case 'fertilizing':
-      case 'pupuk':
-      case 'pemupukan':
-        return PhosphorIconsBold.leaf;
-      case 'pruning':
-      case 'pangkas':
-      case 'pemangkasan':
-        return PhosphorIconsBold.scissors;
-      case 'harvesting':
-      case 'panen':
-        return PhosphorIconsBold.basket;
-      case 'pengecekan_harian':
-      case 'checking':
-        return PhosphorIconsBold.magnifyingGlass;
-      case 'tugas_biasa':
-      case 'maintenance':
-        return PhosphorIconsBold.wrench;
-      case 'weeding':
-      case 'penyiangan':
-        return PhosphorIconsBold.plant;
-      default:
-        return PhosphorIconsBold.check;
-    }
-  }
-
-  Color _getTaskColor(String taskType) {
-    switch (taskType.toLowerCase()) {
-      case 'watering':
-      case 'siram':
-      case 'penyiraman':
-        return Colors.blue;
-      case 'fertilizing':
-      case 'pupuk':
-      case 'pemupukan':
-        return Colors.green;
-      case 'pruning':
-      case 'pangkas':
-      case 'pemangkasan':
-        return Colors.orange;
-      case 'harvesting':
-      case 'panen':
-        return Colors.amber;
-      case 'pengecekan_harian':
-      case 'checking':
-        return Colors.purple;
-      default:
-        return primaryColor;
-    }
-  }
-
-  Widget _buildEmptyState() {
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(100.0),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 27),
-          child: AppBar(
-            backgroundColor: Colors.white,
-            toolbarHeight: 80.0,
-            leading: IconButton(
-              onPressed: () => Get.back(),
-              icon: PhosphorIcon(PhosphorIconsBold.arrowLeft, size: 32.0),
-            ),
-            title: Text(
-              'Tugas Penanaman',
-              style: GoogleFonts.poppins(
-                fontSize: 20,
-                color: blackColor,
-                fontWeight: bold,
-              ),
-            ),
-          ),
-        ),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            PhosphorIcon(
-              PhosphorIcons.warning(),
-              size: 64,
-              color: greyColor,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Data tanaman tidak ditemukan',
-              style: GoogleFonts.poppins(
-                fontSize: 16,
-                color: greyColor,
-              ),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () => Get.back(),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: primaryColor,
-              ),
-              child: Text(
-                'Kembali',
-                style: GoogleFonts.poppins(color: whiteColor),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+  List<int> getAvailableDays() {
+    return userPlantController.selectedUserPlant.value.plantingDays
+        .map((day) => day.day)
+        .toList()
+      ..sort();
   }
 
   @override
   Widget build(BuildContext context) {
-    // If no plant data is passed, show error screen
-    if (plant == null || tasksPerDay.isEmpty) {
-      return _buildEmptyState();
-    }
-
-    List<TaskStatus> currentTasks = tasksPerDay[selectedDay] ?? [];
-    double dayProgress = calculateProgress(currentTasks);
-    double overallProgress = calculateOverallProgress();
-    String currentPhase = phasePerDay[selectedDay] ?? '';
-
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(100.0),
@@ -214,386 +73,423 @@ class _YourPlantsTasksScreenState extends State<YourPlantsTasksScreen> {
             backgroundColor: Colors.white,
             toolbarHeight: 80.0,
             leading: IconButton(
-              onPressed: () => Get.back(),
-              icon: PhosphorIcon(PhosphorIconsBold.arrowLeft, size: 32.0),
-            ),
-            title: Text(
-              plant!.customName,
-              style: GoogleFonts.poppins(
-                fontSize: 20,
-                color: blackColor,
-                fontWeight: bold,
+              onPressed: () {
+                Get.back();
+              },
+              icon: PhosphorIcon(
+                PhosphorIconsBold.arrowLeft,
+                size: 32.0,
               ),
             ),
+            title: Obx(() => Text(
+                  userPlantController
+                          .selectedUserPlant.value.customName.isNotEmpty
+                      ? userPlantController.selectedUserPlant.value.customName
+                      : 'Tanaman Saya',
+                  style: GoogleFonts.poppins(
+                    fontSize: 20,
+                    color: blackColor,
+                    fontWeight: bold,
+                  ),
+                )),
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 21),
-        child: ListView(
-          children: [
-            // Overall Progress
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: primaryColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Progress Keseluruhan',
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      color: blackColor,
-                      fontWeight: semiBold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '${(overallProgress * 100).toStringAsFixed(0)}% dari ${plant!.plantingDate} hari',
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      color: greyColor,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  LinearProgressIndicator(
-                    value: overallProgress,
-                    color: primaryColor,
-                    backgroundColor: Colors.grey.shade300,
-                    minHeight: 8,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
+      body: Obx(() {
+        if (userPlantController.isLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-            // Day Progress
-            Text(
-              'Progress Hari Ini: ${(dayProgress * 100).toStringAsFixed(0)}%',
-              style: GoogleFonts.poppins(
-                fontSize: 18,
-                color: blackColor,
-                fontWeight: bold,
-              ),
-            ),
-            const SizedBox(height: 6),
-            LinearProgressIndicator(
-              value: dayProgress,
-              color: primaryColor,
-              backgroundColor: Colors.grey.shade300,
-              minHeight: 10,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            const SizedBox(height: 20),
+        final selectedUserPlant = userPlantController.selectedUserPlant.value;
+        final availableDays = getAvailableDays();
+        final currentDayData = selectedUserPlant.plantingDays
+            .firstWhereOrNull((d) => d.day == selectedDay);
 
-            // Day Selector
-            Center(
-              child: Column(
-                children: [
-                  Text(
-                    "Pilih Hari",
-                    style: GoogleFonts.poppins(fontSize: 20, fontWeight: bold),
-                  ),
-                  const SizedBox(height: 10),
-                  SizedBox(
-                    height: 60,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: tasksPerDay.keys.length,
-                      itemBuilder: (context, index) {
-                        int day = tasksPerDay.keys.elementAt(index);
-                        bool isSelected = day == selectedDay;
-                        List<TaskStatus> dayTasks = tasksPerDay[day] ?? [];
-                        double progress = calculateProgress(dayTasks);
-                        bool isCompleted =
-                            progress == 1.0 && dayTasks.isNotEmpty;
+        if (selectedUserPlant.id.isEmpty) {
+          return const Center(
+            child: Text('Data tanaman tidak ditemukan'),
+          );
+        }
 
-                        return GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              selectedDay = day;
-                            });
-                          },
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 5),
-                            width: 50,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              color: isSelected
-                                  ? primaryColor
-                                  : isCompleted
-                                      ? Colors.green
-                                      : Colors.white,
-                              borderRadius: BorderRadius.circular(25),
-                              border: Border.all(
-                                  color: isSelected
-                                      ? primaryColor
-                                      : Colors.grey.shade400),
-                            ),
-                            child: Stack(
-                              children: [
-                                Center(
-                                  child: Text(
-                                    "$day",
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: isSelected || isCompleted
-                                          ? Colors.white
-                                          : blackColor,
-                                    ),
-                                  ),
-                                ),
-                                if (isCompleted && !isSelected)
-                                  Positioned(
-                                    top: 2,
-                                    right: 2,
-                                    child: Container(
-                                      width: 16,
-                                      height: 16,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: PhosphorIcon(
-                                        PhosphorIconsBold.check,
-                                        size: 12,
-                                        color: Colors.green,
-                                      ),
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-
-            // Phase Info
-            if (currentPhase.isNotEmpty) ...[
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.blue.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.blue.withOpacity(0.3)),
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 21),
+          child: ListView(
+            children: [
+              // Overall Progress
+              Text(
+                'Progress Keseluruhan: ${selectedUserPlant.progress.toStringAsFixed(0)}%',
+                style: GoogleFonts.poppins(
+                  fontSize: 18,
+                  color: blackColor,
+                  fontWeight: bold,
                 ),
-                child: Row(
+              ),
+              const SizedBox(height: 6),
+              LinearProgressIndicator(
+                value: calculateProgress(),
+                color: primaryColor,
+                backgroundColor: Colors.grey.shade300,
+                minHeight: 10,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              const SizedBox(height: 20),
+
+              // Plant Info
+              Container(
+                padding: const EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade50,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    PhosphorIcon(
-                      PhosphorIconsBold.info,
-                      color: Colors.blue,
-                      size: 20,
-                    ),
-                    const SizedBox(width: 8),
                     Text(
-                      'Fase: $currentPhase',
+                      selectedUserPlant.plant.name,
                       style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        fontWeight: semiBold,
-                        color: Colors.blue.shade700,
+                        fontSize: 16,
+                        fontWeight: bold,
                       ),
+                    ),
+                    Text(
+                      'Status: ${selectedUserPlant.status}',
+                      style: GoogleFonts.poppins(fontSize: 14),
+                    ),
+                    Text(
+                      'Tanggal Tanam: ${selectedUserPlant.plantingDate.day}/${selectedUserPlant.plantingDate.month}/${selectedUserPlant.plantingDate.year}',
+                      style: GoogleFonts.poppins(fontSize: 14),
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: 20),
-            ],
 
-            // Tasks Header
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Tugas Hari ke-$selectedDay",
-                  style: GoogleFonts.poppins(fontSize: 22, fontWeight: bold),
-                ),
-                if (currentTasks.isNotEmpty)
-                  Text(
-                    "${currentTasks.where((t) => t.isDone).length}/${currentTasks.length}",
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      color: primaryColor,
-                      fontWeight: semiBold,
-                    ),
-                  ),
-              ],
-            ),
-            const SizedBox(height: 10),
-
-            // Tasks List
-            if (currentTasks.isEmpty) ...[
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.grey.shade300),
-                ),
-                child: Center(
+              // Day Selection
+              if (availableDays.isNotEmpty) ...[
+                Center(
                   child: Column(
                     children: [
-                      PhosphorIcon(
-                        PhosphorIcons.plant(),
-                        size: 48,
-                        color: greyColor,
-                      ),
-                      const SizedBox(height: 8),
                       Text(
-                        "Tidak ada tugas untuk hari ini",
-                        style: GoogleFonts.poppins(
-                          fontSize: 16,
-                          color: greyColor,
+                        "Hari",
+                        style:
+                            GoogleFonts.poppins(fontSize: 20, fontWeight: bold),
+                      ),
+                      const SizedBox(height: 10),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: availableDays.map((day) {
+                            bool isSelected = day == selectedDay;
+                            final dayData = selectedUserPlant.plantingDays
+                                .firstWhereOrNull((d) => d.day == day);
+                            bool hasCompletedTasks = dayData?.completedTasks ==
+                                    dayData?.totalTasks &&
+                                dayData != null &&
+                                dayData.totalTasks > 0;
+
+                            return GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  selectedDay = day;
+                                });
+                              },
+                              child: Container(
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 5),
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: isSelected
+                                      ? primaryColor
+                                      : hasCompletedTasks
+                                          ? Colors.green.shade100
+                                          : Colors.white,
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(
+                                      color: hasCompletedTasks
+                                          ? Colors.green
+                                          : Colors.grey.shade400),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    "$day",
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: isSelected
+                                          ? Colors.white
+                                          : blackColor,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }).toList(),
                         ),
                       ),
                     ],
                   ),
                 ),
-              ),
-            ] else ...[
-              ...currentTasks.asMap().entries.map((entry) {
-                TaskStatus taskStatus = entry.value;
-                UserPlantingTask task = taskStatus.task;
+                const SizedBox(height: 30),
+              ],
 
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      taskStatus.isDone = !taskStatus.isDone;
-                    });
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    margin: const EdgeInsets.only(bottom: 12),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                          color: taskStatus.isDone
-                              ? primaryColor
-                              : Colors.grey.shade300),
-                      color: taskStatus.isDone
-                          ? primaryColor.withOpacity(0.1)
-                          : whiteColor,
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            color: taskStatus.isDone
-                                ? primaryColor
-                                : _getTaskColor(task.type).withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: PhosphorIcon(
+              // Day Progress and Phase Info
+              if (currentDayData != null) ...[
+                Container(
+                  padding: const EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    color: primaryColor.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: primaryColor.withOpacity(0.3)),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Hari ke-${currentDayData.day} - ${currentDayData.phase}',
+                        style: GoogleFonts.poppins(
+                          fontSize: 16,
+                          fontWeight: bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Progress Hari: ${currentDayData.dayProgress.toStringAsFixed(0)}%',
+                        style: GoogleFonts.poppins(fontSize: 14),
+                      ),
+                      const SizedBox(height: 5),
+                      LinearProgressIndicator(
+                        value: currentDayData.dayProgress / 100,
+                        color: primaryColor,
+                        backgroundColor: Colors.grey.shade300,
+                        minHeight: 6,
+                        borderRadius: BorderRadius.circular(3),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Tugas Selesai: ${currentDayData.completedTasks}/${currentDayData.totalTasks}',
+                        style: GoogleFonts.poppins(fontSize: 14),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+
+              // Daily Tasks
+              Text(
+                "Tugas Harian",
+                style: GoogleFonts.poppins(fontSize: 22, fontWeight: bold),
+              ),
+              const SizedBox(height: 10),
+
+              if (currentDayData != null && currentDayData.tasks.isNotEmpty)
+                ...currentDayData.tasks.map((task) {
+                  return GestureDetector(
+                    onTap: userPlantController.isUpdating.value
+                        ? null
+                        : () async {
+                            await userPlantController.updateTaskProgress(
+                              userPlantId: userPlantId,
+                              taskId: task.id,
+                              doneStatus: !task.isCompleted,
+                            );
+                          },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 15, vertical: 12),
+                      margin: const EdgeInsets.only(bottom: 10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.grey.shade300),
+                        color: task.isCompleted ? primaryColor : whiteColor,
+                      ),
+                      child: Row(
+                        children: [
+                          PhosphorIcon(
                             _getTaskIcon(task.type),
-                            size: 20,
-                            color: taskStatus.isDone
+                            size: 24,
+                            color: task.isCompleted
                                 ? whiteColor
-                                : _getTaskColor(task.type),
+                                : Colors.grey.shade400,
                           ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                task.name,
-                                style: GoogleFonts.poppins(
-                                  fontSize: 16,
-                                  fontWeight: semiBold,
-                                  color: taskStatus.isDone
-                                      ? primaryColor
-                                      : blackColor,
+                          const SizedBox(width: 15),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  task.name,
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 16,
+                                    fontWeight: bold,
+                                    color: task.isCompleted
+                                        ? whiteColor
+                                        : blackColor,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 4),
-                              Row(
-                                children: [
-                                  PhosphorIcon(
-                                    PhosphorIcons.clock(),
-                                    size: 14,
-                                    color: greyColor,
+                                Text(
+                                  '${task.estimatedTime} menit - ${task.type}',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 12,
+                                    color: task.isCompleted
+                                        ? whiteColor.withOpacity(0.8)
+                                        : Colors.grey.shade600,
                                   ),
-                                  const SizedBox(width: 4),
+                                ),
+                                if (task.completedDate != null)
                                   Text(
-                                    "${task.estimatedTime} menit",
+                                    'Selesai: ${task.completedDate!.day}/${task.completedDate!.month}/${task.completedDate!.year}',
                                     style: GoogleFonts.poppins(
-                                      fontSize: 12,
-                                      color: greyColor,
+                                      fontSize: 11,
+                                      color: whiteColor.withOpacity(0.7),
                                     ),
                                   ),
-                                  const SizedBox(width: 12),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                      vertical: 2,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: _getTaskColor(task.type)
-                                          .withOpacity(0.1),
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Text(
-                                      task.type
-                                          .replaceAll('_', ' ')
-                                          .toUpperCase(),
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 10,
-                                        color: _getTaskColor(task.type),
-                                        fontWeight: semiBold,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Container(
-                          width: 24,
-                          height: 24,
-                          decoration: BoxDecoration(
-                            color: taskStatus.isDone
-                                ? primaryColor
-                                : Colors.transparent,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: taskStatus.isDone
-                                  ? primaryColor
-                                  : Colors.grey.shade400,
-                              width: 2,
+                              ],
                             ),
                           ),
-                          child: taskStatus.isDone
-                              ? PhosphorIcon(
-                                  PhosphorIconsBold.check,
-                                  size: 16,
-                                  color: whiteColor,
-                                )
-                              : null,
-                        ),
-                      ],
+                          if (userPlantController.isUpdating.value)
+                            const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor:
+                                    AlwaysStoppedAnimation<Color>(Colors.white),
+                              ),
+                            )
+                          else
+                            CheckboxTheme(
+                              data: CheckboxThemeData(
+                                side: WidgetStateBorderSide.resolveWith(
+                                  (states) {
+                                    if (states.contains(WidgetState.selected)) {
+                                      return BorderSide(color: primaryColor);
+                                    }
+                                    return BorderSide(color: whiteColor);
+                                  },
+                                ),
+                              ),
+                              child: Checkbox(
+                                value: task.isCompleted,
+                                onChanged: (value) async {
+                                  if (value != null) {
+                                    await userPlantController
+                                        .updateTaskProgress(
+                                      userPlantId: userPlantId,
+                                      taskId: task.id,
+                                      doneStatus: value,
+                                    );
+                                  }
+                                },
+                                activeColor: whiteColor,
+                                checkColor: primaryColor,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  );
+                })
+              else
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade50,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.grey.shade300),
+                  ),
+                  child: Center(
+                    child: Text(
+                      currentDayData == null
+                          ? 'Pilih hari untuk melihat tugas'
+                          : 'Tidak ada tugas untuk hari ini',
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        color: Colors.grey.shade600,
+                      ),
                     ),
                   ),
-                );
-              }).toList(),
+                ),
+
+              const SizedBox(height: 20),
+
+              // Finish Plant Button (if applicable)
+              if (selectedUserPlant.status != 'selesai' &&
+                  selectedUserPlant.progress >= 100)
+                ElevatedButton(
+                  onPressed: userPlantController.isLoading.value
+                      ? null
+                      : () async {
+                          final result = await Get.dialog<bool>(
+                            AlertDialog(
+                              title: Text(
+                                'Selesaikan Tanaman',
+                                style: GoogleFonts.poppins(fontWeight: bold),
+                              ),
+                              content: Text(
+                                'Apakah Anda yakin ingin menyelesaikan tanaman ini?',
+                                style: GoogleFonts.poppins(),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Get.back(result: false),
+                                  child: Text('Batal'),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () => Get.back(result: true),
+                                  child: Text('Ya, Selesaikan'),
+                                ),
+                              ],
+                            ),
+                          );
+
+                          if (result == true) {
+                            await userPlantController.finishPlant(userPlantId);
+                            Get.back(); // Return to previous screen
+                          }
+                        },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orange,
+                    minimumSize: const Size(double.infinity, 45),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: Text(
+                    userPlantController.isLoading.value
+                        ? 'Memproses...'
+                        : 'Selesaikan Tanaman',
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: semiBold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
             ],
-            const SizedBox(height: 80), // Extra space for bottom navigation
-          ],
-        ),
-      ),
+          ),
+        );
+      }),
       bottomNavigationBar: const Navbar(),
     );
+  }
+
+  PhosphorIconData _getTaskIcon(String taskType) {
+    switch (taskType.toLowerCase()) {
+      case 'penyiraman':
+        return PhosphorIconsFill.drop;
+      case 'pemupukan':
+        return PhosphorIconsFill.leaf;
+      case 'penyiangan':
+        return PhosphorIconsFill.scissors;
+      case 'pengecekan':
+        return PhosphorIconsFill.magnifyingGlass;
+      case 'pemangkasan':
+        return PhosphorIconsFill.scissors;
+      default:
+        return PhosphorIconsFill.plant;
+    }
   }
 }
