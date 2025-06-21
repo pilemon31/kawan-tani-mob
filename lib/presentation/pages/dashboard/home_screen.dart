@@ -110,7 +110,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                     imagePath: "assets/kelembapan_image.jpg",
                                   ),
                                 )),
-                            const SizedBox(width: 30),
                             Obx(() => SizedBox(
                                   width: 150,
                                   height: 150,
@@ -307,33 +306,75 @@ class _HomeScreenState extends State<HomeScreen> {
                                       .fetchWorkshopById(workshop.idWorkshop);
                                   Get.to(() => const WorkshopDetail());
                                 },
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: Image.network(
-                                    workshop.gambarWorkshop.isNotEmpty
-                                        ? 'http://localhost:2000/uploads/workshops/${workshop.gambarWorkshop}'
-                                        : 'https://placehold.co/600x200/cccccc/ffffff?text=No+Image',
-                                    width: double.infinity,
-                                    height: 200,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Container(
+                                child: Stack(
+                                  alignment: Alignment.bottomLeft,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: Image.network(
+                                        workshop.gambarWorkshop.isNotEmpty
+                                            ? 'http://localhost:2000/uploads/workshops/${workshop.gambarWorkshop}'
+                                            : 'https://placehold.co/600x200/cccccc/ffffff?text=No+Image',
                                         width: double.infinity,
                                         height: 200,
-                                        decoration: BoxDecoration(
-                                          color: greyColor.withOpacity(0.2),
-                                          borderRadius:
-                                              BorderRadius.circular(15),
+                                        fit: BoxFit.cover,
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                          return Container(
+                                            width: double.infinity,
+                                            height: 200,
+                                            decoration: BoxDecoration(
+                                              color: greyColor.withOpacity(0.2),
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                            ),
+                                            child: Center(
+                                              child: PhosphorIcon(
+                                                  PhosphorIcons.wrench(),
+                                                  size: 64,
+                                                  color: greyColor),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    Container(
+                                      width: double.infinity,
+                                      height: 200,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12),
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
+                                          colors: [
+                                            Colors.transparent,
+                                            Colors.black.withOpacity(0.7),
+                                          ],
+                                          stops: const [0.6, 1.0],
                                         ),
-                                        child: Center(
-                                          child: PhosphorIcon(
-                                              PhosphorIcons.wrench(),
-                                              size: 64,
-                                              color: greyColor),
-                                        ),
-                                      );
-                                    },
-                                  ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            workshop.judulWorkshop,
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                            ),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               );
                             }).toList(),
@@ -395,33 +436,86 @@ class _HomeScreenState extends State<HomeScreen> {
                                   articleController.setSelectedArticle(article);
                                   Get.to(() => const ArticleDetail());
                                 },
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: Image.network(
-                                    article.imageUrl.isNotEmpty
-                                        ? 'http://localhost:2000/uploads/articles/${article.imageUrl}'
-                                        : 'https://placehold.co/600x200/cccccc/ffffff?text=No+Image',
-                                    width: double.infinity,
-                                    height: 200,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Container(
+                                child: Stack(
+                                  alignment: Alignment.bottomLeft,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: Image.network(
+                                        article.imageUrl.isNotEmpty
+                                            ? 'http://localhost:2000/uploads/articles/${article.imageUrl}'
+                                            : 'https://placehold.co/600x200/cccccc/ffffff?text=No+Image',
                                         width: double.infinity,
                                         height: 200,
-                                        decoration: BoxDecoration(
-                                          color: greyColor.withOpacity(0.2),
-                                          borderRadius:
-                                              BorderRadius.circular(15),
+                                        fit: BoxFit.cover,
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                          return Container(
+                                            width: double.infinity,
+                                            height: 200,
+                                            decoration: BoxDecoration(
+                                              color: greyColor.withOpacity(0.2),
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                            ),
+                                            child: Center(
+                                              child: PhosphorIcon(
+                                                  PhosphorIcons.newspaper(),
+                                                  size: 64,
+                                                  color: greyColor),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    Container(
+                                      // Overlay untuk gradasi dan teks
+                                      width: double.infinity,
+                                      height:
+                                          200, // Harus sama dengan tinggi gambar
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12),
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
+                                          colors: [
+                                            Colors.transparent,
+                                            Colors.black.withOpacity(0.7),
+                                          ],
+                                          stops: const [0.6, 1.0],
                                         ),
-                                        child: Center(
-                                          child: PhosphorIcon(
-                                              PhosphorIcons.newspaper(),
-                                              size: 64,
-                                              color: greyColor),
-                                        ),
-                                      );
-                                    },
-                                  ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            article.title,
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                            ),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          Text(
+                                            'Oleh ${article.author}',
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 12,
+                                              color: Colors.white70,
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               );
                             }).toList(),
