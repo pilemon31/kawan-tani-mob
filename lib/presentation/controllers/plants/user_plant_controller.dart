@@ -7,7 +7,7 @@ class UserPlantController extends GetxController {
   final UserPlantService _userPlantService = UserPlantService();
 
   var userPlants = <UserPlant>[].obs;
-  var selectedUserPlant = UserPlant(
+  var selectedUserPlant = Rx<UserPlant>(UserPlant(
     id: '',
     customName: '',
     plantingDate: DateTime.now(),
@@ -23,12 +23,18 @@ class UserPlantController extends GetxController {
       plantingDays: [],
     ),
     plantingDays: [],
-  ).obs;
+  ));
   var dailyTasks = <UserPlantingDay>[].obs;
   var todayTasks = <UserPlantingDay>[].obs;
   var isLoading = false.obs;
   var isCreating = false.obs;
   var isUpdating = false.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchTodayTasks(); // Fetches tasks for the home screen
+  }
 
   Future<void> fetchUserPlants() async {
     try {
@@ -46,7 +52,24 @@ class UserPlantController extends GetxController {
     try {
       isLoading(true);
       var result = await _userPlantService.getUserPlantDetail(userPlantId);
-      selectedUserPlant.value = result;
+
+      // Filter plantingDays to include only today and previous days
+      final now = DateTime.now();
+      final filteredPlantingDays = result.plantingDays.where((day) {
+        return day.actualDate.isBefore(now.add(const Duration(days: 1)));
+      }).toList();
+
+      // Update the selectedUserPlant with filtered days
+      selectedUserPlant.value = UserPlant(
+        id: result.id,
+        customName: result.customName,
+        plantingDate: result.plantingDate,
+        targetHarvestDate: result.targetHarvestDate,
+        progress: result.progress,
+        status: result.status,
+        plant: result.plant,
+        plantingDays: filteredPlantingDays, // Use filtered days here
+      );
     } catch (e) {
       Get.snackbar('Error', 'Failed to load user plant detail: $e');
     } finally {
@@ -73,47 +96,31 @@ class UserPlantController extends GetxController {
     }
   }
 
-  Future<void> fetchDailyTasks({
-    required String userPlantId,
-    String? date,
-  }) async {
-    try {
-      isLoading(true);
-      var result = await _userPlantService.getDailyTasks(
-        userPlantId: userPlantId,
-        date: date,
-      );
-      dailyTasks.assignAll(result);
-    } catch (e) {
-      Get.snackbar('Error', 'Failed to load daily tasks: $e');
-    } finally {
-      isLoading(false);
-    }
-  }
-
-  // NEW METHOD: Fetch daily tasks dan update selectedUserPlant
+  // This method is primarily used internally by updateTaskProgress
   Future<void> fetchDailyTasksAndUpdate(String userPlantId) async {
     try {
       isLoading(true);
 
-      // Fetch daily tasks dengan detail lengkap
       var result = await _userPlantService.getDailyTasks(
         userPlantId: userPlantId,
       );
-      dailyTasks.assignAll(result);
 
-      // Update selectedUserPlant.plantingDays dengan data terbaru
-      // Agar UI bisa mengakses tasks dari selectedUserPlant.plantingDays
-      if (selectedUserPlant.value.id == userPlantId) {
-        selectedUserPlant.update((plant) {
-          if (plant != null) {
-            // Clear existing planting days
-            plant.plantingDays.clear();
-            // Add new data from API
-            plant.plantingDays.addAll(result);
-          }
-        });
-      }
+      // Filter plantingDays for the specific user plant to include only today and previous days
+      final now = DateTime.now();
+      final filteredDailyTasks = result.where((day) {
+        return day.actualDate.isBefore(now.add(const Duration(days: 1)));
+      }).toList();
+
+      // Update the selectedUserPlant observable directly as well
+      selectedUserPlant.update((plant) {
+        if (plant != null) {
+          plant.plantingDays.clear();
+          plant.plantingDays
+              .addAll(filteredDailyTasks); // Use filtered days here
+        }
+      });
+      dailyTasks.assignAll(
+          filteredDailyTasks); // Also update the separate dailyTasks observable if used elsewhere
     } catch (e) {
       Get.snackbar('Error', 'Failed to load daily tasks: $e');
     } finally {
@@ -146,9 +153,13 @@ class UserPlantController extends GetxController {
         doneStatus: doneStatus,
       );
 
-      // Refresh data setelah update
-      await fetchDailyTasksAndUpdate(userPlantId);
-      await getUserPlantDetail(userPlantId);
+      // Refetch both the general user plant detail and the daily tasks
+      // to ensure all data is consistent and filtered.
+      await getUserPlantDetail(
+          userPlantId); // Updates selectedUserPlant with filtered days
+      // fetchDailyTasksAndUpdate is called by getUserPlantDetail implicitly
+      // or you can call it explicitly if dailyTasks stream is separate and needed for specific filtering logic.
+      // For this case, getUserPlantDetail update is sufficient.
 
       Get.snackbar('Success', 'Task updated successfully');
     } catch (e) {
@@ -161,15 +172,34 @@ class UserPlantController extends GetxController {
   Future<void> finishPlant(String userPlantId) async {
     try {
       isLoading(true);
-      var result = await _userPlantService.finishPlant(userPlantId);
+      // Call the service to mark the plant as finished
+      await _userPlantService.finishPlant(userPlantId);
 
-      // Update the plant in the local state
-      final index = userPlants.indexWhere((plant) => plant.id == userPlantId);
-      if (index != -1) {
-        userPlants[index] = result;
+      // Remove the plant from the observable list immediately
+      userPlants.removeWhere((plant) => plant.id == userPlantId);
+      userPlants.refresh(); // Ensure UI updates
+
+      // Also clear selected plant if it was the one being finished
+      if (selectedUserPlant.value.id == userPlantId) {
+        selectedUserPlant.value = UserPlant(
+          id: '',
+          customName: '',
+          plantingDate: DateTime.now(),
+          targetHarvestDate: DateTime.now(),
+          progress: 0,
+          status: '',
+          plant: Plant(
+              id: '',
+              name: '',
+              description: '',
+              plantingDuration: 0,
+              instructions: [],
+              plantingDays: []),
+          plantingDays: [],
+        ); // Reset to default
       }
 
-      Get.snackbar('Success', 'Plant finished successfully');
+      Get.snackbar('Success', 'Plant finished successfully and removed.');
     } catch (e) {
       Get.snackbar('Error', 'Failed to finish plant: $e');
     } finally {

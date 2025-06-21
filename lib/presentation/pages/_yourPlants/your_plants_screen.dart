@@ -23,7 +23,13 @@ class _YourPlantsScreenState extends State<YourPlantsScreen> {
   @override
   void initState() {
     super.initState();
+    // Fetch plants initially
     userPlantController.fetchUserPlants();
+  }
+
+  // Define a function to refresh data when returning to this screen
+  Future<void> _refreshData() async {
+    await userPlantController.fetchUserPlants();
   }
 
   @override
@@ -32,41 +38,82 @@ class _YourPlantsScreenState extends State<YourPlantsScreen> {
       appBar: PreferredSize(
           preferredSize: Size.fromHeight(100.0),
           child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 27),
-              child: AppBar(
-                backgroundColor: Colors.white,
-                toolbarHeight: 80.0,
-                leading: IconButton(
+            padding: EdgeInsets.symmetric(horizontal: 27),
+            child: AppBar(
+              backgroundColor: Colors.white,
+              toolbarHeight: 80.0,
+              leading: IconButton(
+                onPressed: () {
+                  Get.to(() => const HomeScreen());
+                },
+                icon: PhosphorIcon(
+                  PhosphorIconsBold.arrowLeft,
+                  size: 32.0,
+                ),
+              ),
+              title: Padding(
+                  padding: EdgeInsets.all(0),
+                  child: Text(
+                    'Tanaman Saya',
+                    style: GoogleFonts.poppins(
+                        fontSize: 20, color: blackColor, fontWeight: bold),
+                  )),
+              actions: [
+                IconButton(
                   onPressed: () {
-                    Get.to(() => const HomeScreen());
+                    Get.to(() => FilterYourPlantsScreen());
                   },
                   icon: PhosphorIcon(
-                    PhosphorIconsBold.arrowLeft,
+                    PhosphorIconsFill.dotsThreeOutlineVertical,
                     size: 32.0,
                   ),
                 ),
-                title: Padding(
-                    padding: EdgeInsets.all(0),
-                    child: Text(
-                      'Tanaman Saya',
-                      style: GoogleFonts.poppins(
-                          fontSize: 20, color: blackColor, fontWeight: bold),
-                    )),
-                actions: [
-                  IconButton(
-                    onPressed: () {
-                      Get.to(() => FilterYourPlantsScreen());
-                    },
-                    icon: PhosphorIcon(
-                      PhosphorIconsFill.dotsThreeOutlineVertical,
-                      size: 32.0,
-                    ),
-                  ),
-                ],
-              ))),
+              ],
+            ),
+          )),
       body: Obx(() {
         if (userPlantController.isLoading.value) {
-          return Center(child: CircularProgressIndicator());
+          return Center(
+              child: CircularProgressIndicator(
+            color: primaryColor,
+          ));
+        }
+
+        if (userPlantController.userPlants.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                PhosphorIcon(
+                  PhosphorIcons.plant(),
+                  size: 64,
+                  color: greyColor,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Anda belum memiliki tanaman. Mari tanam sesuatu!',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    color: greyColor,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    userPlantController.fetchUserPlants(); // Retry fetching
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryColor,
+                  ),
+                  child: Text(
+                    'Muat Ulang',
+                    style: GoogleFonts.poppins(color: whiteColor),
+                  ),
+                ),
+              ],
+            ),
+          );
         }
 
         return Padding(
@@ -79,9 +126,13 @@ class _YourPlantsScreenState extends State<YourPlantsScreen> {
             itemBuilder: (BuildContext context, int index) {
               final userPlant = userPlantController.userPlants[index];
               return InkWell(
-                onTap: () {
-                  Get.to(() => YourPlantsTasksScreen(),
+                onTap: () async {
+                  // Navigate and await the result, then refresh if needed
+                  final result = await Get.to(() => YourPlantsTasksScreen(),
                       arguments: userPlant.id);
+                  if (result == true) {
+                    _refreshData(); // Refresh the list if a task was updated or plant finished
+                  }
                 },
                 borderRadius: BorderRadius.circular(10),
                 child: Container(
@@ -97,7 +148,8 @@ class _YourPlantsScreenState extends State<YourPlantsScreen> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           color: greyColor.withOpacity(0.2),
-                          image: userPlant.plant.imageUrl != null
+                          image: userPlant.plant.imageUrl != null &&
+                                  userPlant.plant.imageUrl!.isNotEmpty
                               ? DecorationImage(
                                   image: NetworkImage(
                                       'http://localhost:2000/uploads/plants/${userPlant.plant.imageUrl}'),
@@ -105,7 +157,8 @@ class _YourPlantsScreenState extends State<YourPlantsScreen> {
                                 )
                               : null,
                         ),
-                        child: userPlant.plant.imageUrl == null
+                        child: userPlant.plant.imageUrl == null ||
+                                userPlant.plant.imageUrl!.isEmpty
                             ? Center(
                                 child: PhosphorIcon(
                                   PhosphorIcons.plant(),
@@ -121,6 +174,7 @@ class _YourPlantsScreenState extends State<YourPlantsScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
+                            // Display customName and current progress
                             "${userPlant.customName} (${userPlant.progress.toStringAsFixed(0)}%)",
                             style: GoogleFonts.poppins(
                                 fontSize: 20, fontWeight: bold),
@@ -135,31 +189,57 @@ class _YourPlantsScreenState extends State<YourPlantsScreen> {
                               ),
                               SizedBox(width: 5),
                               Text(
-                                "${_formatDuration(userPlant.targetHarvestDate.difference(userPlant.plantingDate).inDays)} Hari hingga panen",
+                                // Calculate days remaining from planting date to target harvest date
+                                "${userPlant.targetHarvestDate.difference(userPlant.plantingDate).inDays} Hari hingga panen",
                                 style: GoogleFonts.poppins(fontSize: 12),
                               )
                             ],
                           ),
                           SizedBox(height: 4),
-                          ElevatedButton(
-                            onPressed: () {
-                              Get.to(() => YourPlantsTasksScreen(),
-                                  arguments: userPlant.id);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFF78D14D),
-                              minimumSize: Size(double.infinity, 30),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10)),
+                          if (userPlant.status !=
+                              'selesai') // Only show button if not finished
+                            ElevatedButton(
+                              onPressed: () async {
+                                // Navigate to tasks screen to update tasks
+                                final result = await Get.to(
+                                    () => YourPlantsTasksScreen(),
+                                    arguments: userPlant.id);
+                                if (result == true) {
+                                  _refreshData(); // Refresh the list after returning
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xFF78D14D),
+                                minimumSize: Size(double.infinity, 30),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)),
+                              ),
+                              child: Text(
+                                "Selesaikan Tugas Harian",
+                                style: GoogleFonts.poppins(
+                                    fontSize: 14,
+                                    fontWeight: semiBold,
+                                    color: Colors.white),
+                              ),
                             ),
-                            child: Text(
-                              "Selesaikan Tugas Harian",
-                              style: GoogleFonts.poppins(
-                                  fontSize: 14,
+                          if (userPlant.status ==
+                              'selesai') // Show finished status
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 5),
+                              decoration: BoxDecoration(
+                                color: Colors.green.shade100,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Text(
+                                'Selesai!',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 12,
+                                  color: Colors.green.shade700,
                                   fontWeight: semiBold,
-                                  color: Colors.white),
-                            ),
-                          ),
+                                ),
+                              ),
+                            )
                         ],
                       ),
                     ],
@@ -172,9 +252,5 @@ class _YourPlantsScreenState extends State<YourPlantsScreen> {
       }),
       bottomNavigationBar: Navbar(),
     );
-  }
-
-  String _formatDuration(int days) {
-    return days.toString();
   }
 }

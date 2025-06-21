@@ -1,14 +1,14 @@
 import 'package:flutter_kawan_tani/models/plant_model.dart';
 
 class UserPlant {
-  final String id;
+  final String id; // Expects String
   final String customName;
   final DateTime plantingDate;
   final DateTime targetHarvestDate;
   final double progress;
   final String status;
   final Plant plant;
-  final List<UserPlantingDay> plantingDays;
+  List<UserPlantingDay> plantingDays;
 
   UserPlant({
     required this.id,
@@ -23,7 +23,8 @@ class UserPlant {
 
   factory UserPlant.fromJson(Map<String, dynamic> json) {
     return UserPlant(
-      id: json['id_tanaman_pengguna'] ?? '',
+      // Ensure 'id_tanaman_pengguna' is always a String
+      id: json['id_tanaman_pengguna']?.toString() ?? '',
       customName: json['nama_custom'] ?? '',
       plantingDate: DateTime.parse(json['tanggal_penanaman']),
       targetHarvestDate: DateTime.parse(json['tanggal_target_panen']),
@@ -39,7 +40,7 @@ class UserPlant {
 }
 
 class UserPlantingDay {
-  final String id;
+  final String id; // Expects String
   final int day;
   final DateTime actualDate;
   final String phase;
@@ -62,8 +63,10 @@ class UserPlantingDay {
   });
 
   factory UserPlantingDay.fromJson(Map<String, dynamic> json) {
+    print(
+        'Parsing UserPlantingDay: ${json['id_hari_tanaman_pengguna'].runtimeType} = ${json['id_hari_tanaman_pengguna']}');
     return UserPlantingDay(
-      id: json['id_hari_tanaman_pengguna'] ?? '',
+      id: (json['id_hari_tanaman_pengguna'] as dynamic)?.toString() ?? '',
       day: json['hari_ke'] ?? 0,
       actualDate: DateTime.parse(json['tanggal_aktual']),
       phase: json['fase_penanaman'] ?? '',
@@ -80,7 +83,7 @@ class UserPlantingDay {
 }
 
 class UserPlantingTask {
-  final String id;
+  final String id; // Expects String
   final String name;
   final String type;
   final int estimatedTime;
@@ -98,7 +101,8 @@ class UserPlantingTask {
 
   factory UserPlantingTask.fromJson(Map<String, dynamic> json) {
     return UserPlantingTask(
-      id: json['id_tugas_penanaman_pengguna'] ?? '',
+      // Same here, ensure 'id_tugas_penanaman_pengguna' is always a String
+      id: (json['id_tugas_penanaman_pengguna'] as dynamic)?.toString() ?? '',
       name: json['nama_tugas'] ?? '',
       type: json['jenis_tugas'] ?? '',
       estimatedTime: json['estimasi_waktu'] ?? 0,

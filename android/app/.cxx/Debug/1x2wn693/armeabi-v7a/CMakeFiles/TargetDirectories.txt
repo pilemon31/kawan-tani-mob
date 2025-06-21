@@ -1,0 +1,2 @@
+C:/flutter_kawan_tani/kawan-tani-mob/android/app/.cxx/Debug/1x2wn693/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/flutter_kawan_tani/kawan-tani-mob/android/app/.cxx/Debug/1x2wn693/armeabi-v7a/CMakeFiles/rebuild_cache.dir

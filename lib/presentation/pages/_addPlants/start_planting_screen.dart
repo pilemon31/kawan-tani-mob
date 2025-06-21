@@ -256,7 +256,7 @@ class _StartPlantingScreenState extends State<StartPlantingScreen> {
                         child: ElevatedButton(
                           onPressed: () {
                             Get.to(() => const StartPlantingDetailScreen(),
-                                arguments: plant);
+                                arguments: plantController.selectedPlant.value);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: primaryColor,

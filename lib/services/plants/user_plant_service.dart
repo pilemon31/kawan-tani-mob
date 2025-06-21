@@ -97,21 +97,15 @@ class UserPlantService {
   }) async {
     try {
       final token = await storageService.getToken();
-
       if (token == null || token.isEmpty) {
         throw Exception('No authentication token found');
       }
-
-      // Perbaikan: gunakan POST dengan body
-      final response = await http.post(
+      final response = await http.get(
         Uri.parse('$baseUrl/user-plants/$userPlantId/daily-tasks'),
         headers: {
           'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
         },
-        body: date != null ? jsonEncode({'date': date}) : null,
       );
-
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
         List<dynamic> data = jsonResponse['data'];

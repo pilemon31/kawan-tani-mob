@@ -338,7 +338,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   Text(
-                    "Bagaimana kondisi tanamanmu hari ini 😊? ",
+                    "Kamis, 19 Juni 2025",
                     style: GoogleFonts.poppins(
                         color: Colors.white70, fontSize: 14),
                   ),
