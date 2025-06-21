@@ -9,9 +9,12 @@ import 'package:flutter_kawan_tani/presentation/pages/_addPlants/start_planting_
 import 'package:flutter_kawan_tani/presentation/pages/_yourPlants/your_plants_screen.dart';
 import 'package:flutter_kawan_tani/presentation/pages/workshops/workshops_list.dart';
 import "package:get/get.dart";
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() {
-  runApp(const MyApp());
+  initializeDateFormatting('id', null).then((_) {
+    runApp(const MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {

@@ -1,3 +1,4 @@
+// presentation/pages/dashboard/home_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_kawan_tani/presentation/controllers/auth/login_controller.dart';
 import 'package:flutter_kawan_tani/presentation/controllers/weather/weather_controller.dart';
@@ -9,6 +10,13 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:flutter_kawan_tani/presentation/controllers/profile/profile_controller.dart';
+import 'package:flutter_kawan_tani/presentation/controllers/plants/user_plant_controller.dart';
+import 'package:flutter_kawan_tani/presentation/controllers/articles/article_controller.dart';
+import 'package:flutter_kawan_tani/presentation/controllers/workshop/workshop_controller.dart';
+import 'package:flutter_kawan_tani/presentation/pages/workshops/workshop_detail.dart';
+import 'package:flutter_kawan_tani/presentation/pages/article/article_detail.dart';
+
+import 'package:intl/intl.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,8 +26,50 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final LoginController controller = Get.put(LoginController());
+  final LoginController loginController = Get.put(LoginController());
   final ProfileController profileController = Get.put(ProfileController());
+  final WeatherController weatherController = Get.put(WeatherController());
+  final UserPlantController userPlantController =
+      Get.put(UserPlantController());
+  final ArticleController articleController = Get.put(ArticleController());
+  final WorkshopController workshopController = Get.put(WorkshopController());
+
+  @override
+  void initState() {
+    super.initState();
+    weatherController.fetchWeatherData();
+    userPlantController.fetchUserPlants();
+    articleController.fetchArticles();
+    workshopController.fetchActiveWorkshops();
+  }
+
+  String _getGreeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) {
+      return "Selamat Pagi";
+    } else if (hour < 18) {
+      return "Selamat Siang";
+    } else {
+      return "Selamat Malam";
+    }
+  }
+
+  String _formatDate(DateTime date) {
+    return DateFormat('EEEE, dd MMMM yyyy', 'id_ID').format(date);
+  }
+
+  String _formatPlantDuration(int days) {
+    if (days < 30) {
+      return '$days hari';
+    } else if (days < 365) {
+      double months = days / 30;
+      return '${months.toStringAsFixed(0)} bulan';
+    } else {
+      double years = days / 365;
+      return '${years.toStringAsFixed(1)} tahun';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,53 +82,54 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // --- Weather Section ---
                   Padding(
                     padding: const EdgeInsets.all(16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "Mojokerto, Jawa Timur",
-                          style: GoogleFonts.poppins(
-                              fontSize: 20, fontWeight: semiBold),
-                        ),
+                        Obx(() => Text(
+                              // Dynamic location from weather API
+                              weatherController.location.value,
+                              style: GoogleFonts.poppins(
+                                  fontSize: 20, fontWeight: semiBold),
+                            )),
                         const SizedBox(height: 12),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Row(
-                              children: [
-                                SizedBox(
+                            Obx(() => SizedBox(
                                   width: 150,
                                   height: 150,
-                                  child: Obx(() => WeatherCard(
-                                        title: "Kelembapan",
-                                        value: WeatherController()
-                                            .temperature
-                                            .value,
-                                        imagePath:
-                                            "assets/kelembapan_image.jpg",
-                                      )),
-                                ),
-                                const SizedBox(width: 30),
-                                SizedBox(
+                                  child: WeatherCard(
+                                    title: "Kelembapan",
+                                    value: weatherController
+                                            .isLoadingWeather.value
+                                        ? '...'
+                                        : "${weatherController.humidity.value.toStringAsFixed(0)}%",
+                                    imagePath: "assets/kelembapan_image.jpg",
+                                  ),
+                                )),
+                            const SizedBox(width: 30),
+                            Obx(() => SizedBox(
                                   width: 150,
                                   height: 150,
-                                  child: Obx(() => WeatherCard(
-                                        title: "Suhu",
-                                        value: WeatherController()
-                                            .temperature
-                                            .value,
-                                        imagePath: "assets/suhu_image.jpg",
-                                      )),
-                                ),
-                              ],
-                            ),
+                                  child: WeatherCard(
+                                    title: "Suhu",
+                                    value: weatherController
+                                            .isLoadingWeather.value
+                                        ? '...'
+                                        : "${weatherController.temperature.value.toStringAsFixed(0)}°C",
+                                    imagePath: "assets/suhu_image.jpg",
+                                  ),
+                                )),
                           ],
                         ),
                       ],
                     ),
                   ),
+
+                  // --- Your Plants Section ---
                   Padding(
                     padding: const EdgeInsets.all(16),
                     child: Column(
@@ -94,7 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                Get.offNamed("/plants");
+                                Get.toNamed("/plants");
                               },
                               child: Text(
                                 "Lihat Semua",
@@ -108,95 +159,102 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                         const SizedBox(height: 10),
-                        Center(
-                          child: Container(
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.grey.shade300),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Lemon Malang",
-                                  style: GoogleFonts.poppins(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
+                        Obx(() {
+                          if (userPlantController.isLoading.value) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          }
+                          if (userPlantController.userPlants.isEmpty) {
+                            return Center(
+                              child: Text(
+                                'Belum ada tanaman yang ditanam.',
+                                style: GoogleFonts.poppins(color: greyColor),
+                              ),
+                            );
+                          }
+                          return Column(
+                            children: userPlantController.userPlants
+                                .take(2)
+                                .map((plant) {
+                              return Container(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 10),
+                                margin: EdgeInsets.only(bottom: 10),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  border:
+                                      Border.all(color: Colors.grey.shade300),
                                 ),
-                                Text(
-                                  "36 hari menuju panen",
-                                  style:
-                                      GoogleFonts.poppins(color: Colors.grey),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 50,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        color: primaryColor.withOpacity(0.1),
+                                        image: plant.plant.imageUrl != null &&
+                                                plant.plant.imageUrl!.isNotEmpty
+                                            ? DecorationImage(
+                                                image: NetworkImage(
+                                                    'http://localhost:2000/uploads/plants/${plant.plant.imageUrl}'),
+                                                fit: BoxFit.cover,
+                                              )
+                                            : null,
+                                      ),
+                                      child: plant.plant.imageUrl == null ||
+                                              plant.plant.imageUrl!.isEmpty
+                                          ? Center(
+                                              child: PhosphorIcon(
+                                                  PhosphorIcons.leaf(),
+                                                  size: 24,
+                                                  color: primaryColor),
+                                            )
+                                          : null,
+                                    ),
+                                    SizedBox(width: 10),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            plant.customName,
+                                            style: GoogleFonts.poppins(
+                                                fontSize: 16, fontWeight: bold),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          Text(
+                                            "${_formatPlantDuration(plant.targetHarvestDate.difference(plant.plantingDate).inDays)} menuju panen",
+                                            style: GoogleFonts.poppins(
+                                                color: Colors.grey,
+                                                fontSize: 12),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Text(
+                                      "${plant.progress.toStringAsFixed(0)}%",
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 16,
+                                        fontWeight: semiBold,
+                                        color: primaryColor,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(height: 12),
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 10),
-                                  margin: EdgeInsets.only(bottom: 10),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    border:
-                                        Border.all(color: Colors.grey.shade300),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      PhosphorIcon(PhosphorIconsBold.drop,
-                                          size: 24),
-                                      SizedBox(width: 10),
-                                      Text("Siram tanaman",
-                                          style: GoogleFonts.poppins(
-                                              fontSize: 16, fontWeight: bold)),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 10),
-                                  margin: EdgeInsets.only(bottom: 10),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    border:
-                                        Border.all(color: Colors.grey.shade300),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      PhosphorIcon(PhosphorIconsBold.drop,
-                                          size: 24),
-                                      SizedBox(width: 10),
-                                      Text("Siram tanaman",
-                                          style: GoogleFonts.poppins(
-                                              fontSize: 16, fontWeight: bold)),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 10),
-                                  margin: EdgeInsets.only(bottom: 10),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    border:
-                                        Border.all(color: Colors.grey.shade300),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      PhosphorIcon(PhosphorIconsBold.drop,
-                                          size: 24),
-                                      SizedBox(width: 10),
-                                      Text("Siram tanaman",
-                                          style: GoogleFonts.poppins(
-                                              fontSize: 16, fontWeight: bold)),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                              );
+                            }).toList(),
+                          );
+                        }),
                       ],
                     ),
                   ),
+
+                  // --- Workshops Section ---
                   Padding(
                     padding: const EdgeInsets.all(16),
                     child: Column(
@@ -212,7 +270,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                Get.offNamed("/workshops");
+                                Get.toNamed("/workshops");
                               },
                               child: Text(
                                 "Lihat Semua",
@@ -226,18 +284,66 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                         const SizedBox(height: 12),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.asset(
-                            "assets/workshops.png",
-                            width: double.infinity,
-                            height: 200,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                        Obx(() {
+                          if (workshopController.isLoading.value) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          }
+                          if (workshopController.activeWorkshops.isEmpty) {
+                            return Center(
+                              child: Text(
+                                'Tidak ada workshop aktif.',
+                                style: GoogleFonts.poppins(color: greyColor),
+                              ),
+                            );
+                          }
+                          return Column(
+                            children: workshopController.activeWorkshops
+                                .take(1)
+                                .map((workshop) {
+                              return GestureDetector(
+                                onTap: () async {
+                                  await workshopController
+                                      .fetchWorkshopById(workshop.idWorkshop);
+                                  Get.to(() => const WorkshopDetail());
+                                },
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Image.network(
+                                    workshop.gambarWorkshop.isNotEmpty
+                                        ? 'http://localhost:2000/uploads/workshops/${workshop.gambarWorkshop}'
+                                        : 'https://placehold.co/600x200/cccccc/ffffff?text=No+Image',
+                                    width: double.infinity,
+                                    height: 200,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Container(
+                                        width: double.infinity,
+                                        height: 200,
+                                        decoration: BoxDecoration(
+                                          color: greyColor.withOpacity(0.2),
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                        ),
+                                        child: Center(
+                                          child: PhosphorIcon(
+                                              PhosphorIcons.wrench(),
+                                              size: 64,
+                                              color: greyColor),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          );
+                        }),
                       ],
                     ),
                   ),
+
+                  // --- Articles Section ---
                   Padding(
                     padding: const EdgeInsets.all(16),
                     child: Column(
@@ -253,7 +359,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                Get.offNamed("/articles");
+                                Get.toNamed("/articles");
                               },
                               child: Text(
                                 "Lihat Semua",
@@ -267,15 +373,60 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                         const SizedBox(height: 12),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.asset(
-                            "assets/article.png",
-                            width: double.infinity,
-                            height: 200,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                        Obx(() {
+                          if (articleController.isLoading.value) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          }
+                          if (articleController.articles.isEmpty) {
+                            return Center(
+                              child: Text(
+                                'Tidak ada artikel tersedia.',
+                                style: GoogleFonts.poppins(color: greyColor),
+                              ),
+                            );
+                          }
+                          return Column(
+                            children: articleController.articles
+                                .take(1)
+                                .map((article) {
+                              return GestureDetector(
+                                onTap: () {
+                                  articleController.setSelectedArticle(article);
+                                  Get.to(() => const ArticleDetail());
+                                },
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Image.network(
+                                    article.imageUrl.isNotEmpty
+                                        ? 'http://localhost:2000/uploads/articles/${article.imageUrl}'
+                                        : 'https://placehold.co/600x200/cccccc/ffffff?text=No+Image',
+                                    width: double.infinity,
+                                    height: 200,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Container(
+                                        width: double.infinity,
+                                        height: 200,
+                                        decoration: BoxDecoration(
+                                          color: greyColor.withOpacity(0.2),
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                        ),
+                                        child: Center(
+                                          child: PhosphorIcon(
+                                              PhosphorIcons.newspaper(),
+                                              size: 64,
+                                              color: greyColor),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          );
+                        }),
                       ],
                     ),
                   ),
@@ -304,7 +455,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Selamat Pagi, ",
+                        _getGreeting(),
                         style: GoogleFonts.poppins(
                             color: Colors.white, fontSize: 16),
                       ),
@@ -329,7 +480,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   Obx(
                     () => Text(
-                      '${profileController.user['firstName']} ${profileController.user['lastName']}👋',
+                      profileController.user['firstName']?.isNotEmpty == true
+                          ? '${profileController.user['firstName']} ${profileController.user['lastName']}👋'
+                          : 'Pengguna 👋',
                       style: GoogleFonts.poppins(
                         color: Colors.white,
                         fontSize: 20,
@@ -338,7 +491,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   Text(
-                    "Kamis, 19 Juni 2025",
+                    _formatDate(DateTime.now()),
                     style: GoogleFonts.poppins(
                         color: Colors.white70, fontSize: 14),
                   ),
