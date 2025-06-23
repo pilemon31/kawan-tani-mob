@@ -201,13 +201,11 @@ class ArticleController extends GetxController {
       isUpdating(true);
       bool success = await _articleService.saveArticle(articleId);
       if (success) {
-        // Update local data
         var updatedArticle = selectedArticle.value;
         updatedArticle.isSaved = true;
         selectedArticle.value = updatedArticle;
         selectedArticle.refresh();
 
-        // Update di list juga jika ada
         int index = articles.indexWhere((article) => article.id == articleId);
         if (index != -1) {
           articles[index].isSaved = true;
@@ -228,13 +226,11 @@ class ArticleController extends GetxController {
       isUpdating(true);
       bool success = await _articleService.unsaveArticle(articleId);
       if (success) {
-        // Update local data
         var updatedArticle = selectedArticle.value;
         updatedArticle.isSaved = false;
         selectedArticle.value = updatedArticle;
         selectedArticle.refresh();
 
-        // Update di list juga jika ada
         int index = articles.indexWhere((article) => article.id == articleId);
         if (index != -1) {
           articles[index].isSaved = false;
@@ -255,13 +251,11 @@ class ArticleController extends GetxController {
       isUpdating(true);
       bool success = await _articleService.likeArticle(articleId, rating);
       if (success) {
-        // Update local data
         var updatedArticle = selectedArticle.value;
         updatedArticle.isLiked = true;
         selectedArticle.value = updatedArticle;
         selectedArticle.refresh();
 
-        // Update di list juga jika ada
         int index = articles.indexWhere((article) => article.id == articleId);
         if (index != -1) {
           articles[index].isLiked = true;
@@ -313,7 +307,6 @@ class ArticleController extends GetxController {
     articles.assignAll(filteredArticles);
   }
 
-  // Method untuk reset search
   void resetSearch() {
     fetchArticles();
   }

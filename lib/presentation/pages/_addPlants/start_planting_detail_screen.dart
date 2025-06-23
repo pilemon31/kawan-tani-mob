@@ -125,7 +125,7 @@ class _StartPlantingDetailScreenState extends State<StartPlantingDetailScreen> {
                 ),
                 child: plant!.imageUrl != null && plant!.imageUrl!.isNotEmpty
                     ? Image.network(
-                        'http://localhost:2000/uploads/plants/${plant!.imageUrl}',
+                        'https://kawan-tani-backend-production.up.railway.app/uploads/plants/${plant!.imageUrl}',
                         width: double.infinity,
                         height: 200,
                         fit: BoxFit.cover,

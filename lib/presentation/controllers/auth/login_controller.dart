@@ -20,17 +20,14 @@ class LoginController extends GetxController {
       );
 
       final Map<String, dynamic> responseBody = jsonDecode(response.body);
-      print('Login Response: $responseBody'); // Debug log
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         if (responseBody['success'] == true) {
-          // Simpan token dan data user
           final prefs = await SharedPreferences.getInstance();
           await prefs.setString('token', responseBody['data']['token']);
           await prefs.setString(
               'user', jsonEncode(responseBody['data']['user']));
 
-          print('Token dan user data disimpan');
           return true;
         } else {
           errorMessage.value = responseBody['message'] ?? "Gagal login";
@@ -43,7 +40,6 @@ class LoginController extends GetxController {
       }
     } catch (error) {
       errorMessage.value = "Error: ${error.toString()}";
-      print('Login error: $error'); // Debug log
       return false;
     } finally {
       isLoading.value = false;

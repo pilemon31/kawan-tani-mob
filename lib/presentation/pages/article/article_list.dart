@@ -142,7 +142,7 @@ class _ArticleListState extends State<ArticleList> {
                                   image: DecorationImage(
                                     image: NetworkImage(article
                                             .imageUrl.isNotEmpty
-                                        ? 'http://localhost:2000/uploads/articles/${article.imageUrl}'
+                                        ? 'https://kawan-tani-backend-production.up.railway.app/uploads/articles/${article.imageUrl}'
                                         : 'https://via.placeholder.com/150'),
                                     fit: BoxFit.cover,
                                   ),

@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'dart:async';
+import 'package:flutter_kawan_tani/shared/constants.dart';
 
 class AuthService {
-  // Ganti sesuai IP kamu kalau di emulator
-  static const String baseUrl = "http://localhost:2000/api";
+  static const String baseUrl = Constants.baseUrl;
 
   // Register User
   static Future<http.StreamedResponse> registerUser({

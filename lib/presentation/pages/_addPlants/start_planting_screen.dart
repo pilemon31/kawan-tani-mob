@@ -156,7 +156,7 @@ class _StartPlantingScreenState extends State<StartPlantingScreen> {
                             ? ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
                                 child: Image.network(
-                                  'http://localhost:2000/uploads/plants/${plant.imageUrl!}',
+                                  'https://kawan-tani-backend-production.up.railway.app/uploads/plants/${plant.imageUrl!}',
                                   fit: BoxFit.cover,
                                   errorBuilder: (context, error, stackTrace) {
                                     return Container(

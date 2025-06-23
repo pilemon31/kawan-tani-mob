@@ -75,7 +75,7 @@ class _WorkshopDetailState extends State<WorkshopDetail> {
                 borderRadius: BorderRadius.circular(15),
                 child: Image.network(
                   workshop.gambarWorkshop.isNotEmpty
-                      ? 'http://localhost:2000/uploads/workshops/${workshop.gambarWorkshop}'
+                      ? 'https://kawan-tani-backend-production.up.railway.app/uploads/workshops/${workshop.gambarWorkshop}'
                       : 'https://via.placeholder.com/150',
                   width: double.infinity,
                   height: 180,

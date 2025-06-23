@@ -136,7 +136,7 @@ class _ArticleCommentsState extends State<ArticleComments> {
                                       image: DecorationImage(
                                         image: comment.authorImage.isNotEmpty
                                             ? NetworkImage(
-                                                'http://localhost:2000/uploads/users/${comment.authorImage}')
+                                                'https://kawan-tani-backend-production.up.railway.app/uploads/users/${comment.authorImage}')
                                             : AssetImage("assets/apple.jpg")
                                                 as ImageProvider,
                                         fit: BoxFit.cover,

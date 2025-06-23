@@ -266,7 +266,7 @@ class _ArticleDetailState extends State<ArticleDetail> {
                 borderRadius: BorderRadius.circular(15),
                 child: Image.network(
                   article.imageUrl.isNotEmpty
-                      ? 'http://localhost:2000/uploads/articles/${article.imageUrl}'
+                      ? 'https://kawan-tani-backend-production.up.railway.app/uploads/articles/${article.imageUrl}'
                       : 'https://via.placeholder.com/150',
                   width: double.infinity,
                   height: 200,
@@ -301,7 +301,7 @@ class _ArticleDetailState extends State<ArticleDetail> {
                           image: DecorationImage(
                             image: article.authorImage.isNotEmpty
                                 ? NetworkImage(
-                                    'http://localhost:2000/uploads/users/${article.authorImage}')
+                                    'https://kawan-tani-backend-production.up.railway.app/uploads/users/${article.authorImage}')
                                 : AssetImage("assets/farmer2.jpg")
                                     as ImageProvider,
                             fit: BoxFit.cover,

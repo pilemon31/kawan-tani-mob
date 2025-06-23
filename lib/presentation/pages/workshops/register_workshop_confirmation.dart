@@ -24,6 +24,7 @@ class _RegisterWorkshopConfirmationState
   @override
   Widget build(BuildContext context) {
     final workshop = _workshopController.selectedWorkshop.value;
+    
     Future<void> _handlePayment() async {
       try {
         await controller.registerForWorkshop(

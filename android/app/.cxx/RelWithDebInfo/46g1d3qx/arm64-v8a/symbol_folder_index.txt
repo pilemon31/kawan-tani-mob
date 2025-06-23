@@ -1,0 +1,1 @@
+C:\flutter_kawan_tani\kawan-tani-mob\build\app\intermediates\cxx\RelWithDebInfo\46g1d3qx\obj\arm64-v8a

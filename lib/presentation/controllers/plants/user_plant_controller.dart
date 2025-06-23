@@ -196,7 +196,7 @@ class UserPlantController extends GetxController {
               instructions: [],
               plantingDays: []),
           plantingDays: [],
-        ); // Reset to default
+        );
       }
 
       Get.snackbar('Success', 'Plant finished successfully and removed.');

@@ -152,7 +152,7 @@ class _YourPlantsScreenState extends State<YourPlantsScreen> {
                                   userPlant.plant.imageUrl!.isNotEmpty
                               ? DecorationImage(
                                   image: NetworkImage(
-                                      'http://localhost:2000/uploads/plants/${userPlant.plant.imageUrl}'),
+                                      'https://kawan-tani-backend-production.up.railway.app/uploads/plants/${userPlant.plant.imageUrl}'),
                                   fit: BoxFit.cover,
                                 )
                               : null,

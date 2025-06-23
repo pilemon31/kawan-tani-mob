@@ -1,4 +1,3 @@
-// presentation/pages/dashboard/home_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_kawan_tani/presentation/controllers/auth/login_controller.dart';
 import 'package:flutter_kawan_tani/presentation/controllers/weather/weather_controller.dart';
@@ -196,7 +195,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 plant.plant.imageUrl!.isNotEmpty
                                             ? DecorationImage(
                                                 image: NetworkImage(
-                                                    'http://localhost:2000/uploads/plants/${plant.plant.imageUrl}'),
+                                                    'https://kawan-tani-backend-production.up.railway.app/uploads/plants/${plant.plant.imageUrl}'),
                                                 fit: BoxFit.cover,
                                               )
                                             : null,
@@ -313,7 +312,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       borderRadius: BorderRadius.circular(12),
                                       child: Image.network(
                                         workshop.gambarWorkshop.isNotEmpty
-                                            ? 'http://localhost:2000/uploads/workshops/${workshop.gambarWorkshop}'
+                                            ? 'https://kawan-tani-backend-production.up.railway.app/uploads/workshops/${workshop.gambarWorkshop}'
                                             : 'https://placehold.co/600x200/cccccc/ffffff?text=No+Image',
                                         width: double.infinity,
                                         height: 200,
@@ -443,7 +442,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       borderRadius: BorderRadius.circular(12),
                                       child: Image.network(
                                         article.imageUrl.isNotEmpty
-                                            ? 'http://localhost:2000/uploads/articles/${article.imageUrl}'
+                                            ? 'https://kawan-tani-backend-production.up.railway.app/uploads/articles/${article.imageUrl}'
                                             : 'https://placehold.co/600x200/cccccc/ffffff?text=No+Image',
                                         width: double.infinity,
                                         height: 200,

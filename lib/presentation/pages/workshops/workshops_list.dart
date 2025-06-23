@@ -144,7 +144,7 @@ class _WorkshopsListState extends State<WorkshopsList> {
                                   image: DecorationImage(
                                     image: NetworkImage(workshop
                                             .gambarWorkshop.isNotEmpty
-                                        ? 'http://localhost:2000/uploads/workshops/${workshop.gambarWorkshop}'
+                                        ? 'https://kawan-tani-backend-production.up.railway.app/uploads/workshops/${workshop.gambarWorkshop}'
                                         : 'https://via.placeholder.com/150'),
                                     fit: BoxFit.cover,
                                   ),
