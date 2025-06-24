@@ -6,13 +6,6 @@ import "package:get/get.dart";
 import 'package:google_fonts/google_fonts.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-class TaskStatus {
-  final PlantingTask task;
-  bool isDone;
-
-  TaskStatus(this.task, {this.isDone = false});
-}
-
 class StartPlantingTasksScreen extends StatefulWidget {
   const StartPlantingTasksScreen({super.key});
 
@@ -24,7 +17,7 @@ class StartPlantingTasksScreen extends StatefulWidget {
 class _StartPlantingTasksScreenState extends State<StartPlantingTasksScreen> {
   Plant? plant;
   int selectedDay = 1;
-  Map<int, List<TaskStatus>> tasksPerDay = {};
+  Map<int, List<PlantingTask>> tasksPerDay = {};
   Map<int, String> phasePerDay = {};
 
   @override
@@ -51,32 +44,9 @@ class _StartPlantingTasksScreenState extends State<StartPlantingTasksScreen> {
 
     // Group tasks by day from plant data
     for (PlantingDay plantingDay in plant!.plantingDays) {
-      List<TaskStatus> dayTasks =
-          plantingDay.tasks.map((task) => TaskStatus(task)).toList();
-
-      tasksPerDay[plantingDay.day] = dayTasks;
+      tasksPerDay[plantingDay.day] = plantingDay.tasks;
       phasePerDay[plantingDay.day] = plantingDay.phase;
     }
-  }
-
-  double calculateProgress(List<TaskStatus> tasks) {
-    if (tasks.isEmpty) return 0.0;
-    int doneCount = tasks.where((task) => task.isDone).length;
-    return doneCount / tasks.length;
-  }
-
-  double calculateOverallProgress() {
-    if (tasksPerDay.isEmpty) return 0.0;
-
-    int totalTasks = 0;
-    int completedTasks = 0;
-
-    tasksPerDay.values.forEach((dayTasks) {
-      totalTasks += dayTasks.length;
-      completedTasks += dayTasks.where((task) => task.isDone).length;
-    });
-
-    return totalTasks > 0 ? completedTasks / totalTasks : 0.0;
   }
 
   PhosphorIconData _getTaskIcon(String taskType) {
@@ -200,9 +170,7 @@ class _StartPlantingTasksScreenState extends State<StartPlantingTasksScreen> {
       return _buildEmptyState();
     }
 
-    List<TaskStatus> currentTasks = tasksPerDay[selectedDay] ?? [];
-    double dayProgress = calculateProgress(currentTasks);
-    double overallProgress = calculateOverallProgress();
+    List<PlantingTask> currentTasks = tasksPerDay[selectedDay] ?? [];
     String currentPhase = phasePerDay[selectedDay] ?? '';
 
     return Scaffold(
@@ -232,64 +200,6 @@ class _StartPlantingTasksScreenState extends State<StartPlantingTasksScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 21),
         child: ListView(
           children: [
-            // Overall Progress
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: primaryColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Progress Keseluruhan',
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      color: blackColor,
-                      fontWeight: semiBold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '${(overallProgress * 100).toStringAsFixed(0)}% dari ${plant!.plantingDuration} hari',
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      color: greyColor,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  LinearProgressIndicator(
-                    value: overallProgress,
-                    color: primaryColor,
-                    backgroundColor: Colors.grey.shade300,
-                    minHeight: 8,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-
-            // Day Progress
-            Text(
-              'Progress Hari Ini: ${(dayProgress * 100).toStringAsFixed(0)}%',
-              style: GoogleFonts.poppins(
-                fontSize: 18,
-                color: blackColor,
-                fontWeight: bold,
-              ),
-            ),
-            const SizedBox(height: 6),
-            LinearProgressIndicator(
-              value: dayProgress,
-              color: primaryColor,
-              backgroundColor: Colors.grey.shade300,
-              minHeight: 10,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            const SizedBox(height: 20),
-
             // Day Selector
             Center(
               child: Column(
@@ -307,10 +217,6 @@ class _StartPlantingTasksScreenState extends State<StartPlantingTasksScreen> {
                       itemBuilder: (context, index) {
                         int day = tasksPerDay.keys.elementAt(index);
                         bool isSelected = day == selectedDay;
-                        List<TaskStatus> dayTasks = tasksPerDay[day] ?? [];
-                        double progress = calculateProgress(dayTasks);
-                        bool isCompleted =
-                            progress == 1.0 && dayTasks.isNotEmpty;
 
                         return GestureDetector(
                           onTap: () {
@@ -323,50 +229,22 @@ class _StartPlantingTasksScreenState extends State<StartPlantingTasksScreen> {
                             width: 50,
                             height: 50,
                             decoration: BoxDecoration(
-                              color: isSelected
-                                  ? primaryColor
-                                  : isCompleted
-                                      ? Colors.green
-                                      : Colors.white,
+                              color: isSelected ? primaryColor : Colors.white,
                               borderRadius: BorderRadius.circular(25),
                               border: Border.all(
                                   color: isSelected
                                       ? primaryColor
                                       : Colors.grey.shade400),
                             ),
-                            child: Stack(
-                              children: [
-                                Center(
-                                  child: Text(
-                                    "$day",
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: isSelected || isCompleted
-                                          ? Colors.white
-                                          : blackColor,
-                                    ),
-                                  ),
+                            child: Center(
+                              child: Text(
+                                "$day",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: isSelected ? Colors.white : blackColor,
                                 ),
-                                if (isCompleted && !isSelected)
-                                  Positioned(
-                                    top: 2,
-                                    right: 2,
-                                    child: Container(
-                                      width: 16,
-                                      height: 16,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: PhosphorIcon(
-                                        PhosphorIconsBold.check,
-                                        size: 12,
-                                        color: Colors.green,
-                                      ),
-                                    ),
-                                  ),
-                              ],
+                              ),
                             ),
                           ),
                         );
@@ -410,23 +288,9 @@ class _StartPlantingTasksScreenState extends State<StartPlantingTasksScreen> {
             ],
 
             // Tasks Header
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Tugas Hari ke-$selectedDay",
-                  style: GoogleFonts.poppins(fontSize: 22, fontWeight: bold),
-                ),
-                if (currentTasks.isNotEmpty)
-                  Text(
-                    "${currentTasks.where((t) => t.isDone).length}/${currentTasks.length}",
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      color: primaryColor,
-                      fontWeight: semiBold,
-                    ),
-                  ),
-              ],
+            Text(
+              "Tugas Hari ke-$selectedDay",
+              style: GoogleFonts.poppins(fontSize: 22, fontWeight: bold),
             ),
             const SizedBox(height: 10),
 
@@ -460,136 +324,93 @@ class _StartPlantingTasksScreenState extends State<StartPlantingTasksScreen> {
               ),
             ] else ...[
               ...currentTasks.asMap().entries.map((entry) {
-                TaskStatus taskStatus = entry.value;
-                PlantingTask task = taskStatus.task;
+                PlantingTask task = entry.value;
 
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      taskStatus.isDone = !taskStatus.isDone;
-                    });
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    margin: const EdgeInsets.only(bottom: 12),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                          color: taskStatus.isDone
-                              ? primaryColor
-                              : Colors.grey.shade300),
-                      color: taskStatus.isDone
-                          ? primaryColor.withOpacity(0.1)
-                          : whiteColor,
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            color: taskStatus.isDone
-                                ? primaryColor
-                                : _getTaskColor(task.type).withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: PhosphorIcon(
-                            _getTaskIcon(task.type),
-                            size: 20,
-                            color: taskStatus.isDone
-                                ? whiteColor
-                                : _getTaskColor(task.type),
-                          ),
+                return Container(
+                  padding: const EdgeInsets.all(16),
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.grey.shade300),
+                    color: whiteColor,
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: _getTaskColor(task.type).withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(20),
                         ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                task.name,
-                                style: GoogleFonts.poppins(
-                                  fontSize: 16,
-                                  fontWeight: semiBold,
-                                  color: taskStatus.isDone
-                                      ? primaryColor
-                                      : blackColor,
-                                ),
+                        child: PhosphorIcon(
+                          _getTaskIcon(task.type),
+                          size: 20,
+                          color: _getTaskColor(task.type),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              task.name,
+                              style: GoogleFonts.poppins(
+                                fontSize: 16,
+                                fontWeight: semiBold,
+                                color: blackColor,
                               ),
-                              const SizedBox(height: 4),
-                              Row(
-                                children: [
-                                  PhosphorIcon(
-                                    PhosphorIcons.clock(),
-                                    size: 14,
+                            ),
+                            const SizedBox(height: 4),
+                            Row(
+                              children: [
+                                PhosphorIcon(
+                                  PhosphorIcons.clock(),
+                                  size: 14,
+                                  color: greyColor,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  "${task.estimatedTime} menit",
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 12,
                                     color: greyColor,
                                   ),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    "${task.estimatedTime} menit",
+                                ),
+                                const SizedBox(width: 12),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 2,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: _getTaskColor(task.type)
+                                        .withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Text(
+                                    task.type
+                                        .replaceAll('_', ' ')
+                                        .toUpperCase(),
                                     style: GoogleFonts.poppins(
-                                      fontSize: 12,
-                                      color: greyColor,
+                                      fontSize: 10,
+                                      color: _getTaskColor(task.type),
+                                      fontWeight: semiBold,
                                     ),
                                   ),
-                                  const SizedBox(width: 12),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                      vertical: 2,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: _getTaskColor(task.type)
-                                          .withOpacity(0.1),
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Text(
-                                      task.type
-                                          .replaceAll('_', ' ')
-                                          .toUpperCase(),
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 10,
-                                        color: _getTaskColor(task.type),
-                                        fontWeight: semiBold,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Container(
-                          width: 24,
-                          height: 24,
-                          decoration: BoxDecoration(
-                            color: taskStatus.isDone
-                                ? primaryColor
-                                : Colors.transparent,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: taskStatus.isDone
-                                  ? primaryColor
-                                  : Colors.grey.shade400,
-                              width: 2,
+                                ),
+                              ],
                             ),
-                          ),
-                          child: taskStatus.isDone
-                              ? PhosphorIcon(
-                                  PhosphorIconsBold.check,
-                                  size: 16,
-                                  color: whiteColor,
-                                )
-                              : null,
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 );
               }).toList(),
             ],
-            const SizedBox(height: 80), // Extra space for bottom navigation
+            const SizedBox(height: 80),
           ],
         ),
       ),

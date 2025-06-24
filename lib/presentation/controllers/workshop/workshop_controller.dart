@@ -12,16 +12,16 @@ class WorkshopController extends GetxController {
   var ownWorkshops = <Workshop>[].obs;
   var participants = <WorkshopRegistration>[].obs;
   var selectedWorkshop = Workshop(
-    idWorkshop: '',
-    judulWorkshop: '',
-    tanggalWorkshop: '',
-    alamatLengkapWorkshop: '',
-    waktuMulai: '',
-    waktuBerakhir: '',
-    statusVerifikasi: '',
-    statusAktif: false,
-    gambarWorkshop: ''
-  ).obs;
+          idWorkshop: '',
+          judulWorkshop: '',
+          tanggalWorkshop: '',
+          alamatLengkapWorkshop: '',
+          waktuMulai: '',
+          waktuBerakhir: '',
+          statusVerifikasi: '',
+          statusAktif: false,
+          gambarWorkshop: '')
+      .obs;
 
   // Error handling
   var errorMessage = ''.obs;
@@ -49,6 +49,18 @@ class WorkshopController extends GetxController {
     try {
       isLoading(true);
       final result = await workshopService.getActiveWorkshops();
+      activeWorkshops.assignAll(result);
+    } catch (e) {
+      errorMessage(e.toString());
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<void> fetchRegisteredWorkshop() async {
+    try {
+      isLoading(true);
+      final result = await workshopService.getRegisteredWorkshops();
       activeWorkshops.assignAll(result);
     } catch (e) {
       errorMessage(e.toString());

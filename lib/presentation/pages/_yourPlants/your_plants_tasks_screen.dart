@@ -478,7 +478,7 @@ class _YourPlantsTasksScreenState extends State<YourPlantsTasksScreen> {
                                     child: CircularProgressIndicator(
                                       strokeWidth: 2,
                                       valueColor: AlwaysStoppedAnimation<Color>(
-                                          Colors.white),
+                                          Colors.grey),
                                     ),
                                   )
                                 else

@@ -40,7 +40,28 @@ class WorkshopService {
         throw Exception('HTTP ${response.statusCode}: ${response.body}');
       }
     } catch (e) {
-      print('Error in getAllWorkshops: $e');
+      throw Exception('Failed to load workshops: $e');
+    }
+  }
+
+  Future<List<Workshop>> getRegisteredWorkshops() async {
+    try {
+      final token = await _getToken();
+      final response = await http.get(
+        Uri.parse('$baseUrl/workshops/registered'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body)['data'];
+        return data.map((json) => Workshop.fromJson(json)).toList();
+      } else {
+        throw Exception('HTTP ${response.statusCode}: ${response.body}');
+      }
+    } catch (e) {
       throw Exception('Failed to load workshops: $e');
     }
   }

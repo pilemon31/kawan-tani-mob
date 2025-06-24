@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kawan_tani/presentation/controllers/plants/user_plant_controller.dart';
+import 'package:flutter_kawan_tani/presentation/pages/_addPlants/start_planting_tasks_screen.dart';
 import 'package:flutter_kawan_tani/presentation/pages/_yourPlants/your_plants_screen.dart';
 import 'package:flutter_kawan_tani/presentation/widgets/navbar/navbar.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
@@ -450,6 +451,100 @@ class _StartPlantingDetailScreenState extends State<StartPlantingDetailScreen> {
               SizedBox(height: 20),
             ],
 
+            // Daily Tasks Section
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Tugas Harian",
+                  style: GoogleFonts.poppins(fontSize: 22, fontWeight: bold),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Get.to(() => const StartPlantingTasksScreen(),
+                        arguments: plant);
+                  },
+                  child: Text(
+                    "Lihat Detail",
+                    style: GoogleFonts.poppins(
+                      fontSize: 12,
+                      fontWeight: light,
+                      color: primaryColor,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 10),
+
+            // Display daily tasks from planting days
+            if (plant!.plantingDays.isNotEmpty) ...[
+              ...plant!.plantingDays
+                  .expand((day) => day.tasks)
+                  .take(3)
+                  .map((task) => Container(
+                        padding:
+                            EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                        margin: EdgeInsets.only(bottom: 10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: Colors.grey.shade300),
+                        ),
+                        child: Row(
+                          children: [
+                            PhosphorIcon(
+                              _getTaskIcon(task.type),
+                              size: 24,
+                              color: primaryColor,
+                            ),
+                            SizedBox(width: 10),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    task.name,
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 16,
+                                      fontWeight: bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    "Estimasi: ${task.estimatedTime} menit",
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 12,
+                                      color: greyColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ))
+                  .toList(),
+            ] else ...[
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: Center(
+                  child: Text(
+                    "Belum ada tugas harian tersedia",
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      color: greyColor,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+
+            SizedBox(height: 20),
+
+            // Action Button
             ElevatedButton(
               onPressed: () {
                 Get.snackbar(
@@ -517,6 +612,25 @@ class _StartPlantingDetailScreenState extends State<StartPlantingDetailScreen> {
     } else {
       double years = days / 365;
       return '${years.toStringAsFixed(1)} tahun';
+    }
+  }
+
+  PhosphorIconData _getTaskIcon(String taskType) {
+    switch (taskType.toLowerCase()) {
+      case 'watering':
+      case 'siram':
+        return PhosphorIconsBold.drop;
+      case 'fertilizing':
+      case 'pupuk':
+        return PhosphorIconsBold.leaf;
+      case 'pruning':
+      case 'pangkas':
+        return PhosphorIconsBold.scissors;
+      case 'harvesting':
+      case 'panen':
+        return PhosphorIconsBold.basket;
+      default:
+        return PhosphorIconsBold.check;
     }
   }
 }

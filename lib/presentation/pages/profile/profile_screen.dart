@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kawan_tani/presentation/pages/article/saved_article_list.dart';
 import 'package:flutter_kawan_tani/presentation/pages/profile/profile_view.dart';
+import 'package:flutter_kawan_tani/presentation/pages/workshops/workshop_registered_list.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -72,9 +73,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 _buildSettingItem(
                   icon: PhosphorIconsBold.clockCounterClockwise,
-                  title: 'Seminar',
-                  subtitle: 'Riwayat Seminar',
-                  onTap: () {},
+                  title: 'Workshop',
+                  subtitle: 'Workshop Didaftar',
+                  onTap: () => Get.to(() => WorkshopRegisteredList()),
                 ),
                 const SizedBox(height: 24),
                 _buildSectionTitle('Pengaturan'),

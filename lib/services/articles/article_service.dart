@@ -110,7 +110,7 @@ class ArticleService {
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
         List<dynamic> data = jsonResponse['data'];
-        return data.map((item) => Article.fromJson(item)).toList();
+        return data.map((json) => Article.fromJson(json)).toList();
       } else {
         throw Exception('Failed to load saved articles');
       }
