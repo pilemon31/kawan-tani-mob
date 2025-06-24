@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kawan_tani/presentation/controllers/articles/article_controller.dart';
 import 'package:flutter_kawan_tani/presentation/pages/article/article_detail.dart';
-import 'package:flutter_kawan_tani/presentation/pages/article/article_filter.dart';
 import 'package:flutter_kawan_tani/presentation/widgets/navbar/navbar.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -19,6 +18,9 @@ class _ArticleListState extends State<ArticleList> {
   final TextEditingController _searchController = TextEditingController();
   final ArticleController _articleController = Get.put(ArticleController());
 
+  // Add search query variable
+  String _searchQuery = '';
+
   @override
   void initState() {
     super.initState();
@@ -28,37 +30,31 @@ class _ArticleListState extends State<ArticleList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(100.0),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 27),
-          child: AppBar(
-            backgroundColor: Colors.white,
-            toolbarHeight: 80.0,
-            automaticallyImplyLeading: false,
-            title: Padding(
-              padding: const EdgeInsets.all(0),
-              child: Text(
-                'Artikel Pertanian',
-                style: GoogleFonts.poppins(
-                    fontSize: 22,
-                    color: blackColor,
-                    fontWeight: FontWeight.bold),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        toolbarHeight: 70,
+        title: Row(
+          children: [
+            IconButton(
+              onPressed: () {
+                Get.back();
+              },
+              icon: PhosphorIcon(
+                PhosphorIconsBold.arrowLeft,
+                size: 28,
               ),
             ),
-            actions: [
-              IconButton(
-                onPressed: () {
-                  Get.to(() => const FilterArticleScreen());
-                },
-                icon: PhosphorIcon(
-                  PhosphorIconsFill.dotsThreeOutlineVertical,
-                  size: 32.0,
-                  color: blackColor,
-                ),
+            const SizedBox(width: 8),
+            Text(
+              'Artikel Pertanian',
+              style: GoogleFonts.poppins(
+                fontSize: 24,
+                fontWeight: FontWeight.w600,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
       body: SafeArea(
@@ -69,7 +65,12 @@ class _ArticleListState extends State<ArticleList> {
               TextFormField(
                 controller: _searchController,
                 keyboardType: TextInputType.name,
-                onChanged: (value) {},
+                onChanged: (value) {
+                  // Update search query and rebuild UI
+                  setState(() {
+                    _searchQuery = value.toLowerCase();
+                  });
+                },
                 decoration: InputDecoration(
                   hintText: "Cari artikel pertanian....",
                   hintStyle: GoogleFonts.poppins(
@@ -79,6 +80,22 @@ class _ArticleListState extends State<ArticleList> {
                     size: 19.0,
                     color: Color(0xff8594AC),
                   ),
+                  // Add clear button when searching
+                  suffixIcon: _searchQuery.isNotEmpty
+                      ? IconButton(
+                          onPressed: () {
+                            _searchController.clear();
+                            setState(() {
+                              _searchQuery = '';
+                            });
+                          },
+                          icon: const PhosphorIcon(
+                            PhosphorIconsRegular.x,
+                            size: 16,
+                            color: Color(0xff8594AC),
+                          ),
+                        )
+                      : null,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                     borderSide: const BorderSide(color: Color(0xffC3C6D4)),
@@ -113,13 +130,55 @@ class _ArticleListState extends State<ArticleList> {
                     );
                   }
 
+                  // Filter articles based on search query
+                  final filteredArticles =
+                      _articleController.articles.where((article) {
+                    if (_searchQuery.isEmpty) return true;
+
+                    return article.title.toLowerCase().contains(_searchQuery) ||
+                        article.author.toLowerCase().contains(_searchQuery);
+                  }).toList();
+
+                  // Show message if no results found
+                  if (filteredArticles.isEmpty && _searchQuery.isNotEmpty) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          PhosphorIcon(
+                            PhosphorIconsRegular.magnifyingGlass,
+                            size: 64,
+                            color: Colors.grey[400],
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Tidak ada artikel ditemukan',
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Coba kata kunci lain',
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              color: Colors.grey[500],
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
                   return ListView.separated(
-                    itemCount: _articleController.articles.length,
+                    itemCount: filteredArticles.length,
                     separatorBuilder: (BuildContext context, int index) {
                       return const SizedBox(height: 10);
                     },
                     itemBuilder: (BuildContext context, int index) {
-                      final article = _articleController.articles[index];
+                      final article = filteredArticles[index];
                       return InkWell(
                         onTap: () {
                           _articleController.setSelectedArticle(article);

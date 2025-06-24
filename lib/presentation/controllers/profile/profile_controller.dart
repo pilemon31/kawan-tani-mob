@@ -53,7 +53,6 @@ class ProfileController extends GetxController {
         if (responseBody['success'] == true && responseBody['data'] != null) {
           final userData = responseBody['data']['user'];
 
-          // Map data dari API ke format yang digunakan app
           final mappedUser = {
             'id': userData['id_pengguna'],
             'firstName': userData['nama_depan_pengguna'],
@@ -66,11 +65,9 @@ class ProfileController extends GetxController {
             'status_verifikasi': userData['status_verfikasi'],
           };
 
-          // Update user data
           user.clear();
           user.assignAll(mappedUser);
 
-          // Simpan ke SharedPreferences
           await prefs.setString('user', jsonEncode(mappedUser));
           user.refresh();
         }
@@ -147,10 +144,8 @@ class ProfileController extends GetxController {
     try {
       isLoading(true);
 
-      // Coba ambil data terbaru dari API terlebih dahulu
       await fetchUserData();
 
-      // Jika API gagal, fallback ke data lokal
       if (user.isEmpty) {
         final prefs = await SharedPreferences.getInstance();
         final userJson = prefs.getString('user');
@@ -172,7 +167,7 @@ class ProfileController extends GetxController {
   String getAvatarUrl() {
     final avatar = user['avatar'];
     if (avatar != null && avatar.toString().isNotEmpty) {
-      return 'http://localhost:2000/uploads/users/$avatar';
+      return 'https://kawan-tani-backend-production.up.railway.app/uploads/users/$avatar';
     }
     return '';
   }

@@ -113,34 +113,6 @@ class ProfileView extends StatelessWidget {
                     color: Colors.grey[100],
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Debug Info:',
-                        style: GoogleFonts.poppins(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey[700],
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'User ID: ${user['id'] ?? 'N/A'}',
-                        style: GoogleFonts.poppins(
-                          fontSize: 10,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                      Text(
-                        'Data keys: ${user.keys.toList()}',
-                        style: GoogleFonts.poppins(
-                          fontSize: 10,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                    ],
-                  ),
                 ),
               ],
             ),
