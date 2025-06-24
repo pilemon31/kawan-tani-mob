@@ -110,7 +110,7 @@ class ArticleService {
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
         List<dynamic> data = jsonResponse['data'];
-        return data.map((json) => Article.fromJson(json)).toList();
+        return data.map((item) => Article.fromJson(item)).toList();
       } else {
         throw Exception('Failed to load saved articles');
       }
@@ -249,7 +249,7 @@ class ArticleService {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final jsonResponse = jsonDecode(response.body);
-        
+
         final commentData = jsonResponse['data'];
 
         return Comment(

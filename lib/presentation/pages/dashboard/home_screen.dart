@@ -88,7 +88,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Obx(() => Text(
-                              // Dynamic location from weather API
                               weatherController.location.value,
                               style: GoogleFonts.poppins(
                                   fontSize: 20, fontWeight: semiBold),

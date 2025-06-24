@@ -19,6 +19,8 @@ class _YourPlantsTasksScreenState extends State<YourPlantsTasksScreen> {
   late String userPlantId;
   late RxInt selectedDay;
 
+  final RxSet<String> updatingTasks = <String>{}.obs;
+
   @override
   void initState() {
     super.initState();
@@ -31,27 +33,36 @@ class _YourPlantsTasksScreenState extends State<YourPlantsTasksScreen> {
   }
 
   Future<void> _loadData() async {
-    // Set isLoading to true before fetching data
     userPlantController.isLoading(true);
     try {
       await userPlantController.getUserPlantDetail(userPlantId);
 
-      // Now that selectedUserPlant is updated, check its plantingDays
       if (userPlantController.selectedUserPlant.value.plantingDays.isNotEmpty) {
-        // Only update selectedDay if it hasn't been set to a valid day yet,
-        // or if you always want to default to the first day upon reload.
-        // This line is safe because it's now wrapped in addPostFrameCallback.
         selectedDay.value =
             userPlantController.selectedUserPlant.value.plantingDays.first.day;
-      } else {
-        print('No planting days found for this user plant. (After fetch)');
-        // Optionally show a Get.snackbar here, but ensure it's not during build
-        // Get.snackbar('Info', 'Belum ada tugas harian untuk tanaman ini.');
-      }
+      } else {}
     } catch (e) {
       Get.snackbar('Error', 'Gagal memuat detail tanaman: ${e.toString()}');
     } finally {
       userPlantController.isLoading(false);
+    }
+  }
+
+  Future<void> _updateTaskStatus(String taskId, bool newStatus) async {
+    updatingTasks.add(taskId);
+
+    try {
+      await userPlantController.updateTaskProgress(
+        userPlantId: userPlantId,
+        taskId: taskId,
+        doneStatus: newStatus,
+      );
+
+      await userPlantController.getUserPlantDetail(userPlantId);
+    } catch (e) {
+      Get.snackbar('Error', 'Gagal mengupdate tugas: ${e.toString()}');
+    } finally {
+      updatingTasks.remove(taskId);
     }
   }
 
@@ -141,7 +152,6 @@ class _YourPlantsTasksScreenState extends State<YourPlantsTasksScreen> {
       body: Obx(() {
         if (userPlantController.isLoading.value &&
             userPlantController.selectedUserPlant.value.id.isEmpty) {
-          // Show full screen loading indicator only if no data has been loaded yet
           return const Center(child: CircularProgressIndicator());
         }
 
@@ -256,7 +266,6 @@ class _YourPlantsTasksScreenState extends State<YourPlantsTasksScreen> {
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Obx(() => Row(
-                              // Wrap Row with Obx to react to selectedDay changes
                               children: availableDays.map((day) {
                                 bool isSelected = day == selectedDay.value;
                                 final dayData = selectedUserPlant.plantingDays
@@ -269,7 +278,6 @@ class _YourPlantsTasksScreenState extends State<YourPlantsTasksScreen> {
 
                                 return GestureDetector(
                                   onTap: () {
-                                    // Direct assignment is fine, selectedDay is RxInt
                                     selectedDay.value = day;
                                   },
                                   child: Container(
@@ -398,116 +406,112 @@ class _YourPlantsTasksScreenState extends State<YourPlantsTasksScreen> {
                 const SizedBox(height: 10),
                 if (currentDayData.tasks.isNotEmpty)
                   ...currentDayData.tasks.map((task) {
-                    return GestureDetector(
-                      onTap: userPlantController.isUpdating.value
-                          ? null
-                          : () async {
-                              await userPlantController.updateTaskProgress(
-                                userPlantId: userPlantId,
-                                taskId: task.id,
-                                doneStatus: !task.isCompleted,
-                              );
-                            },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 12),
-                        margin: const EdgeInsets.only(bottom: 10),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                              color: task.isCompleted
-                                  ? primaryColor
-                                  : Colors.grey.shade300),
-                          color: task.isCompleted ? primaryColor : whiteColor,
-                        ),
-                        child: Row(
-                          children: [
-                            PhosphorIcon(
-                              _getTaskIcon(task.type),
-                              size: 24,
-                              color: task.isCompleted
-                                  ? whiteColor
-                                  : _getTaskColor(task.type),
+                    return Obx(() => GestureDetector(
+                          onTap: updatingTasks.contains(task.id)
+                              ? null
+                              : () async {
+                                  await _updateTaskStatus(
+                                      task.id, !task.isCompleted);
+                                },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 15, vertical: 12),
+                            margin: const EdgeInsets.only(bottom: 10),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                  color: task.isCompleted
+                                      ? primaryColor
+                                      : Colors.grey.shade300),
+                              color:
+                                  task.isCompleted ? primaryColor : whiteColor,
                             ),
-                            const SizedBox(width: 15),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    task.name,
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 16,
-                                      fontWeight: bold,
-                                      color: task.isCompleted
-                                          ? whiteColor
-                                          : blackColor,
-                                    ),
+                            child: Row(
+                              children: [
+                                PhosphorIcon(
+                                  _getTaskIcon(task.type),
+                                  size: 24,
+                                  color: task.isCompleted
+                                      ? whiteColor
+                                      : _getTaskColor(task.type),
+                                ),
+                                const SizedBox(width: 15),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        task.name,
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 16,
+                                          fontWeight: bold,
+                                          color: task.isCompleted
+                                              ? whiteColor
+                                              : blackColor,
+                                        ),
+                                      ),
+                                      Text(
+                                        '${task.estimatedTime} menit - ${task.type}',
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 12,
+                                          color: task.isCompleted
+                                              ? whiteColor.withOpacity(0.8)
+                                              : Colors.grey.shade600,
+                                        ),
+                                      ),
+                                      if (task.completedDate != null)
+                                        Text(
+                                          'Selesai: ${task.completedDate!.day}/${task.completedDate!.month}/${task.completedDate!.year}',
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 11,
+                                            color: whiteColor.withOpacity(0.7),
+                                          ),
+                                        ),
+                                    ],
                                   ),
-                                  Text(
-                                    '${task.estimatedTime} menit - ${task.type}',
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 12,
-                                      color: task.isCompleted
-                                          ? whiteColor.withOpacity(0.8)
-                                          : Colors.grey.shade600,
+                                ),
+                                if (updatingTasks.contains(task.id))
+                                  const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Colors.white),
                                     ),
-                                  ),
-                                  if (task.completedDate != null)
-                                    Text(
-                                      'Selesai: ${task.completedDate!.day}/${task.completedDate!.month}/${task.completedDate!.year}',
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 11,
-                                        color: whiteColor.withOpacity(0.7),
+                                  )
+                                else
+                                  CheckboxTheme(
+                                    data: CheckboxThemeData(
+                                      side: WidgetStateBorderSide.resolveWith(
+                                        (states) {
+                                          if (states
+                                              .contains(WidgetState.selected)) {
+                                            return BorderSide(
+                                                color: primaryColor);
+                                          }
+                                          return BorderSide(
+                                              color: Colors.grey.shade400);
+                                        },
                                       ),
                                     ),
-                                ],
-                              ),
-                            ),
-                            if (userPlantController.isUpdating.value)
-                              const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                      Colors.white),
-                                ),
-                              )
-                            else
-                              CheckboxTheme(
-                                data: CheckboxThemeData(
-                                  side: WidgetStateBorderSide.resolveWith(
-                                    (states) {
-                                      if (states
-                                          .contains(WidgetState.selected)) {
-                                        return BorderSide(color: primaryColor);
-                                      }
-                                      return BorderSide(
-                                          color: Colors.grey.shade400);
-                                    },
+                                    child: Checkbox(
+                                      value: task.isCompleted,
+                                      onChanged: (value) async {
+                                        if (value != null) {
+                                          await _updateTaskStatus(
+                                              task.id, value);
+                                        }
+                                      },
+                                      activeColor: primaryColor,
+                                      checkColor: whiteColor,
+                                    ),
                                   ),
-                                ),
-                                child: Checkbox(
-                                  value: task.isCompleted,
-                                  onChanged: (value) async {
-                                    if (value != null) {
-                                      await userPlantController
-                                          .updateTaskProgress(
-                                        userPlantId: userPlantId,
-                                        taskId: task.id,
-                                        doneStatus: value,
-                                      );
-                                    }
-                                  },
-                                  activeColor: primaryColor,
-                                  checkColor: whiteColor,
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                    );
+                              ],
+                            ),
+                          ),
+                        ));
                   })
                 else
                   Container(
@@ -528,7 +532,6 @@ class _YourPlantsTasksScreenState extends State<YourPlantsTasksScreen> {
                     ),
                   ),
               ] else ...[
-                // This block runs if currentDayData is null (no tasks for the selected day)
                 Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
@@ -581,7 +584,7 @@ class _YourPlantsTasksScreenState extends State<YourPlantsTasksScreen> {
                             if (result == true) {
                               await userPlantController
                                   .finishPlant(userPlantId);
-                              Get.back();
+                              Get.back(result: true);
                             }
                           },
                     style: ElevatedButton.styleFrom(

@@ -33,7 +33,7 @@ class UserPlantController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchTodayTasks(); // Fetches tasks for the home screen
+    fetchTodayTasks();
   }
 
   Future<void> fetchUserPlants() async {
@@ -52,14 +52,11 @@ class UserPlantController extends GetxController {
     try {
       isLoading(true);
       var result = await _userPlantService.getUserPlantDetail(userPlantId);
-
-      // Filter plantingDays to include only today and previous days
       final now = DateTime.now();
       final filteredPlantingDays = result.plantingDays.where((day) {
         return day.actualDate.isBefore(now.add(const Duration(days: 1)));
       }).toList();
 
-      // Update the selectedUserPlant with filtered days
       selectedUserPlant.value = UserPlant(
         id: result.id,
         customName: result.customName,
@@ -68,7 +65,7 @@ class UserPlantController extends GetxController {
         progress: result.progress,
         status: result.status,
         plant: result.plant,
-        plantingDays: filteredPlantingDays, // Use filtered days here
+        plantingDays: filteredPlantingDays,
       );
     } catch (e) {
       Get.snackbar('Error', 'Failed to load user plant detail: $e');
@@ -96,7 +93,6 @@ class UserPlantController extends GetxController {
     }
   }
 
-  // This method is primarily used internally by updateTaskProgress
   Future<void> fetchDailyTasksAndUpdate(String userPlantId) async {
     try {
       isLoading(true);
@@ -105,22 +101,20 @@ class UserPlantController extends GetxController {
         userPlantId: userPlantId,
       );
 
-      // Filter plantingDays for the specific user plant to include only today and previous days
       final now = DateTime.now();
       final filteredDailyTasks = result.where((day) {
         return day.actualDate.isBefore(now.add(const Duration(days: 1)));
       }).toList();
 
-      // Update the selectedUserPlant observable directly as well
       selectedUserPlant.update((plant) {
         if (plant != null) {
           plant.plantingDays.clear();
           plant.plantingDays
-              .addAll(filteredDailyTasks); // Use filtered days here
+              .addAll(filteredDailyTasks);
         }
       });
       dailyTasks.assignAll(
-          filteredDailyTasks); // Also update the separate dailyTasks observable if used elsewhere
+          filteredDailyTasks);
     } catch (e) {
       Get.snackbar('Error', 'Failed to load daily tasks: $e');
     } finally {
@@ -152,14 +146,8 @@ class UserPlantController extends GetxController {
         taskId: taskId,
         doneStatus: doneStatus,
       );
-
-      // Refetch both the general user plant detail and the daily tasks
-      // to ensure all data is consistent and filtered.
       await getUserPlantDetail(
-          userPlantId); // Updates selectedUserPlant with filtered days
-      // fetchDailyTasksAndUpdate is called by getUserPlantDetail implicitly
-      // or you can call it explicitly if dailyTasks stream is separate and needed for specific filtering logic.
-      // For this case, getUserPlantDetail update is sufficient.
+          userPlantId);
 
       Get.snackbar('Success', 'Task updated successfully');
     } catch (e) {
@@ -172,14 +160,11 @@ class UserPlantController extends GetxController {
   Future<void> finishPlant(String userPlantId) async {
     try {
       isLoading(true);
-      // Call the service to mark the plant as finished
       await _userPlantService.finishPlant(userPlantId);
 
-      // Remove the plant from the observable list immediately
       userPlants.removeWhere((plant) => plant.id == userPlantId);
-      userPlants.refresh(); // Ensure UI updates
+      userPlants.refresh();
 
-      // Also clear selected plant if it was the one being finished
       if (selectedUserPlant.value.id == userPlantId) {
         selectedUserPlant.value = UserPlant(
           id: '',

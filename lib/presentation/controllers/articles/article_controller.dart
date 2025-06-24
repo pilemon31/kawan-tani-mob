@@ -22,6 +22,20 @@ class ArticleController extends GetxController {
     status: '',
     isVerified: '',
   ).obs;
+  var selectedSavedArticle = Article(
+    id: '',
+    title: '',
+    description: '',
+    content: '',
+    imageUrl: '',
+    category: '',
+    author: '',
+    authorImage: '',
+    createdAt: DateTime.now(),
+    isActive: true,
+    status: '',
+    isVerified: '',
+  ).obs;
   var isLoading = false.obs;
   var isCreating = false.obs;
   var isUpdating = false.obs;
@@ -86,6 +100,18 @@ class ArticleController extends GetxController {
       isLoading(true);
       var result = await _articleService.getArticleById(id);
       selectedArticle.value = result;
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to load article: $e');
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<void> getSavedArticleById(String id) async {
+    try {
+      isLoading(true);
+      var result = await _articleService.getArticleById(id);
+      selectedSavedArticle.value = result;
     } catch (e) {
       Get.snackbar('Error', 'Failed to load article: $e');
     } finally {

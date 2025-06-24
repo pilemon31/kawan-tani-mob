@@ -8,14 +8,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:get/get.dart';
 
-class ArticleDetail extends StatefulWidget {
-  const ArticleDetail({super.key});
+class SavedArticleDetail extends StatefulWidget {
+  const SavedArticleDetail({super.key});
 
   @override
-  State<ArticleDetail> createState() => _ArticleDetailState();
+  State<SavedArticleDetail> createState() => _SavedArticleDetailState();
 }
 
-class _ArticleDetailState extends State<ArticleDetail> {
+class _SavedArticleDetailState extends State<SavedArticleDetail> {
   final ArticleController _articleController = Get.find<ArticleController>();
   double selectedRating = 0;
 
@@ -53,7 +53,7 @@ class _ArticleDetailState extends State<ArticleDetail> {
             ),
             TextButton(
               onPressed: () async {
-                Get.back(); // Tutup dialog
+                Get.back();
                 final success =
                     await _articleController.unlikeArticle(articleId);
                 if (success) {
@@ -71,10 +71,8 @@ class _ArticleDetailState extends State<ArticleDetail> {
         ),
       );
     } else {
-      // Reset rating sebelum menampilkan dialog
       selectedRating = 0;
 
-      // Jika belum liked, tampilkan dialog rating
       showDialog(
         context: context,
         builder: (context) => StatefulBuilder(
@@ -245,7 +243,6 @@ class _ArticleDetailState extends State<ArticleDetail> {
                 ),
                 IconButton(
                   onPressed: () {
-                    // TODO: Implement share functionality
                   },
                   icon: PhosphorIcon(
                     PhosphorIconsBold.shareNetwork,

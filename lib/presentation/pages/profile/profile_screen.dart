@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kawan_tani/presentation/pages/article/saved_article_list.dart';
 import 'package:flutter_kawan_tani/presentation/pages/profile/profile_view.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -66,8 +67,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 _buildSettingItem(
                   icon: PhosphorIconsBold.clockCounterClockwise,
                   title: 'Artikel',
-                  subtitle: 'Riwayat Artikel',
-                  onTap: () {},
+                  subtitle: 'Artikel Disimpan',
+                  onTap: () => Get.to(() => SavedArticleList()),
                 ),
                 _buildSettingItem(
                   icon: PhosphorIconsBold.clockCounterClockwise,

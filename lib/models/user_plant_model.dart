@@ -1,7 +1,7 @@
 import 'package:flutter_kawan_tani/models/plant_model.dart';
 
 class UserPlant {
-  final String id; // Expects String
+  final String id;
   final String customName;
   final DateTime plantingDate;
   final DateTime targetHarvestDate;
@@ -23,7 +23,6 @@ class UserPlant {
 
   factory UserPlant.fromJson(Map<String, dynamic> json) {
     return UserPlant(
-      // Ensure 'id_tanaman_pengguna' is always a String
       id: json['id_tanaman_pengguna']?.toString() ?? '',
       customName: json['nama_custom'] ?? '',
       plantingDate: DateTime.parse(json['tanggal_penanaman']),
@@ -40,7 +39,7 @@ class UserPlant {
 }
 
 class UserPlantingDay {
-  final String id; // Expects String
+  final String id;
   final int day;
   final DateTime actualDate;
   final String phase;
@@ -83,7 +82,7 @@ class UserPlantingDay {
 }
 
 class UserPlantingTask {
-  final String id; // Expects String
+  final String id;
   final String name;
   final String type;
   final int estimatedTime;
@@ -101,7 +100,6 @@ class UserPlantingTask {
 
   factory UserPlantingTask.fromJson(Map<String, dynamic> json) {
     return UserPlantingTask(
-      // Same here, ensure 'id_tugas_penanaman_pengguna' is always a String
       id: (json['id_tugas_penanaman_pengguna'] as dynamic)?.toString() ?? '',
       name: json['nama_tugas'] ?? '',
       type: json['jenis_tugas'] ?? '',

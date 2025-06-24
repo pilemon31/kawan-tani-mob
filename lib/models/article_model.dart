@@ -46,10 +46,12 @@ class Article {
       content: json['isi_artikel'] ?? '',
       imageUrl: json['gambar_artikel'] ?? '',
       category: json['kategori']?['nama_kategori_artikel'] ?? '',
-      author: '${json['pengguna']?['nama_depan_pengguna'] ?? ''} ${json['pengguna']?['nama_belakang_pengguna'] ?? ''}'.trim(),
+      author:
+          '${json['pengguna']?['nama_depan_pengguna'] ?? ''} ${json['pengguna']?['nama_belakang_pengguna'] ?? ''}'
+              .trim(),
       authorImage: json['pengguna']?['avatar'] ?? '',
-      createdAt: json['tanggal_artikel'] != null 
-          ? DateTime.parse(json['tanggal_artikel']) 
+      createdAt: json['tanggal_artikel'] != null
+          ? DateTime.parse(json['tanggal_artikel'])
           : DateTime.now(),
       isActive: json['status_aktif'] ?? false,
       status: json['status_artikel'] ?? '',
@@ -98,12 +100,14 @@ class Comment {
 
   factory Comment.fromJson(Map<String, dynamic> json) {
     return Comment(
-      id: json['id_komentar']?.toString() ?? '', // Convert int to String
+      id: json['id_komentar']?.toString() ?? '',
       content: json['komentar'] ?? '',
-      author: '${json['pengguna']?['nama_depan_pengguna'] ?? ''} ${json['pengguna']?['nama_belakang_pengguna'] ?? ''}'.trim(),
-      authorImage: json['pengguna']?['avatar'] ?? '', // Menggunakan 'avatar' bukan 'foto_profil'
-      createdAt: json['tanggal_komentar'] != null 
-          ? DateTime.parse(json['tanggal_komentar']) 
+      author:
+          '${json['pengguna']?['nama_depan_pengguna'] ?? ''} ${json['pengguna']?['nama_belakang_pengguna'] ?? ''}'
+              .trim(),
+      authorImage: json['pengguna']?['avatar'] ?? '',
+      createdAt: json['tanggal_komentar'] != null
+          ? DateTime.parse(json['tanggal_komentar'])
           : DateTime.now(),
     );
   }
@@ -135,8 +139,8 @@ class ArticleLike {
       id: json['id']?.toString() ?? '',
       userId: json['id_pengguna'] ?? '',
       articleId: json['id_artikel'] ?? '',
-      createdAt: json['created_at'] != null 
-          ? DateTime.parse(json['created_at']) 
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'])
           : DateTime.now(),
     );
   }

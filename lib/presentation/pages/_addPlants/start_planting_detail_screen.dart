@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kawan_tani/presentation/controllers/plants/user_plant_controller.dart';
-import 'package:flutter_kawan_tani/presentation/pages/_yourPlants/your_plants_screen.dart'; // Navigate to YourPlantsScreen
+import 'package:flutter_kawan_tani/presentation/pages/_yourPlants/your_plants_screen.dart';
 import 'package:flutter_kawan_tani/presentation/widgets/navbar/navbar.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:flutter_kawan_tani/models/plant_model.dart';
@@ -21,10 +21,140 @@ class _StartPlantingDetailScreenState extends State<StartPlantingDetailScreen> {
   final UserPlantController userPlantController =
       Get.find<UserPlantController>();
 
+  final TextEditingController customNameController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     plant = Get.arguments as Plant?;
+    if (plant != null) {
+      customNameController.text = plant!.name;
+    }
+  }
+
+  @override
+  void dispose() {
+    customNameController.dispose();
+    super.dispose();
+  }
+
+  void _showCustomNameDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: Text(
+            'Nama Tanaman Anda',
+            style: GoogleFonts.poppins(
+              fontSize: 18,
+              fontWeight: bold,
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Berikan nama khusus untuk tanaman ${plant!.name} Anda',
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  color: greyColor,
+                ),
+              ),
+              SizedBox(height: 16),
+              TextField(
+                controller: customNameController,
+                decoration: InputDecoration(
+                  labelText: 'Nama Tanaman',
+                  hintText: 'Contoh: Tomat Belakang Rumah',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: primaryColor),
+                  ),
+                ),
+                maxLength: 50,
+                textCapitalization: TextCapitalization.words,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                'Batal',
+                style: GoogleFonts.poppins(
+                  color: greyColor,
+                ),
+              ),
+            ),
+            Obx(
+              () => ElevatedButton(
+                onPressed: userPlantController.isCreating.value
+                    ? null
+                    : () async {
+                        String customName = customNameController.text.trim();
+                        if (customName.isEmpty) {
+                          Get.snackbar(
+                            'Error',
+                            'Nama tanaman tidak boleh kosong',
+                            backgroundColor: Colors.red,
+                            colorText: whiteColor,
+                          );
+                          return;
+                        }
+
+                        Navigator.of(context).pop();
+
+                        await userPlantController.createUserPlant(
+                          plantId: plant!.id,
+                          customName: customName,
+                        );
+
+                        Get.offAll(() => YourPlantsScreen());
+                        Get.snackbar(
+                          'Berhasil',
+                          'Memulai penanaman $customName',
+                          backgroundColor: primaryColor,
+                          colorText: whiteColor,
+                        );
+                      },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: primaryColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: userPlantController.isCreating.value
+                    ? SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          color: whiteColor,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : Text(
+                        'Mulai Tanam',
+                        style: GoogleFonts.poppins(
+                          color: whiteColor,
+                          fontWeight: semiBold,
+                        ),
+                      ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -320,10 +450,8 @@ class _StartPlantingDetailScreenState extends State<StartPlantingDetailScreen> {
               SizedBox(height: 20),
             ],
 
-            // Action Buttons
             ElevatedButton(
               onPressed: () {
-                // Navigate to shop or marketplace
                 Get.snackbar(
                   'Info',
                   'Fitur beli alat dan bahan akan segera tersedia',
@@ -348,43 +476,24 @@ class _StartPlantingDetailScreenState extends State<StartPlantingDetailScreen> {
               ),
             ),
             SizedBox(height: 10),
-            Obx(
-              () => ElevatedButton(
-                onPressed: userPlantController.isCreating.value
-                    ? null
-                    : () async {
-                        await userPlantController.createUserPlant(
-                          plantId: plant!.id,
-                          customName: plant!.name,
-                        );
-                        // After successful creation, navigate to YourPlantsScreen
-                        // The YourPlantsScreen will then fetch the user's plants,
-                        // including the newly created one with its specific tasks.
-                        Get.offAll(() => YourPlantsScreen());
-                        Get.snackbar(
-                          'Berhasil',
-                          'Memulai penanaman ${plant!.name}',
-                          backgroundColor: primaryColor,
-                          colorText: whiteColor,
-                        );
-                      },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryColor,
-                  minimumSize: Size(double.infinity, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+            ElevatedButton(
+              onPressed: () {
+                _showCustomNameDialog();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: primaryColor,
+                minimumSize: Size(double.infinity, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                child: userPlantController.isCreating.value
-                    ? CircularProgressIndicator(color: whiteColor)
-                    : Text(
-                        "Mulai tanam",
-                        style: GoogleFonts.poppins(
-                          fontSize: 18,
-                          fontWeight: semiBold,
-                          color: Colors.white,
-                        ),
-                      ),
+              ),
+              child: Text(
+                "Mulai tanam",
+                style: GoogleFonts.poppins(
+                  fontSize: 18,
+                  fontWeight: semiBold,
+                  color: Colors.white,
+                ),
               ),
             ),
             SizedBox(height: 20),
