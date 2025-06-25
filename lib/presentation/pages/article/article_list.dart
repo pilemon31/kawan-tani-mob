@@ -48,7 +48,7 @@ class _ArticleListState extends State<ArticleList> {
             title: Padding(
               padding: EdgeInsets.all(0),
               child: Text(
-                'Mulai Bertanam',
+                'Artikel Pertanian',
                 style: GoogleFonts.poppins(
                   fontSize: 20,
                   color: blackColor,
