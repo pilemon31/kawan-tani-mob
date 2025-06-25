@@ -11,6 +11,7 @@ class WorkshopController extends GetxController {
   var activeWorkshops = <Workshop>[].obs;
   var ownWorkshops = <Workshop>[].obs;
   var participants = <WorkshopRegistration>[].obs;
+  var registeredWorkshopDetails = <Map<String, dynamic>>[].obs;
   var selectedWorkshop = Workshop(
           idWorkshop: '',
           judulWorkshop: '',
@@ -30,6 +31,7 @@ class WorkshopController extends GetxController {
   void onInit() {
     fetchAllWorkshops();
     fetchActiveWorkshops();
+    fetchRegisteredWorkshop();
     super.onInit();
   }
 
@@ -62,17 +64,21 @@ class WorkshopController extends GetxController {
       isLoading(true);
       final List<WorkshopRegistration> registrations =
           await workshopService.getRegisteredWorkshops();
-      List<Workshop> fetchedWorkshops = [];
+
+      List<Map<String, dynamic>> fetchedDetails = [];
 
       for (var reg in registrations) {
-        //
         try {
           final workshopDetail =
               await workshopService.getWorkshopById(reg.idWorkshop);
-          fetchedWorkshops.add(workshopDetail);
+
+          fetchedDetails.add({
+            'workshop': workshopDetail,
+            'registration': reg,
+          });
         } catch (e) {}
       }
-      activeWorkshops.assignAll(fetchedWorkshops);
+      registeredWorkshopDetails.assignAll(fetchedDetails);
     } catch (e) {
       errorMessage(e.toString());
     } finally {

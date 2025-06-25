@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kawan_tani/presentation/controllers/articles/article_controller.dart';
-import 'package:flutter_kawan_tani/presentation/pages/article/saved_article_detail.dart';
+import 'package:flutter_kawan_tani/presentation/pages/article/article_detail.dart';
+// import 'package:flutter_kawan_tani/presentation/pages/article/saved_article_detail.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
@@ -179,7 +180,7 @@ class _SavedArticleListState extends State<SavedArticleList> {
                       return InkWell(
                         onTap: () {
                           _articleController.setSelectedArticle(article);
-                          Get.to(() => const SavedArticleDetail());
+                          Get.to(() => const ArticleDetail());
                         },
                         borderRadius: BorderRadius.circular(10),
                         child: Container(

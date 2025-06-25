@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kawan_tani/models/workshop_model.dart'; // Import model
 import 'package:flutter_kawan_tani/presentation/controllers/workshop/register_workshop_controller.dart';
+import 'package:flutter_kawan_tani/presentation/controllers/workshop/workshop_controller.dart'; // Import controller
 import 'package:flutter_kawan_tani/presentation/pages/workshops/register_workshop_confirmation.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:intl/intl.dart'; // Import intl untuk format harga
 
 class RegisterWorkshopPayment extends StatefulWidget {
   const RegisterWorkshopPayment({super.key});
@@ -15,12 +18,22 @@ class RegisterWorkshopPayment extends StatefulWidget {
 }
 
 class _RegisterWorkshopPaymentState extends State<RegisterWorkshopPayment> {
-  int selectedIndex = -1;
+  // Dapatkan instance controller
   final RegisterWorkshopController registerWorkshopController =
-      Get.put(RegisterWorkshopController());
+      Get.find<RegisterWorkshopController>();
+  final WorkshopController workshopController = Get.find<WorkshopController>();
 
   @override
   Widget build(BuildContext context) {
+    // Ambil data workshop yang dipilih
+    final Workshop workshop = workshopController.selectedWorkshop.value;
+
+    // Format harga agar lebih mudah dibaca
+    final currencyFormatter =
+        NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
+    final String formattedPrice = currencyFormatter
+        .format(double.tryParse(workshop.hargaWorkshop ?? '0') ?? 0);
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(100),
@@ -72,197 +85,59 @@ class _RegisterWorkshopPaymentState extends State<RegisterWorkshopPayment> {
             ),
             const SizedBox(height: 28),
 
-            // GoPay
-            GestureDetector(
-              onTap: () =>
-                  {setState(() => registerWorkshopController.paymentMethod(0))},
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-                margin: const EdgeInsets.only(bottom: 16),
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                height: 80,
-                decoration: BoxDecoration(
-                  color: registerWorkshopController.paymentMethod.value == 0
-                      ? primaryColor
-                      : const Color(0xFFF2F2F2),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: registerWorkshopController.paymentMethod.value == 0
-                        ? primaryColor
-                        : Colors.transparent,
-                    width: 2,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black26,
-                      offset: Offset(2, 2),
-                      blurRadius: 6,
-                    ),
-                  ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Image.asset('assets/gopay.png', width: 120, height: 120),
-                    ],
-                  ),
-                ),
-              ),
+            // Menggunakan widget builder untuk setiap pilihan pembayaran
+            _buildPaymentOption(
+              index: 0,
+              assetPath: 'assets/gopay.png',
+              price: formattedPrice,
+            ),
+            _buildPaymentOption(
+              index: 1,
+              assetPath: 'assets/dana.png',
+              price: formattedPrice,
+            ),
+            _buildPaymentOption(
+              index: 2,
+              assetPath: 'assets/ovo.png',
+              price: formattedPrice,
+            ),
+            _buildPaymentOption(
+              index: 3,
+              assetPath: 'assets/qris.png',
+              price: formattedPrice,
             ),
 
-            // Dana
-            GestureDetector(
-              onTap: () =>
-                  {setState(() => registerWorkshopController.paymentMethod(1))},
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-                margin: const EdgeInsets.only(bottom: 16),
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                height: 80,
-                decoration: BoxDecoration(
-                  color: registerWorkshopController.paymentMethod.value == 1
-                      ? primaryColor
-                      : const Color(0xFFF2F2F2),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: registerWorkshopController.paymentMethod.value == 1
-                        ? primaryColor
-                        : Colors.transparent,
-                    width: 2,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black26,
-                      offset: Offset(2, 2),
-                      blurRadius: 6,
-                    ),
-                  ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Image.asset('assets/dana.png', width: 120, height: 120),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            const SizedBox(height: 32),
 
-            // OVO
-            GestureDetector(
-              onTap: () =>
-                  {setState(() => registerWorkshopController.paymentMethod(2))},
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-                margin: const EdgeInsets.only(bottom: 16),
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                height: 80,
-                decoration: BoxDecoration(
-                  color: registerWorkshopController.paymentMethod.value == 2
-                      ? primaryColor
-                      : const Color(0xFFF2F2F2),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: registerWorkshopController.paymentMethod.value == 2
-                        ? primaryColor
-                        : Colors.transparent,
-                    width: 2,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black26,
-                      offset: Offset(2, 2),
-                      blurRadius: 6,
+            // Bungkus tombol dengan Obx agar state-nya reaktif
+            Obx(() => ElevatedButton(
+                  // Tombol akan aktif jika salah satu metode sudah dipilih
+                  onPressed: registerWorkshopController.paymentMethod.value !=
+                          -1
+                      ? () => Get.to(() => const RegisterWorkshopConfirmation())
+                      : null, // null akan membuat tombol nonaktif
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryColor,
+                    disabledBackgroundColor:
+                        Colors.grey[300], // Warna saat nonaktif
+                    minimumSize: const Size(double.infinity, 48),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                  ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Image.asset('assets/ovo.png', width: 120, height: 120),
-                    ],
                   ),
-                ),
-              ),
-            ),
-
-            // QRIS
-            GestureDetector(
-              onTap: () =>
-                  {setState(() => registerWorkshopController.paymentMethod(3))},
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-                margin: const EdgeInsets.only(bottom: 16),
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                height: 80,
-                decoration: BoxDecoration(
-                  color: registerWorkshopController.paymentMethod.value == 3
-                      ? primaryColor
-                      : const Color(0xFFF2F2F2),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: registerWorkshopController.paymentMethod.value == 3
-                        ? primaryColor
-                        : Colors.transparent,
-                    width: 2,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black26,
-                      offset: Offset(2, 2),
-                      blurRadius: 6,
+                  child: Text(
+                    'Lanjutkan',
+                    style: GoogleFonts.poppins(
+                      color: whiteColor,
+                      fontSize: 16,
+                      fontWeight: bold,
                     ),
-                  ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Image.asset('assets/qris.png', width: 120, height: 120),
-                    ],
                   ),
-                ),
-              ),
-            ),
-
+                )),
             const SizedBox(height: 12),
-
-            ElevatedButton(
-              onPressed: registerWorkshopController.paymentMethod.value != -1
-                  ? () => Get.to(() => const RegisterWorkshopConfirmation())
-                  : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: primaryColor,
-                minimumSize: const Size(double.infinity, 48),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: Text(
-                'Lanjutkan',
-                style: GoogleFonts.poppins(
-                  color: whiteColor,
-                  fontSize: 16,
-                  fontWeight: bold,
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton(
+            OutlinedButton(
               onPressed: () => Get.back(),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: whiteColor,
+              style: OutlinedButton.styleFrom(
                 side: BorderSide(color: primaryColor),
                 minimumSize: const Size(double.infinity, 48),
                 shape: RoundedRectangleBorder(
@@ -270,7 +145,7 @@ class _RegisterWorkshopPaymentState extends State<RegisterWorkshopPayment> {
                 ),
               ),
               child: Text(
-                'Keluar',
+                'Kembali',
                 style: GoogleFonts.poppins(
                   color: primaryColor,
                   fontSize: 16,
@@ -280,6 +155,50 @@ class _RegisterWorkshopPaymentState extends State<RegisterWorkshopPayment> {
             ),
             const SizedBox(height: 20),
           ],
+        ),
+      ),
+    );
+  }
+
+  // Widget builder yang bisa digunakan kembali untuk pilihan pembayaran
+  Widget _buildPaymentOption(
+      {required int index, required String assetPath, required String price}) {
+    // Bungkus dengan Obx agar UI otomatis update saat state di controller berubah
+    return Obx(
+      () => GestureDetector(
+        onTap: () {
+          // Cukup ubah nilai di controller, UI akan update otomatis
+          registerWorkshopController.paymentMethod(index);
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          margin: const EdgeInsets.only(bottom: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          height: 80,
+          decoration: BoxDecoration(
+            color: registerWorkshopController.paymentMethod.value == index
+                ? primaryColor.withOpacity(0.1)
+                : const Color(0xFFF2F2F2),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: registerWorkshopController.paymentMethod.value == index
+                  ? primaryColor
+                  : Colors.grey.shade300,
+              width: 2,
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Image.asset(assetPath, height: 40),
+              Text(
+                price,
+                style:
+                    blackTextStyle.copyWith(fontSize: 16, fontWeight: semiBold),
+              ),
+            ],
+          ),
         ),
       ),
     );

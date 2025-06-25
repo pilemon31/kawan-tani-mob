@@ -10,7 +10,7 @@ class RegisterWorkshopController extends GetxController {
   final emailAddress = "".obs;
   final phoneNumber = "".obs;
   final gender = 0.obs;
-  final paymentMethod = 0.obs;
+  final paymentMethod = (-1).obs;
 
   Future<void> registerForWorkshop({
     required String workshopId,

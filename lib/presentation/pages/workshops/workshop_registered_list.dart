@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kawan_tani/presentation/controllers/workshop/workshop_controller.dart';
+import 'package:flutter_kawan_tani/presentation/pages/workshops/workshop_registration_success.dart';
 import 'package:flutter_kawan_tani/presentation/widgets/navbar/navbar.dart';
+import 'package:flutter_kawan_tani/models/workshop_model.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -15,14 +17,16 @@ class WorkshopRegisteredList extends StatefulWidget {
 
 class _WorkshopRegisteredListState extends State<WorkshopRegisteredList> {
   final TextEditingController _searchController = TextEditingController();
-  final WorkshopController _workshopController = Get.put(WorkshopController());
+  final WorkshopController _workshopController = Get.find<WorkshopController>();
 
   String _searchQuery = '';
 
   @override
   void initState() {
     super.initState();
-    _workshopController.fetchRegisteredWorkshop();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _workshopController.fetchRegisteredWorkshop();
+    });
   }
 
   @override
@@ -119,20 +123,21 @@ class _WorkshopRegisteredListState extends State<WorkshopRegisteredList> {
                     return const Center(child: CircularProgressIndicator());
                   }
 
-                  if (_workshopController.activeWorkshops.isEmpty) {
+                  if (_workshopController.registeredWorkshopDetails.isEmpty) {
                     return Center(
                       child: Text(
-                        'Tidak ada workshop tersedia',
+                        'Anda belum mendaftar workshop apapun',
                         style: GoogleFonts.poppins(),
                       ),
                     );
                   }
 
                   // Filter workshops based on search query
-                  final filteredWorkshops =
-                      _workshopController.activeWorkshops.where((workshop) {
+                  final filteredWorkshops = _workshopController
+                      .registeredWorkshopDetails
+                      .where((item) {
+                    final Workshop workshop = item['workshop'];
                     if (_searchQuery.isEmpty) return true;
-
                     return workshop.judulWorkshop
                             .toLowerCase()
                             .contains(_searchQuery) ||
@@ -178,17 +183,19 @@ class _WorkshopRegisteredListState extends State<WorkshopRegisteredList> {
                     separatorBuilder: (BuildContext context, int index) {
                       return const SizedBox(height: 21);
                     },
-                    itemCount: _workshopController.activeWorkshops.length,
+                    itemCount: filteredWorkshops.length,
                     itemBuilder: (BuildContext context, int index) {
-                      final workshop =
-                          _workshopController.activeWorkshops[index];
+                      final item = filteredWorkshops[index];
+                      final Workshop workshop = item['workshop'];
+                      final WorkshopRegistration registration =
+                          item['registration'];
                       return InkWell(
-                        onTap: () {},
-                        // onTap: () async {
-                        //   await _workshopController
-                        //       .fetchWorkshopById(workshop.idWorkshop);
-                        //   Get.to(() => const WorkshopDetail());
-                        // },
+                        onTap: () {
+                          Get.to(() => WorkshopRegistrationSuccess(
+                                workshop: workshop,
+                                registration: registration,
+                              ));
+                        },
                         borderRadius: BorderRadius.circular(10),
                         child: Container(
                           padding: const EdgeInsets.symmetric(

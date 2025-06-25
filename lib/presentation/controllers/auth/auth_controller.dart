@@ -16,7 +16,6 @@ class AuthController extends GetxController {
   void onInit() {
     fetchCurrentUser();
     super.onInit();
-    
     _checkLoginStatus();
   }
 
