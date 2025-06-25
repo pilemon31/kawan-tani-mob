@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'package:flutter_kawan_tani/services/auth/auth_service.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_kawan_tani/presentation/controllers/auth/auth_controller.dart';
 
 class LoginController extends GetxController {
+  final AuthController _authController = Get.find<AuthController>();
   final email = "".obs;
   final password = "".obs;
   var isLoading = false.obs;
@@ -27,6 +29,8 @@ class LoginController extends GetxController {
           await prefs.setString('token', responseBody['data']['token']);
           await prefs.setString(
               'user', jsonEncode(responseBody['data']['user']));
+
+          _authController.saveAuthData(responseBody['data']['token']);
 
           return true;
         } else {

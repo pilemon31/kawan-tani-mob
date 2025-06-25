@@ -18,7 +18,6 @@ class _WorkshopsListState extends State<WorkshopsList> {
   final TextEditingController _searchController = TextEditingController();
   final WorkshopController _workshopController = Get.put(WorkshopController());
 
-  // Add search query variable
   String _searchQuery = '';
 
   @override
@@ -30,31 +29,34 @@ class _WorkshopsListState extends State<WorkshopsList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
-        elevation: 0,
-        toolbarHeight: 70,
-        title: Row(
-          children: [
-            IconButton(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(100.0),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 27),
+          child: AppBar(
+            backgroundColor: whiteColor,
+            toolbarHeight: 80.0,
+            leading: IconButton(
               onPressed: () {
                 Get.back();
               },
               icon: PhosphorIcon(
                 PhosphorIconsBold.arrowLeft,
-                size: 28,
+                size: 32.0,
               ),
             ),
-            const SizedBox(width: 8),
-            Text(
-              'Workshop Pertanian',
-              style: GoogleFonts.poppins(
-                fontSize: 24,
-                fontWeight: FontWeight.w600,
+            title: Padding(
+              padding: EdgeInsets.all(0),
+              child: Text(
+                'Workshop Pertanian',
+                style: GoogleFonts.poppins(
+                  fontSize: 20,
+                  color: blackColor,
+                  fontWeight: bold,
+                ),
               ),
             ),
-          ],
+          ),
         ),
       ),
       body: SafeArea(

@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart'; // Import Get
 import 'package:flutter_kawan_tani/presentation/pages/intro/onboarding_screen.dart';
+import 'package:flutter_kawan_tani/presentation/pages/dashboard/home_screen.dart';
+import 'package:flutter_kawan_tani/presentation/controllers/auth/auth_controller.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -10,24 +13,27 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
+  final AuthController authController = Get.find<AuthController>();
+
   @override
   void initState() {
     super.initState();
+    _checkAuthStatus();
+  }
 
-    Timer(const Duration(seconds: 2), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const OnboardingPage(),
-        ),
-      );
-    });
+  void _checkAuthStatus() async {
+    await Future.delayed(const Duration(seconds: 2));
+
+    if (authController.isLoggedIn.value) {
+      Get.offAll(() => const HomeScreen());
+    } else {
+      Get.offAll(() => const OnboardingPage());
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Menggunakan BoxDecoration dengan gradient
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(

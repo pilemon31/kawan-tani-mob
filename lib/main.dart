@@ -10,11 +10,14 @@ import 'package:flutter_kawan_tani/presentation/pages/_yourPlants/your_plants_sc
 import 'package:flutter_kawan_tani/presentation/pages/workshops/workshops_list.dart';
 import "package:get/get.dart";
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:flutter_kawan_tani/presentation/controllers/auth/auth_controller.dart';
 
-void main() {
-  initializeDateFormatting('id', null).then((_) {
-    runApp(const MyApp());
-  });
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('id', null);
+  Get.put(AuthController());
+  Get.put(ArticleController());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -22,7 +25,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(ArticleController());
     return GetMaterialApp(
       title: "KawanTani",
       theme: ThemeData(scaffoldBackgroundColor: Colors.white),

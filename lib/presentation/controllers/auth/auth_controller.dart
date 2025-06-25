@@ -1,27 +1,31 @@
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:flutter_kawan_tani/shared/storage_service.dart';
 
 class AuthController extends GetxController {
-  final storage = GetStorage();
+  final StorageService _storageService = StorageService();
   var isLoggedIn = false.obs;
   var token = ''.obs;
 
   @override
   void onInit() {
     super.onInit();
-    token.value = storage.read('token') ?? '';
+    _checkLoginStatus();
+  }
+
+  Future<void> _checkLoginStatus() async {
+    token.value = await _storageService.getToken() ?? '';
     isLoggedIn.value = token.isNotEmpty;
   }
 
-  void saveAuthData(String newToken) {
+  Future<void> saveAuthData(String newToken) async {
     token.value = newToken;
-    storage.write('token', newToken);
+    await _storageService.saveToken(newToken);
     isLoggedIn.value = true;
   }
 
-  void logout() {
+  Future<void> logout() async {
     token.value = '';
-    storage.remove('token');
+    await _storageService.clearAll();
     isLoggedIn.value = false;
   }
 }

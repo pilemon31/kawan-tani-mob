@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:flutter_kawan_tani/presentation/controllers/profile/profile_controller.dart';
+import 'package:flutter_kawan_tani/shared/theme.dart';
 
 class ProfileEdit extends StatefulWidget {
   @override
@@ -24,6 +26,8 @@ class _ProfileEditState extends State<ProfileEdit> {
 
   int? _selectedGender;
   bool _isSubmitting = false;
+  bool isMaleClicked = false;
+  bool isFemaleClicked = false;
 
   @override
   void initState() {
@@ -44,6 +48,14 @@ class _ProfileEditState extends State<ProfileEdit> {
 
     _selectedGender =
         (user['gender'] == 1 || user['gender'] == 2) ? user['gender'] : 1;
+
+    if (_selectedGender == 1) {
+      isMaleClicked = true;
+      isFemaleClicked = false;
+    } else if (_selectedGender == 2) {
+      isMaleClicked = false;
+      isFemaleClicked = true;
+    }
   }
 
   @override
@@ -75,6 +87,22 @@ class _ProfileEditState extends State<ProfileEdit> {
     }
   }
 
+  void clickedMale() {
+    _selectedGender = 1;
+    setState(() {
+      isMaleClicked = true;
+      isFemaleClicked = false;
+    });
+  }
+
+  void clickedFemale() {
+    _selectedGender = 2;
+    setState(() {
+      isMaleClicked = false;
+      isFemaleClicked = true;
+    });
+  }
+
   Future<void> _saveProfile() async {
     if (_formKey.currentState?.validate() != true) return;
     if (_isSubmitting) return;
@@ -96,15 +124,11 @@ class _ProfileEditState extends State<ProfileEdit> {
       'confirmPassword': _confirmPasswordController.text.trim(),
     };
 
-    print('🚀 Submitting profile update: $updatedData');
-
     try {
       // Update profile
       final success = await _controller.updateProfile(updatedData);
 
       if (success) {
-        print('✅ Profile update successful, showing success message');
-
         // Show success message
         Get.snackbar(
           'Berhasil',
@@ -114,18 +138,14 @@ class _ProfileEditState extends State<ProfileEdit> {
           colorText: Colors.white,
           duration: const Duration(seconds: 2),
         );
-        
+
         await Future.delayed(const Duration(milliseconds: 800));
         Get.offAllNamed('/home');
 
         await _controller.refreshProfile();
-
-        print('🔙 Going back to previous screen');
-        Get.back(
-            result: 'updated');
+        Get.back(result: 'updated');
       }
     } catch (e) {
-      print('❌ Profile update failed: $e');
       Get.snackbar(
         'Gagal',
         e.toString().replaceAll('Exception: ', ''),
@@ -144,117 +164,445 @@ class _ProfileEditState extends State<ProfileEdit> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Edit Profil', style: GoogleFonts.poppins()),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              _buildTextField(_firstNameController, 'Nama Depan',
-                  validator: (value) => value == null || value.trim().isEmpty
-                      ? 'Nama depan wajib diisi'
-                      : null),
-              const SizedBox(height: 20),
-              _buildTextField(_lastNameController, 'Nama Belakang'),
-              const SizedBox(height: 20),
-              _buildTextField(_emailController, 'Email'),
-              const SizedBox(height: 20),
-              _buildTextField(
-                _phoneController,
-                'Nomor HP',
-                keyboardType: TextInputType.phone,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(100.0),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 27),
+          child: AppBar(
+            backgroundColor: Colors.white,
+            toolbarHeight: 80.0,
+            leading: IconButton(
+              onPressed: () {
+                Get.back();
+              },
+              icon: PhosphorIcon(
+                PhosphorIconsBold.arrowLeft,
+                size: 32.0,
               ),
-              const SizedBox(height: 20),
-              TextFormField(
-                controller: _birthDateController,
-                decoration: const InputDecoration(
-                  labelText: 'Tanggal Lahir',
-                  suffixIcon: Icon(Icons.calendar_today),
-                ),
-                readOnly: true,
-                onTap: () => _selectDate(context),
+            ),
+            title: Text(
+              'Edit Profil',
+              style: GoogleFonts.poppins(
+                fontSize: 20,
+                color: blackColor,
+                fontWeight: bold,
               ),
-              const SizedBox(height: 20),
-              DropdownButtonFormField<int>(
-                value: _selectedGender,
-                decoration: const InputDecoration(labelText: 'Jenis Kelamin'),
-                items: const [
-                  DropdownMenuItem(value: 1, child: Text('Laki-laki')),
-                  DropdownMenuItem(value: 2, child: Text('Perempuan')),
-                ],
-                onChanged: (value) => setState(() {
-                  _selectedGender = value;
-                }),
-                validator: (value) =>
-                    value == null ? 'Pilih jenis kelamin' : null,
-              ),
-              const SizedBox(height: 20),
-              _buildTextField(
-                _passwordController,
-                'Password Baru',
-                hintText: 'Kosongkan jika tidak ingin mengubah',
-                obscureText: true,
-              ),
-              const SizedBox(height: 20),
-              _buildTextField(
-                _confirmPasswordController,
-                'Konfirmasi Password Baru',
-                hintText: 'Kosongkan jika tidak ingin mengubah',
-                obscureText: true,
-                validator: (value) {
-                  if (_passwordController.text.isNotEmpty &&
-                      value != _passwordController.text) {
-                    return 'Password tidak cocok';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 30),
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: _isSubmitting ? null : _saveProfile,
-                  child: _isSubmitting
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(Colors.white),
-                          ),
-                        )
-                      : const Text('Simpan Perubahan'),
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),
-    );
-  }
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 21),
+        child: ListView(
+          children: [
+            Text(
+              'Detail Profil',
+              style: GoogleFonts.poppins(
+                fontSize: 14,
+                color: blackColor,
+                fontWeight: bold,
+              ),
+            ),
+            Text(
+              'Perbarui informasi profil Anda untuk menjaga data tetap akurat',
+              style: GoogleFonts.poppins(
+                fontSize: 12,
+                color: greyColor,
+                fontWeight: medium,
+              ),
+            ),
+            SizedBox(height: 10),
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  // Nama Depan
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Nama Depan",
+                        style: GoogleFonts.poppins(
+                            fontSize: 15, color: blackColor),
+                      ),
+                      SizedBox(height: 8.0),
+                      TextFormField(
+                        controller: _firstNameController,
+                        keyboardType: TextInputType.name,
+                        decoration: InputDecoration(
+                          hintText: "Masukkan nama depan",
+                          hintStyle: GoogleFonts.poppins(
+                              fontSize: 15.0, fontWeight: light),
+                          prefixIcon: PhosphorIcon(
+                            PhosphorIcons.user(),
+                            size: 19.0,
+                            color: Color(0xff8594AC),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: BorderSide.none,
+                          ),
+                          fillColor: Color(0xffE7EFF2),
+                          filled: true,
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 12.0, horizontal: 15.0),
+                        ),
+                        validator: (value) =>
+                            value == null || value.trim().isEmpty
+                                ? 'Nama depan wajib diisi'
+                                : null,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
 
-  Widget _buildTextField(
-    TextEditingController controller,
-    String label, {
-    String? hintText,
-    TextInputType keyboardType = TextInputType.text,
-    bool obscureText = false,
-    String? Function(String?)? validator,
-  }) {
-    return TextFormField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hintText,
+                  // Nama Belakang
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Nama Belakang",
+                        style: GoogleFonts.poppins(
+                            fontSize: 15, color: blackColor),
+                      ),
+                      SizedBox(height: 8.0),
+                      TextFormField(
+                        controller: _lastNameController,
+                        keyboardType: TextInputType.name,
+                        decoration: InputDecoration(
+                          hintText: "Masukkan nama belakang",
+                          hintStyle: GoogleFonts.poppins(
+                              fontSize: 15.0, fontWeight: light),
+                          prefixIcon: PhosphorIcon(
+                            PhosphorIcons.user(),
+                            size: 19.0,
+                            color: Color(0xff8594AC),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: BorderSide.none,
+                          ),
+                          fillColor: Color(0xffE7EFF2),
+                          filled: true,
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 12.0, horizontal: 15.0),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+
+                  // Email
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Email",
+                        style: GoogleFonts.poppins(
+                            fontSize: 15, color: blackColor),
+                      ),
+                      SizedBox(height: 8.0),
+                      TextFormField(
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                          hintText: "contoh@email.com",
+                          hintStyle: GoogleFonts.poppins(
+                              fontSize: 15.0, fontWeight: light),
+                          prefixIcon: PhosphorIcon(
+                            PhosphorIcons.envelope(),
+                            size: 19.0,
+                            color: Color(0xff8594AC),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: BorderSide.none,
+                          ),
+                          fillColor: Color(0xffE7EFF2),
+                          filled: true,
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 12.0, horizontal: 15.0),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+
+                  // Nomor HP
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Nomor HP",
+                        style: GoogleFonts.poppins(
+                            fontSize: 15, color: blackColor),
+                      ),
+                      SizedBox(height: 8.0),
+                      TextFormField(
+                        controller: _phoneController,
+                        keyboardType: TextInputType.phone,
+                        decoration: InputDecoration(
+                          hintText: "+628234569",
+                          hintStyle: GoogleFonts.poppins(
+                              fontSize: 15.0, fontWeight: light),
+                          prefixIcon: PhosphorIcon(
+                            PhosphorIcons.phone(),
+                            size: 19.0,
+                            color: Color(0xff8594AC),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: BorderSide.none,
+                          ),
+                          fillColor: Color(0xffE7EFF2),
+                          filled: true,
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 12.0, horizontal: 15.0),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+
+                  // Tanggal Lahir
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Tanggal Lahir",
+                        style: GoogleFonts.poppins(
+                            fontSize: 15, color: blackColor),
+                      ),
+                      SizedBox(height: 8.0),
+                      TextFormField(
+                        controller: _birthDateController,
+                        readOnly: true,
+                        onTap: () => _selectDate(context),
+                        decoration: InputDecoration(
+                          hintText: "Pilih tanggal lahir",
+                          hintStyle: GoogleFonts.poppins(
+                              fontSize: 15.0, fontWeight: light),
+                          prefixIcon: PhosphorIcon(
+                            PhosphorIcons.calendar(),
+                            size: 19.0,
+                            color: Color(0xff8594AC),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: BorderSide.none,
+                          ),
+                          fillColor: Color(0xffE7EFF2),
+                          filled: true,
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 12.0, horizontal: 15.0),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+
+                  // Jenis Kelamin
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Jenis Kelamin",
+                        style: GoogleFonts.poppins(
+                            fontSize: 15, color: blackColor),
+                      ),
+                      SizedBox(height: 8.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: clickedMale,
+                              style: ElevatedButton.styleFrom(
+                                elevation: 0.0,
+                                backgroundColor: isMaleClicked
+                                    ? Color(0x00ffffff)
+                                    : Color(0xffE7EFF2),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                side: isMaleClicked
+                                    ? BorderSide(color: Color(0xffE7EFF2))
+                                    : BorderSide.none,
+                              ),
+                              child: Text(
+                                "Laki-Laki",
+                                style: GoogleFonts.poppins(
+                                    fontSize: 15, color: Color(0xff4993F8)),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 18),
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: clickedFemale,
+                              style: ElevatedButton.styleFrom(
+                                elevation: 0.0,
+                                backgroundColor: isFemaleClicked
+                                    ? Color(0x00ffffff)
+                                    : Color(0xffE7EFF2),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  side: isFemaleClicked
+                                      ? BorderSide(color: Color(0xffE7EFF2))
+                                      : BorderSide.none,
+                                ),
+                              ),
+                              child: Text(
+                                "Perempuan",
+                                style: GoogleFonts.poppins(
+                                    fontSize: 15, color: Color(0xffF99D9D)),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+
+                  // Password Baru
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Password Baru",
+                        style: GoogleFonts.poppins(
+                            fontSize: 15, color: blackColor),
+                      ),
+                      SizedBox(height: 8.0),
+                      TextFormField(
+                        controller: _passwordController,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          hintText: "Kosongkan jika tidak ingin mengubah",
+                          hintStyle: GoogleFonts.poppins(
+                              fontSize: 15.0, fontWeight: light),
+                          prefixIcon: PhosphorIcon(
+                            PhosphorIcons.lock(),
+                            size: 19.0,
+                            color: Color(0xff8594AC),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: BorderSide.none,
+                          ),
+                          fillColor: Color(0xffE7EFF2),
+                          filled: true,
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 12.0, horizontal: 15.0),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+
+                  // Konfirmasi Password
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Konfirmasi Password Baru",
+                        style: GoogleFonts.poppins(
+                            fontSize: 15, color: blackColor),
+                      ),
+                      SizedBox(height: 8.0),
+                      TextFormField(
+                        controller: _confirmPasswordController,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          hintText: "Kosongkan jika tidak ingin mengubah",
+                          hintStyle: GoogleFonts.poppins(
+                              fontSize: 15.0, fontWeight: light),
+                          prefixIcon: PhosphorIcon(
+                            PhosphorIcons.lock(),
+                            size: 19.0,
+                            color: Color(0xff8594AC),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: BorderSide.none,
+                          ),
+                          fillColor: Color(0xffE7EFF2),
+                          filled: true,
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 12.0, horizontal: 15.0),
+                        ),
+                        validator: (value) {
+                          if (_passwordController.text.isNotEmpty &&
+                              value != _passwordController.text) {
+                            return 'Password tidak cocok';
+                          }
+                          return null;
+                        },
+                      ),
+                    ],
+                  ),
+
+                  SizedBox(height: 28),
+
+                  // Button Simpan
+                  ElevatedButton(
+                    onPressed: _isSubmitting ? null : _saveProfile,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primaryColor,
+                      elevation: 0.0,
+                      shadowColor: Colors.transparent,
+                      minimumSize: Size(double.infinity, 48),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: _isSubmitting
+                        ? SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          )
+                        : Text(
+                            'Simpan Perubahan',
+                            style: GoogleFonts.poppins(
+                                color: whiteColor,
+                                fontSize: 16,
+                                fontWeight: bold),
+                          ),
+                  ),
+                  SizedBox(height: 18),
+
+                  // Button Kembali
+                  ElevatedButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: whiteColor,
+                        elevation: 0.0,
+                        shadowColor: Colors.transparent,
+                        minimumSize: Size(double.infinity, 48),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        side: BorderSide(color: primaryColor)),
+                    child: Text(
+                      'Batal',
+                      style: GoogleFonts.poppins(
+                          color: primaryColor, fontSize: 16, fontWeight: bold),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
-      keyboardType: keyboardType,
-      obscureText: obscureText,
-      validator: validator,
     );
   }
 }

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kawan_tani/presentation/controllers/plants/user_plant_controller.dart';
 import 'package:flutter_kawan_tani/presentation/pages/_yourPlants/your_plants_tasks_screen.dart';
-import 'package:flutter_kawan_tani/presentation/pages/dashboard/home_screen.dart';
-import 'package:flutter_kawan_tani/presentation/pages/_filterPlants/filter_your_plants_screen.dart';
 import 'package:flutter_kawan_tani/presentation/widgets/navbar/navbar.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:get/get.dart';
@@ -23,11 +21,9 @@ class _YourPlantsScreenState extends State<YourPlantsScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch plants initially
     userPlantController.fetchUserPlants();
   }
 
-  // Define a function to refresh data when returning to this screen
   Future<void> _refreshData() async {
     await userPlantController.fetchUserPlants();
   }
@@ -36,41 +32,35 @@ class _YourPlantsScreenState extends State<YourPlantsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-          preferredSize: Size.fromHeight(100.0),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 27),
-            child: AppBar(
-              backgroundColor: Colors.white,
-              toolbarHeight: 80.0,
-              leading: IconButton(
-                onPressed: () {
-                  Get.to(() => const HomeScreen());
-                },
-                icon: PhosphorIcon(
-                  PhosphorIconsBold.arrowLeft,
-                  size: 32.0,
+        preferredSize: Size.fromHeight(100.0),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 27),
+          child: AppBar(
+            backgroundColor: whiteColor,
+            toolbarHeight: 80.0,
+            leading: IconButton(
+              onPressed: () {
+                Get.back();
+              },
+              icon: PhosphorIcon(
+                PhosphorIconsBold.arrowLeft,
+                size: 32.0,
+              ),
+            ),
+            title: Padding(
+              padding: EdgeInsets.all(0),
+              child: Text(
+                'Tanaman Saya',
+                style: GoogleFonts.poppins(
+                  fontSize: 20,
+                  color: blackColor,
+                  fontWeight: bold,
                 ),
               ),
-              title: Padding(
-                  padding: EdgeInsets.all(0),
-                  child: Text(
-                    'Tanaman Saya',
-                    style: GoogleFonts.poppins(
-                        fontSize: 20, color: blackColor, fontWeight: bold),
-                  )),
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    Get.to(() => FilterYourPlantsScreen());
-                  },
-                  icon: PhosphorIcon(
-                    PhosphorIconsFill.dotsThreeOutlineVertical,
-                    size: 32.0,
-                  ),
-                ),
-              ],
             ),
-          )),
+          ),
+        ),
+      ),
       body: Obx(() {
         if (userPlantController.isLoading.value) {
           return Center(
