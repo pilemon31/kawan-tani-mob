@@ -1,5 +1,3 @@
-import 'package:flutter_kawan_tani/shared/storage_service.dart';
-
 class Article {
   final String id;
   final String title;
@@ -13,6 +11,7 @@ class Article {
   final bool isActive;
   final String status;
   final String isVerified;
+  final double rating;
   final List<Comment> comments;
   final List<ArticleLike> likes;
   bool isLiked;
@@ -31,6 +30,7 @@ class Article {
     required this.isActive,
     required this.status,
     required this.isVerified,
+    this.rating = 0.0,
     this.comments = const [],
     this.likes = const [],
     this.isLiked = false,
@@ -38,12 +38,6 @@ class Article {
   });
 
   factory Article.fromJson(Map<String, dynamic> json) {
-    final userId = StorageService().getUserData();
-    final likes = (json['artikel_disukai'] as List<dynamic>?) ?? [];
-    final isLiked = likes.any((like) => like['id_pengguna'] == userId);
-    final savedArticles = (json['artikel_disimpan'] as List<dynamic>?) ?? [];
-    final isSaved = savedArticles.any((saved) => saved['id_pengguna'] == userId);
-
     return Article(
       id: json['id_artikel'] ?? '',
       title: json['judul_artikel'] ?? '',
@@ -61,13 +55,15 @@ class Article {
       isActive: json['status_aktif'] ?? false,
       status: json['status_artikel'] ?? '',
       isVerified: json['status_verifikasi'] ?? '',
+      rating: (json['rating'] ?? 0.0).toDouble(),
       comments: (json['komentar_artikel'] as List<dynamic>?)
               ?.map((comment) => Comment.fromJson(comment))
               .toList() ??
           [],
-      likes: likes.map((like) => ArticleLike.fromJson(like)).toList(),
-      isLiked: isLiked,
-      isSaved: isSaved,
+      likes: (json['artikel_disukai'] as List<dynamic>?)
+              ?.map((like) => ArticleLike.fromJson(like))
+              .toList() ??
+          [],
     );
   }
 

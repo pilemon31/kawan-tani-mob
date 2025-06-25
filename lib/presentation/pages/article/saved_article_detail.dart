@@ -17,6 +17,7 @@ class SavedArticleDetail extends StatefulWidget {
 
 class _SavedArticleDetailState extends State<SavedArticleDetail> {
   final ArticleController _articleController = Get.find<ArticleController>();
+  double selectedRating = 0;
 
   @override
   void initState() {
@@ -35,11 +36,11 @@ class _SavedArticleDetailState extends State<SavedArticleDetail> {
         context: context,
         builder: (context) => AlertDialog(
           title: Text(
-            "Batalkan Suka",
+            "Batalkan Rating",
             style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
           ),
           content: Text(
-            "Apakah Anda yakin ingin membatalkan suka untuk artikel ini?",
+            "Apakah Anda yakin ingin membatalkan rating untuk artikel ini?",
             style: GoogleFonts.poppins(),
           ),
           actions: [
@@ -56,9 +57,9 @@ class _SavedArticleDetailState extends State<SavedArticleDetail> {
                 final success =
                     await _articleController.unlikeArticle(articleId);
                 if (success) {
-                  showCustomToast(context, "Berhasil membatalkan suka!");
+                  showCustomToast(context, "Rating berhasil dibatalkan!");
                 } else {
-                  showCustomToast(context, "Gagal membatalkan suka!");
+                  showCustomToast(context, "Gagal membatalkan rating!");
                 }
               },
               child: Text(
@@ -70,32 +71,108 @@ class _SavedArticleDetailState extends State<SavedArticleDetail> {
         ),
       );
     } else {
-      _articleController.likeArticle(articleId).then((success) {
-        if (success) {
-          showCustomToast(context, "Berhasil menyukai artikel!");
-        } else {
-          showCustomToast(context, "Gagal menyukai artikel!");
-        }
-      });
-    }
-  }
+      selectedRating = 0;
 
-  void _handleBookmarkTap(bool isSaved, String articleId) {
-    _articleController.saveArticle(articleId).then((success) {
-      if (success) {
-        showCustomToast(
-            context,
-            isSaved
-                ? "Berhasil menghapus artikel dari simpanan!"
-                : "Berhasil menyimpan artikel!");
-      } else {
-        showCustomToast(
-            context,
-            isSaved
-                ? "Gagal menghapus artikel dari simpanan!"
-                : "Gagal menyimpan artikel!");
-      }
-    });
+      showDialog(
+        context: context,
+        builder: (context) => StatefulBuilder(
+          builder: (context, setDialogState) => Dialog(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: whiteColor,
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: IconButton(
+                        onPressed: () {
+                          Get.back();
+                        },
+                        icon: PhosphorIcon(
+                          PhosphorIconsBold.x,
+                          size: 25.0,
+                          color: blackColor,
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Text("Beri Rating Artikel",
+                          textAlign: TextAlign.left,
+                          style: GoogleFonts.poppins(
+                              fontSize: 20, fontWeight: bold)),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      "Berikan rating Anda untuk artikel ini dan bantu kami meningkatkan kualitas konten yang disajikan.",
+                      style: GoogleFonts.poppins(fontSize: 12),
+                    ),
+                    SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(
+                        5,
+                        (index) => IconButton(
+                          onPressed: () {
+                            setDialogState(() {
+                              selectedRating = (index + 1).toDouble();
+                            });
+                          },
+                          icon: PhosphorIcon(
+                            index < selectedRating
+                                ? PhosphorIconsFill.star
+                                : PhosphorIconsBold.star,
+                            size: 30.0,
+                            color: Colors.yellow,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () async {
+                        if (selectedRating > 0) {
+                          final success = await _articleController.likeArticle(
+                              articleId, selectedRating);
+                          if (success) {
+                            showCustomToast(
+                                context, "Rating berhasil diberikan!");
+                            Get.back();
+                          } else {
+                            showCustomToast(
+                                context, "Gagal memberikan rating!");
+                          }
+                        } else {
+                          showCustomToast(
+                              context, "Pilih rating terlebih dahulu!");
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryColor,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                        elevation: 0.0,
+                        minimumSize: Size(double.infinity, 42),
+                      ),
+                      child: Text(
+                        "Beri Rating",
+                        style: GoogleFonts.poppins(
+                            color: whiteColor, fontSize: 15, fontWeight: bold),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
   }
 
   @override
@@ -107,9 +184,9 @@ class _SavedArticleDetailState extends State<SavedArticleDetail> {
 
       return Scaffold(
         appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(100.0),
+          preferredSize: Size.fromHeight(100.0),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 27),
+            padding: EdgeInsets.symmetric(horizontal: 27),
             child: AppBar(
               backgroundColor: Colors.white,
               toolbarHeight: 80.0,
@@ -117,7 +194,7 @@ class _SavedArticleDetailState extends State<SavedArticleDetail> {
                 onPressed: () {
                   Get.back();
                 },
-                icon: const PhosphorIcon(
+                icon: PhosphorIcon(
                   PhosphorIconsBold.arrowLeft,
                   size: 32.0,
                 ),
@@ -125,9 +202,9 @@ class _SavedArticleDetailState extends State<SavedArticleDetail> {
               actions: [
                 IconButton(
                   onPressed: () {
-                    Get.to(() => const ArticleComments());
+                    Get.to(() => ArticleComments());
                   },
-                  icon: const PhosphorIcon(
+                  icon: PhosphorIcon(
                     PhosphorIconsBold.chatCircle,
                     size: 32.0,
                   ),
@@ -141,7 +218,21 @@ class _SavedArticleDetailState extends State<SavedArticleDetail> {
                   ),
                 ),
                 IconButton(
-                  onPressed: () => _handleBookmarkTap(isBookmarked, article.id),
+                  onPressed: () async {
+                    if (isBookmarked) {
+                      final success =
+                          await _articleController.unsaveArticle(article.id);
+                      if (success) {
+                        showCustomToast(context, "Berhasil menghapus artikel!");
+                      }
+                    } else {
+                      final success =
+                          await _articleController.saveArticle(article.id);
+                      if (success) {
+                        showCustomToast(context, "Berhasil menambah artikel!");
+                      }
+                    }
+                  },
                   icon: PhosphorIcon(
                     isBookmarked
                         ? PhosphorIconsFill.bookmarkSimple
@@ -152,9 +243,8 @@ class _SavedArticleDetailState extends State<SavedArticleDetail> {
                 ),
                 IconButton(
                   onPressed: () {
-                    // TODO: Implement share functionality
                   },
-                  icon: const PhosphorIcon(
+                  icon: PhosphorIcon(
                     PhosphorIconsBold.shareNetwork,
                     size: 32.0,
                   ),
@@ -164,7 +254,7 @@ class _SavedArticleDetailState extends State<SavedArticleDetail> {
           ),
         ),
         body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 27),
+          padding: EdgeInsets.symmetric(horizontal: 27),
           child: ListView(
             children: [
               ClipRRect(
@@ -184,17 +274,16 @@ class _SavedArticleDetailState extends State<SavedArticleDetail> {
                   ),
                 ),
               ),
-              const SizedBox(height: 18),
+              SizedBox(height: 18),
               Align(
                 alignment: Alignment.topLeft,
                 child: Text(
                   article.title,
                   textAlign: TextAlign.start,
-                  style: GoogleFonts.poppins(
-                      fontSize: 24, fontWeight: FontWeight.bold),
+                  style: GoogleFonts.poppins(fontSize: 24, fontWeight: bold),
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -208,60 +297,75 @@ class _SavedArticleDetailState extends State<SavedArticleDetail> {
                             image: article.authorImage.isNotEmpty
                                 ? NetworkImage(
                                     'https://kawan-tani-backend-production.up.railway.app/uploads/users/${article.authorImage}')
-                                : const AssetImage("assets/farmer2.jpg")
+                                : AssetImage("assets/farmer2.jpg")
                                     as ImageProvider,
                             fit: BoxFit.cover,
                           ),
                           shape: BoxShape.circle,
                         ),
                       ),
-                      const SizedBox(width: 10),
+                      SizedBox(width: 10),
                       Text(
                         article.author,
                         style: GoogleFonts.poppins(
-                            fontSize: 14, fontWeight: FontWeight.w300),
-                      ),
+                            fontSize: 14, fontWeight: light),
+                      )
                     ],
                   ),
                   Text(
                     "${article.createdAt.day} ${_getMonthName(article.createdAt.month)} ${article.createdAt.year}",
                     style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        color: greyColor,
-                        fontWeight: FontWeight.w300),
-                  ),
+                        fontSize: 14, color: greyColor, fontWeight: light),
+                  )
                 ],
               ),
-              const SizedBox(height: 10),
-              Text(
-                article.content,
-                style: GoogleFonts.poppins(fontSize: 14),
+              SizedBox(height: 10),
+              Column(
+                children: [
+                  Text(
+                    article.content,
+                    style: GoogleFonts.poppins(fontSize: 14),
+                  ),
+                  SizedBox(height: 10),
+                ],
               ),
-              const SizedBox(height: 50),
+              SizedBox(height: 50),
             ],
           ),
         ),
-        bottomNavigationBar: const Navbar(),
+        bottomNavigationBar: Navbar(),
       );
     });
   }
 
   String _getMonthName(int month) {
-    const months = [
-      '',
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'Mei',
-      'Jun',
-      'Jul',
-      'Agu',
-      'Sep',
-      'Okt',
-      'Nov',
-      'Des'
-    ];
-    return months[month];
+    switch (month) {
+      case 1:
+        return 'Jan';
+      case 2:
+        return 'Feb';
+      case 3:
+        return 'Mar';
+      case 4:
+        return 'Apr';
+      case 5:
+        return 'Mei';
+      case 6:
+        return 'Jun';
+      case 7:
+        return 'Jul';
+      case 8:
+        return 'Agu';
+      case 9:
+        return 'Sep';
+      case 10:
+        return 'Okt';
+      case 11:
+        return 'Nov';
+      case 12:
+        return 'Des';
+      default:
+        return '';
+    }
   }
 }
