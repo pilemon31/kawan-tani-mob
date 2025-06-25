@@ -4,9 +4,12 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'dart:async';
 import 'package:flutter_kawan_tani/shared/constants.dart';
+import 'package:flutter_kawan_tani/shared/storage_service.dart'; 
+import 'package:flutter_kawan_tani/models/user_model.dart';
 
 class AuthService {
   static const String baseUrl = Constants.baseUrl;
+  final StorageService _storageService = StorageService();
 
   // Register User
   static Future<http.StreamedResponse> registerUser({
@@ -210,6 +213,41 @@ class AuthService {
       throw Exception('Format respons tidak valid');
     } catch (e) {
       throw Exception('Gagal update profil: ${e.toString()}');
+    }
+  }
+
+   Future<User> validateToken() async {
+    try {
+      // 1. Ambil token dari StorageService Anda
+      final token = await _storageService.getToken();
+
+      if (token == null || token.isEmpty) {
+        throw Exception('Token tidak ditemukan. Pengguna belum login.');
+      }
+
+      // 2. Lakukan request ke API dengan header otentikasi
+      final response = await http.get(
+        Uri.parse('$baseUrl/auth/validate'), // Endpoint validasi
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      // 3. Periksa status code dan parse response
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+        // Parse JSON response menjadi User model
+        return User.fromJson(jsonResponse);
+      } else {
+        // Handle error jika token tidak valid atau ada masalah lain
+        print('Gagal memvalidasi token: ${response.body}');
+        throw Exception('Gagal memvalidasi pengguna (Status: ${response.statusCode})');
+      }
+    } catch (e) {
+      print('Error di AuthService: $e');
+      // Lempar kembali error agar bisa ditangani di controller
+      throw Exception('Terjadi kesalahan saat validasi: $e');
     }
   }
 }

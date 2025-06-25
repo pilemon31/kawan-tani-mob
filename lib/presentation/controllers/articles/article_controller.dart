@@ -1,9 +1,11 @@
 import 'package:get/get.dart';
 import 'package:flutter_kawan_tani/models/article_model.dart';
 import 'package:flutter_kawan_tani/services/articles/article_service.dart';
+import 'package:flutter_kawan_tani/presentation/controllers/auth/auth_controller.dart'; 
 
 class ArticleController extends GetxController {
   final ArticleService _articleService = ArticleService();
+  final AuthController _authController = Get.find<AuthController>();
 
   var articles = <Article>[].obs;
   var userArticles = <Article>[].obs;
@@ -21,6 +23,7 @@ class ArticleController extends GetxController {
     isActive: true,
     status: '',
     isVerified: '',
+
   ).obs;
   var selectedSavedArticle = Article(
     id: '',
@@ -99,21 +102,19 @@ class ArticleController extends GetxController {
     try {
       isLoading(true);
       var result = await _articleService.getArticleById(id);
+
+      if (savedArticles.isEmpty) await fetchSavedArticles();
+      result.isSaved = savedArticles.any((saved) => saved.id == result.id);
+
+      final currentUserId = _authController.currentUser.value.id;
+
+      if (currentUserId.isNotEmpty && result.likes != null) {
+        result.isLiked = result.likes.any((like) => like.userId == currentUserId);
+      }
+
       selectedArticle.value = result;
     } catch (e) {
-      Get.snackbar('Error', 'Failed to load article: $e');
-    } finally {
-      isLoading(false);
-    }
-  }
-
-  Future<void> getSavedArticleById(String id) async {
-    try {
-      isLoading(true);
-      var result = await _articleService.getArticleById(id);
-      selectedSavedArticle.value = result;
-    } catch (e) {
-      Get.snackbar('Error', 'Failed to load article: $e');
+      Get.snackbar('Error', 'Gagal memuat detail artikel: $e');
     } finally {
       isLoading(false);
     }
@@ -222,96 +223,122 @@ class ArticleController extends GetxController {
     }
   }
 
-  Future<bool> saveArticle(String articleId) async {
-    try {
-      isUpdating(true);
-      bool success = await _articleService.saveArticle(articleId);
-      if (success) {
-        var updatedArticle = selectedArticle.value;
-        updatedArticle.isSaved = true;
-        selectedArticle.value = updatedArticle;
-        selectedArticle.refresh();
+  // Ganti fungsi saveArticle dengan yang ini
+Future<bool> saveArticle(String articleId) async {
+  try {
+    isUpdating(true);
+    bool success = await _articleService.saveArticle(articleId);
+    if (success) {
+      // PERBAIKAN 1: Update state pada selectedArticle
+      selectedArticle.update((article) {
+        article?.isSaved = true;
+      });
 
-        int index = articles.indexWhere((article) => article.id == articleId);
-        if (index != -1) {
-          articles[index].isSaved = true;
-          articles.refresh();
-        }
+      // PERBAIKAN 2: Update state pada daftar artikel utama (jika ada)
+      int index = articles.indexWhere((article) => article.id == articleId);
+      if (index != -1) {
+        articles[index].isSaved = true;
+        articles.refresh();
       }
-      return success;
-    } catch (e) {
-      Get.snackbar('Error', 'Failed to save article: $e');
-      return false;
-    } finally {
-      isUpdating(false);
-    }
-  }
 
-  Future<bool> unsaveArticle(String articleId) async {
-    try {
-      isUpdating(true);
-      bool success = await _articleService.unsaveArticle(articleId);
-      if (success) {
-        var updatedArticle = selectedArticle.value;
-        updatedArticle.isSaved = false;
-        selectedArticle.value = updatedArticle;
-        selectedArticle.refresh();
-
-        int index = articles.indexWhere((article) => article.id == articleId);
-        if (index != -1) {
-          articles[index].isSaved = false;
-          articles.refresh();
-        }
+      // PERBAIKAN 3 (PENTING): Tambahkan artikel ke daftar savedArticles
+      // Cek dulu agar tidak ada duplikat
+      if (!savedArticles.any((article) => article.id == articleId)) {
+        // Kita butuh objek artikel lengkap, ambil dari selectedArticle
+        savedArticles.add(selectedArticle.value);
       }
-      return success;
-    } catch (e) {
-      Get.snackbar('Error', 'Failed to unsave article: $e');
-      return false;
-    } finally {
-      isUpdating(false);
     }
+    return success;
+  } catch (e) {
+    Get.snackbar('Error', 'Failed to save article: $e');
+    return false;
+  } finally {
+    isUpdating(false);
   }
+}
 
-  Future<bool> likeArticle(String articleId, double rating) async {
-    try {
-      isUpdating(true);
-      bool success = await _articleService.likeArticle(articleId, rating);
-      if (success) {
-        var updatedArticle = selectedArticle.value;
-        updatedArticle.isLiked = true;
-        selectedArticle.value = updatedArticle;
-        selectedArticle.refresh();
+// Ganti fungsi unsaveArticle dengan yang ini
+Future<bool> unsaveArticle(String articleId) async {
+  try {
+    isUpdating(true);
+    bool success = await _articleService.unsaveArticle(articleId);
+    if (success) {
+      // PERBAIKAN 1: Update state pada selectedArticle
+      selectedArticle.update((article) {
+        article?.isSaved = false;
+      });
 
-        int index = articles.indexWhere((article) => article.id == articleId);
-        if (index != -1) {
-          articles[index].isLiked = true;
-          articles.refresh();
-        }
+      // PERBAIKAN 2: Update state pada daftar artikel utama (jika ada)
+      int index = articles.indexWhere((article) => article.id == articleId);
+      if (index != -1) {
+        articles[index].isSaved = false;
+        articles.refresh();
       }
-      return success;
-    } catch (e) {
-      Get.snackbar('Error', 'Failed to like article: $e');
-      return false;
-    } finally {
-      isUpdating(false);
-    }
-  }
 
-  Future<bool> unlikeArticle(String articleId) async {
-    try {
-      final success = await _articleService.unlikeArticle(articleId);
-      if (success) {
-        articles.firstWhere((a) => a.id == articleId).isLiked = false;
-        selectedArticle.update((article) {
-          article?.isLiked = false;
-        });
-      }
-      return success;
-    } catch (e) {
-      Get.snackbar('Error', 'Failed to unlike article: $e');
-      return false;
+      // PERBAIKAN 3 (PENTING): Hapus artikel dari daftar savedArticles
+      savedArticles.removeWhere((article) => article.id == articleId);
     }
+    return success;
+  } catch (e) {
+    Get.snackbar('Error', 'Failed to unsave article: $e');
+    return false;
+  } finally {
+    isUpdating(false);
   }
+}
+
+// Ganti juga fungsi like dan unlike agar lebih konsisten
+Future<bool> likeArticle(String articleId, double rating) async {
+  try {
+    isUpdating(true);
+    bool success = await _articleService.likeArticle(articleId, rating);
+    if (success) {
+      // Update state pada selectedArticle
+      selectedArticle.update((article) {
+        article?.isLiked = true;
+      });
+
+      // Update state pada daftar artikel utama (jika ada)
+      int index = articles.indexWhere((article) => article.id == articleId);
+      if (index != -1) {
+        articles[index].isLiked = true;
+        articles.refresh();
+      }
+    }
+    return success;
+  } catch (e) {
+    Get.snackbar('Error', 'Failed to like article: $e');
+    return false;
+  } finally {
+    isUpdating(false);
+  }
+}
+
+Future<bool> unlikeArticle(String articleId) async {
+  try {
+    isUpdating(true);
+    final success = await _articleService.unlikeArticle(articleId);
+    if (success) {
+      // Update state pada selectedArticle
+      selectedArticle.update((article) {
+        article?.isLiked = false;
+      });
+
+      // Update state pada daftar artikel utama (jika ada)
+      int index = articles.indexWhere((article) => article.id == articleId);
+      if (index != -1) {
+        articles[index].isLiked = false;
+        articles.refresh();
+      }
+    }
+    return success;
+  } catch (e) {
+    Get.snackbar('Error', 'Failed to unlike article: $e');
+    return false;
+  } finally {
+    isUpdating(false);
+  }
+}
 
   void setSelectedArticle(Article article) {
     getArticleById(article.id);
