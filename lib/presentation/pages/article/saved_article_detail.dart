@@ -242,8 +242,7 @@ class _SavedArticleDetailState extends State<SavedArticleDetail> {
                   ),
                 ),
                 IconButton(
-                  onPressed: () {
-                  },
+                  onPressed: () {},
                   icon: PhosphorIcon(
                     PhosphorIconsBold.shareNetwork,
                     size: 32.0,

@@ -30,234 +30,110 @@ class _ArticleDetailState extends State<ArticleDetail> {
     }
   }
 
-  void _handleStarTap(bool isLiked, String articleId) {
-    if (isLiked) {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text(
-            "Batalkan Rating",
-            style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
-          ),
-          content: Text(
-            "Apakah Anda yakin ingin membatalkan rating untuk artikel ini?",
-            style: GoogleFonts.poppins(),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Get.back(),
-              child: Text(
-                "Batal",
-                style: GoogleFonts.poppins(color: Colors.grey),
-              ),
-            ),
-            TextButton(
-              onPressed: () async {
-                Get.back(); // Tutup dialog
-                final success =
-                    await _articleController.unlikeArticle(articleId);
-                if (success) {
-                  showCustomToast(context, "Rating berhasil dibatalkan!");
-                } else {
-                  showCustomToast(context, "Gagal membatalkan rating!");
-                }
-              },
-              child: Text(
-                "Ya, Batalkan",
-                style: GoogleFonts.poppins(color: Colors.red),
-              ),
-            ),
-          ],
-        ),
-      );
-    } else {
-      // Reset rating sebelum menampilkan dialog
-      selectedRating = 0;
+  void _handleStarTap() {
+    _articleController.toggleLikeStatus().then((_) {
+      final isLiked = _articleController.selectedArticle.value.isLiked;
+      showCustomToast(
+          context, isLiked ? "Artikel disukai!" : "Suka dibatalkan!");
+    });
+  }
 
-      // Jika belum liked, tampilkan dialog rating
-      showDialog(
-        context: context,
-        builder: (context) => StatefulBuilder(
-          builder: (context, setDialogState) => Dialog(
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: whiteColor,
-              ),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: IconButton(
-                        onPressed: () {
-                          Get.back();
-                        },
-                        icon: PhosphorIcon(
-                          PhosphorIconsBold.x,
-                          size: 25.0,
-                          color: blackColor,
-                        ),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: Text("Beri Rating Artikel",
-                          textAlign: TextAlign.left,
-                          style: GoogleFonts.poppins(
-                              fontSize: 20, fontWeight: bold)),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      "Berikan rating Anda untuk artikel ini dan bantu kami meningkatkan kualitas konten yang disajikan.",
-                      style: GoogleFonts.poppins(fontSize: 12),
-                    ),
-                    SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(
-                        5,
-                        (index) => IconButton(
-                          onPressed: () {
-                            setDialogState(() {
-                              selectedRating = (index + 1).toDouble();
-                            });
-                          },
-                          icon: PhosphorIcon(
-                            index < selectedRating
-                                ? PhosphorIconsFill.star
-                                : PhosphorIconsBold.star,
-                            size: 30.0,
-                            color: Colors.yellow,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: () async {
-                        if (selectedRating > 0) {
-                          final success = await _articleController.likeArticle(
-                              articleId, selectedRating);
-                          if (success) {
-                            showCustomToast(
-                                context, "Rating berhasil diberikan!");
-                            Get.back();
-                          } else {
-                            showCustomToast(
-                                context, "Gagal memberikan rating!");
-                          }
-                        } else {
-                          showCustomToast(
-                              context, "Pilih rating terlebih dahulu!");
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: primaryColor,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8)),
-                        elevation: 0.0,
-                        minimumSize: Size(double.infinity, 42),
-                      ),
-                      child: Text(
-                        "Beri Rating",
-                        style: GoogleFonts.poppins(
-                            color: whiteColor, fontSize: 15, fontWeight: bold),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
-    }
+  void _handleBookmarkTap() {
+    _articleController.toggleSaveStatus().then((_) {
+      final isSaved = _articleController.selectedArticle.value.isSaved;
+      showCustomToast(context,
+          isSaved ? "Artikel disimpan!" : "Artikel dihapus dari simpanan!");
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      final article = _articleController.selectedArticle.value;
-      final isBookmarked = article.isSaved;
-      final isLiked = article.isLiked;
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(80.0),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 27),
+          child: Obx(() {
+            final isBookmarked =
+                _articleController.selectedArticle.value.isSaved;
+            final isLiked = _articleController.selectedArticle.value.isLiked;
 
-      return Scaffold(
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(100.0),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 27),
-            child: AppBar(
+            return AppBar(
               backgroundColor: Colors.white,
+              elevation: 0,
+              centerTitle: true,
               toolbarHeight: 80.0,
               leading: IconButton(
-                onPressed: () {
-                  Get.back();
-                },
-                icon: PhosphorIcon(
-                  PhosphorIconsBold.arrowLeft,
-                  size: 32.0,
-                ),
+                onPressed: () => Get.back(),
+                icon: PhosphorIcon(PhosphorIconsBold.arrowLeft,
+                    size: 32.0, color: blackColor),
               ),
               actions: [
                 IconButton(
-                  onPressed: () {
-                    Get.to(() => ArticleComments());
-                  },
-                  icon: PhosphorIcon(
-                    PhosphorIconsBold.chatCircle,
-                    size: 32.0,
-                  ),
+                  onPressed: () => Get.to(() => ArticleComments()),
+                  icon: PhosphorIcon(PhosphorIconsBold.chatCircle,
+                      size: 32.0, color: blackColor),
                 ),
+                Obx(() => IconButton(
+                      onPressed: _articleController.isTogglingLike.value
+                          ? null
+                          : _handleStarTap,
+                      icon: _articleController.isTogglingLike.value
+                          ? const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(strokeWidth: 2))
+                          : PhosphorIcon(
+                              isLiked
+                                  ? PhosphorIconsFill.star
+                                  : PhosphorIconsBold.star,
+                              size: 32.0,
+                              color: isLiked
+                                  ? const Color(0xFFFFC107)
+                                  : blackColor,
+                            ),
+                    )),
+                Obx(() => IconButton(
+                      onPressed: _articleController.isTogglingSave.value
+                          ? null
+                          : _handleBookmarkTap,
+                      icon: _articleController.isTogglingSave.value
+                          ? const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(strokeWidth: 2))
+                          : PhosphorIcon(
+                              isBookmarked
+                                  ? PhosphorIconsFill.bookmarkSimple
+                                  : PhosphorIconsBold.bookmarkSimple,
+                              size: 32.0,
+                              color: isBookmarked ? primaryColor : blackColor,
+                            ),
+                    )),
                 IconButton(
-                  onPressed: () => _handleStarTap(isLiked, article.id),
-                  icon: PhosphorIcon(
-                    isLiked ? PhosphorIconsFill.star : PhosphorIconsBold.star,
-                    size: 32.0,
-                    color: isLiked ? Colors.yellow : blackColor,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () async {
-                    if (isBookmarked) {
-                      final success =
-                          await _articleController.unsaveArticle(article.id);
-                      if (success) {
-                        showCustomToast(context, "Berhasil menghapus artikel!");
-                      }
-                    } else {
-                      final success =
-                          await _articleController.saveArticle(article.id);
-                      if (success) {
-                        showCustomToast(context, "Berhasil menambah artikel!");
-                      }
-                    }
-                  },
-                  icon: PhosphorIcon(
-                    isBookmarked
-                        ? PhosphorIconsFill.bookmarkSimple
-                        : PhosphorIconsBold.bookmarkSimple,
-                    size: 32.0,
-                    color: isBookmarked ? primaryColor : blackColor,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    // TODO: Implement share functionality
-                  },
-                  icon: PhosphorIcon(
-                    PhosphorIconsBold.shareNetwork,
-                    size: 32.0,
-                  ),
+                  onPressed: () {/* TODO: Implement share */},
+                  icon: PhosphorIcon(PhosphorIconsBold.shareNetwork,
+                      size: 32.0, color: blackColor),
                 ),
               ],
-            ),
-          ),
+            );
+          }),
         ),
-        body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 27),
+      ),
+      body: Obx(() {
+        if (_articleController.isLoading.value &&
+            _articleController.selectedArticle.value.id.isEmpty) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        final article = _articleController.selectedArticle.value;
+
+        if (article.id.isEmpty) {
+          return const Center(child: Text("Artikel tidak ditemukan."));
+        }
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 27),
           child: ListView(
             children: [
               ClipRRect(
@@ -265,7 +141,7 @@ class _ArticleDetailState extends State<ArticleDetail> {
                 child: Image.network(
                   article.imageUrl.isNotEmpty
                       ? 'https://kawan-tani-backend-production.up.railway.app/uploads/articles/${article.imageUrl}'
-                      : 'https://via.placeholder.com/150',
+                      : 'https://via.placeholder.com/400x200.png?text=No+Image',
                   width: double.infinity,
                   height: 200,
                   fit: BoxFit.cover,
@@ -277,37 +153,27 @@ class _ArticleDetailState extends State<ArticleDetail> {
                   ),
                 ),
               ),
-              SizedBox(height: 18),
-              Align(
-                alignment: Alignment.topLeft,
-                child: Text(
-                  article.title,
-                  textAlign: TextAlign.start,
-                  style: GoogleFonts.poppins(fontSize: 24, fontWeight: bold),
-                ),
+              const SizedBox(height: 18),
+              Text(
+                article.title,
+                style: GoogleFonts.poppins(
+                    fontSize: 24, fontWeight: bold, color: blackColor),
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     children: [
-                      Container(
-                        width: 30,
-                        height: 30,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: article.authorImage.isNotEmpty
-                                ? NetworkImage(
-                                    'https://kawan-tani-backend-production.up.railway.app/uploads/users/${article.authorImage}')
-                                : AssetImage("assets/farmer2.jpg")
-                                    as ImageProvider,
-                            fit: BoxFit.cover,
-                          ),
-                          shape: BoxShape.circle,
-                        ),
+                      CircleAvatar(
+                        radius: 15,
+                        backgroundImage: article.authorImage.isNotEmpty
+                            ? NetworkImage(
+                                'https://kawan-tani-backend-production.up.railway.app/uploads/users/${article.authorImage}')
+                            : const AssetImage("assets/farmer2.jpg")
+                                as ImageProvider,
                       ),
-                      SizedBox(width: 10),
+                      const SizedBox(width: 10),
                       Text(
                         article.author,
                         style: GoogleFonts.poppins(
@@ -322,23 +188,19 @@ class _ArticleDetailState extends State<ArticleDetail> {
                   )
                 ],
               ),
-              SizedBox(height: 10),
-              Column(
-                children: [
-                  Text(
-                    article.content,
-                    style: GoogleFonts.poppins(fontSize: 14),
-                  ),
-                  SizedBox(height: 10),
-                ],
+              const SizedBox(height: 20),
+              Text(
+                article.content,
+                style: GoogleFonts.poppins(
+                    fontSize: 14, height: 1.8, color: blackColor),
               ),
-              SizedBox(height: 50),
+              const SizedBox(height: 50),
             ],
           ),
-        ),
-        bottomNavigationBar: Navbar(),
-      );
-    });
+        );
+      }),
+      bottomNavigationBar: const Navbar(),
+    );
   }
 
   String _getMonthName(int month) {

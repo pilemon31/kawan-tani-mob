@@ -124,32 +124,27 @@ class ArticleLike {
   final String id;
   final String userId;
   final String articleId;
-  final DateTime createdAt;
 
   ArticleLike({
     required this.id,
     required this.userId,
     required this.articleId,
-    required this.createdAt,
   });
 
   factory ArticleLike.fromJson(Map<String, dynamic> json) {
     return ArticleLike(
-      id: json['id']?.toString() ?? '',
+      // PERBAIKAN: Sesuaikan key dengan respons API dari Prisma
+      id: json['id_artikel_disukai'] ?? '',
       userId: json['id_pengguna'] ?? '',
       articleId: json['id_artikel'] ?? '',
-      createdAt: json['created_at'] != null
-          ? DateTime.parse(json['created_at'])
-          : DateTime.now(),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+      'id_artikel_disukai': id,
       'id_pengguna': userId,
       'id_artikel': articleId,
-      'created_at': createdAt.toIso8601String(),
     };
   }
 }

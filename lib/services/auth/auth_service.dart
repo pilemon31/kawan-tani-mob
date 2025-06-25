@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'dart:async';
 import 'package:flutter_kawan_tani/shared/constants.dart';
-import 'package:flutter_kawan_tani/shared/storage_service.dart'; 
+import 'package:flutter_kawan_tani/shared/storage_service.dart';
 import 'package:flutter_kawan_tani/models/user_model.dart';
 
 class AuthService {
@@ -83,6 +83,32 @@ class AuthService {
       return response;
     } catch (e) {
       throw Exception('Gagal login user: $e');
+    }
+  }
+
+  Future<Map<String, dynamic>?> getCurrentUser() async {
+    try {
+      final token = await _storageService.getToken();
+      if (token == null || token.isEmpty) {
+        // Tidak ada token, berarti pengguna belum login
+        return null;
+      }
+
+      // Menggunakan fungsi static getUserData yang sudah ada
+      final response = await AuthService.getUserData(token: token);
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+        // Backend Anda kemungkinan mengembalikan data di dalam key 'data'
+        return jsonResponse['data'] as Map<String, dynamic>?;
+      } else {
+        // Token mungkin tidak valid atau ada error lain
+        debugPrint('Gagal mendapatkan data pengguna: ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      debugPrint('Error di getCurrentUser: $e');
+      return null;
     }
   }
 
@@ -216,7 +242,7 @@ class AuthService {
     }
   }
 
-   Future<User> validateToken() async {
+  Future<User> validateToken() async {
     try {
       // 1. Ambil token dari StorageService Anda
       final token = await _storageService.getToken();
@@ -242,7 +268,8 @@ class AuthService {
       } else {
         // Handle error jika token tidak valid atau ada masalah lain
         print('Gagal memvalidasi token: ${response.body}');
-        throw Exception('Gagal memvalidasi pengguna (Status: ${response.statusCode})');
+        throw Exception(
+            'Gagal memvalidasi pengguna (Status: ${response.statusCode})');
       }
     } catch (e) {
       print('Error di AuthService: $e');

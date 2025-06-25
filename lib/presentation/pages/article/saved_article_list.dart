@@ -170,12 +170,12 @@ class _SavedArticleListState extends State<SavedArticleList> {
                   }
 
                   return ListView.separated(
-                    itemCount: _articleController.savedArticles.length,
+                    itemCount: filteredArticles.length,
                     separatorBuilder: (BuildContext context, int index) {
                       return const SizedBox(height: 10);
                     },
                     itemBuilder: (BuildContext context, int index) {
-                      final article = _articleController.savedArticles[index];
+                      final article = filteredArticles[index];
                       return InkWell(
                         onTap: () {
                           _articleController.setSelectedArticle(article);
@@ -224,19 +224,19 @@ class _SavedArticleListState extends State<SavedArticleList> {
                                           CrossAxisAlignment.center,
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Oleh',
-                                          style:
-                                              GoogleFonts.poppins(fontSize: 12),
-                                        ),
-                                        const SizedBox(width: 4.5),
-                                        Text(
-                                          article.author,
-                                          style:
-                                              GoogleFonts.poppins(fontSize: 12),
-                                        ),
-                                      ],
+                                      // children: [
+                                      //   Text(
+                                      //     'Oleh',
+                                      //     style:
+                                      //         GoogleFonts.poppins(fontSize: 12),
+                                      //   ),
+                                      //   const SizedBox(width: 4.5),
+                                      //   Text(
+                                      //     article.author,
+                                      //     style:
+                                      //         GoogleFonts.poppins(fontSize: 12),
+                                      //   ),
+                                      // ],
                                     ),
                                     const SizedBox(height: 10),
                                     Row(

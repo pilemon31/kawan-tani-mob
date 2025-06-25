@@ -100,24 +100,29 @@ class ArticleService {
     }
   }
 
-  Future<List<Article>> getSavedArticles() async {
-    try {
-      final token = await storageService.getToken();
-      final response = await http.get(
-        Uri.parse('$baseUrl/articles/saved'),
-        headers: {'Authorization': 'Bearer $token'},
-      );
-      if (response.statusCode == 200) {
-        final jsonResponse = jsonDecode(response.body);
-        List<dynamic> data = jsonResponse['data'];
-        return data.map((json) => Article.fromJson(json)).toList();
-      } else {
-        throw Exception('Failed to load saved articles');
-      }
-    } catch (e) {
-      throw Exception('Error: $e');
+Future<List<Article>> getSavedArticles() async {
+  try {
+    final token = await storageService.getToken();
+    final response = await http.get(
+      Uri.parse('$baseUrl/articles/saved'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+    if (response.statusCode == 200) {
+      final jsonResponse = jsonDecode(response.body);
+      List<dynamic> data = jsonResponse['data'];
+
+      return data.map((savedItemJson) {
+        final articleJson = savedItemJson['artikel'] as Map<String, dynamic>;
+        return Article.fromJson(articleJson);
+      }).toList();
+      
+    } else {
+      throw Exception('Gagal memuat artikel yang disimpan');
     }
+  } catch (e) {
+    throw Exception('Error: $e');
   }
+}
 
   Future<Article> createArticle({
     required String title,
@@ -287,7 +292,7 @@ class ArticleService {
     try {
       final token = await storageService.getToken();
       final response = await http.delete(
-        Uri.parse('$baseUrl/articles/$articleId/unsave'),
+        Uri.parse('$baseUrl/articles/$articleId/save'),
         headers: {'Authorization': 'Bearer $token'},
       );
       return response.statusCode == 200;

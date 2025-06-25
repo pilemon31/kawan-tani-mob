@@ -1,11 +1,11 @@
+import 'package:flutter_kawan_tani/services/auth/auth_service.dart';
 import 'package:get/get.dart';
 import 'package:flutter_kawan_tani/models/article_model.dart';
 import 'package:flutter_kawan_tani/services/articles/article_service.dart';
-import 'package:flutter_kawan_tani/presentation/controllers/auth/auth_controller.dart'; 
 
 class ArticleController extends GetxController {
   final ArticleService _articleService = ArticleService();
-  final AuthController _authController = Get.find<AuthController>();
+  final AuthService _authService = AuthService();
 
   var articles = <Article>[].obs;
   var userArticles = <Article>[].obs;
@@ -23,7 +23,6 @@ class ArticleController extends GetxController {
     isActive: true,
     status: '',
     isVerified: '',
-
   ).obs;
   var selectedSavedArticle = Article(
     id: '',
@@ -43,6 +42,8 @@ class ArticleController extends GetxController {
   var isCreating = false.obs;
   var isUpdating = false.obs;
   var isDeleting = false.obs;
+  var isTogglingLike = false.obs;
+  var isTogglingSave = false.obs;
 
   @override
   void onInit() {
@@ -89,10 +90,11 @@ class ArticleController extends GetxController {
   Future<void> fetchSavedArticles() async {
     try {
       isLoading(true);
+      // Sekarang ini akan mengembalikan List<Article> yang benar
       var result = await _articleService.getSavedArticles();
       savedArticles.assignAll(result);
     } catch (e) {
-      Get.snackbar('Error', 'Failed to load saved articles: $e');
+      Get.snackbar('Error', 'Gagal memuat artikel yang disimpan: $e');
     } finally {
       isLoading(false);
     }
@@ -101,20 +103,33 @@ class ArticleController extends GetxController {
   Future<void> getArticleById(String id) async {
     try {
       isLoading(true);
-      var result = await _articleService.getArticleById(id);
+      final articleData = await _articleService.getArticleById(id);
+      final savedData = await _articleService.getSavedArticles();
+      final user = await _authService.getCurrentUser();
 
-      if (savedArticles.isEmpty) await fetchSavedArticles();
-      result.isSaved = savedArticles.any((saved) => saved.id == result.id);
-
-      final currentUserId = _authController.currentUser.value.id;
-
-      if (currentUserId.isNotEmpty && result.likes != null) {
-        result.isLiked = result.likes.any((like) => like.userId == currentUserId);
+      if (user != null) {
+        articleData.isLiked =
+            articleData.likes.any((like) => like.userId == user['id_pengguna']);
+        articleData.isSaved =
+            savedData.any((saved) => saved.id == articleData.id);
       }
 
-      selectedArticle.value = result;
+      // Update nilai dari selectedArticle yang sudah diobservasi
+      selectedArticle.value = articleData;
     } catch (e) {
       Get.snackbar('Error', 'Gagal memuat detail artikel: $e');
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<void> getSavedArticleById(String id) async {
+    try {
+      isLoading(true);
+      var result = await _articleService.getArticleById(id);
+      selectedSavedArticle.value = result;
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to load article: $e');
     } finally {
       isLoading(false);
     }
@@ -201,6 +216,82 @@ class ArticleController extends GetxController {
     }
   }
 
+  Future<void> toggleSaveStatus() async {
+    if (isTogglingSave.value) return;
+
+    final articleId = selectedArticle.value.id;
+    if (articleId.isEmpty) return;
+
+    try {
+      isTogglingSave(true);
+      bool isCurrentlySaved = selectedArticle.value.isSaved;
+
+      bool success = isCurrentlySaved
+          ? await _articleService.unsaveArticle(articleId)
+          : await _articleService.saveArticle(articleId);
+
+      if (success) {
+        // Buat objek baru untuk memastikan GetX mendeteksi perubahan
+        var updatedArticle = selectedArticle.value;
+        updatedArticle.isSaved = !isCurrentlySaved;
+        selectedArticle.value = updatedArticle;
+        selectedArticle.refresh(); // Panggil refresh untuk update UI
+
+        _updateArticleInList(articleId, isSaved: !isCurrentlySaved);
+      } else {
+        Get.snackbar('Gagal', 'Gagal memperbarui status simpan artikel.');
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Terjadi kesalahan: $e');
+    } finally {
+      isTogglingSave(false);
+    }
+  }
+
+  Future<void> toggleLikeStatus() async {
+    if (isTogglingLike.value) return;
+
+    final articleId = selectedArticle.value.id;
+    if (articleId.isEmpty) return;
+
+    try {
+      isTogglingLike(true);
+      bool isCurrentlyLiked = selectedArticle.value.isLiked;
+
+      bool success = isCurrentlyLiked
+          ? await _articleService.unlikeArticle(articleId)
+          : await _articleService.likeArticle(articleId, 5.0);
+
+      if (success) {
+        // Buat objek baru untuk memastikan GetX mendeteksi perubahan
+        var updatedArticle = selectedArticle.value;
+        updatedArticle.isLiked = !isCurrentlyLiked;
+        selectedArticle.value = updatedArticle;
+        selectedArticle.refresh(); // Panggil refresh untuk update UI
+
+        _updateArticleInList(articleId, isLiked: !isCurrentlyLiked);
+      } else {
+        Get.snackbar('Gagal', 'Gagal memperbarui status suka artikel.');
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Terjadi kesalahan: $e');
+    } finally {
+      isTogglingLike(false);
+    }
+  }
+
+  void _updateArticleInList(String articleId, {bool? isLiked, bool? isSaved}) {
+    int index = articles.indexWhere((a) => a.id == articleId);
+    if (index != -1) {
+      // Perlu membuat objek baru agar list reaktif
+      var updatedArticle = articles[index];
+      if (isLiked != null) updatedArticle.isLiked = isLiked;
+      if (isSaved != null) updatedArticle.isSaved = isSaved;
+      articles[index] = updatedArticle;
+      articles.refresh();
+    }
+  }
+
   Future<bool> verifyArticle(String id) async {
     try {
       return await _articleService.verifyArticle(id);
@@ -223,122 +314,96 @@ class ArticleController extends GetxController {
     }
   }
 
-  // Ganti fungsi saveArticle dengan yang ini
-Future<bool> saveArticle(String articleId) async {
-  try {
-    isUpdating(true);
-    bool success = await _articleService.saveArticle(articleId);
-    if (success) {
-      // PERBAIKAN 1: Update state pada selectedArticle
-      selectedArticle.update((article) {
-        article?.isSaved = true;
-      });
+  Future<bool> saveArticle(String articleId) async {
+    try {
+      isUpdating(true);
+      bool success = await _articleService.saveArticle(articleId);
+      if (success) {
+        var updatedArticle = selectedArticle.value;
+        updatedArticle.isSaved = true;
+        selectedArticle.value = updatedArticle;
+        selectedArticle.refresh();
 
-      // PERBAIKAN 2: Update state pada daftar artikel utama (jika ada)
-      int index = articles.indexWhere((article) => article.id == articleId);
-      if (index != -1) {
-        articles[index].isSaved = true;
-        articles.refresh();
+        int index = articles.indexWhere((article) => article.id == articleId);
+        if (index != -1) {
+          articles[index].isSaved = true;
+          articles.refresh();
+        }
       }
-
-      // PERBAIKAN 3 (PENTING): Tambahkan artikel ke daftar savedArticles
-      // Cek dulu agar tidak ada duplikat
-      if (!savedArticles.any((article) => article.id == articleId)) {
-        // Kita butuh objek artikel lengkap, ambil dari selectedArticle
-        savedArticles.add(selectedArticle.value);
-      }
+      return success;
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to save article: $e');
+      return false;
+    } finally {
+      isUpdating(false);
     }
-    return success;
-  } catch (e) {
-    Get.snackbar('Error', 'Failed to save article: $e');
-    return false;
-  } finally {
-    isUpdating(false);
   }
-}
 
-// Ganti fungsi unsaveArticle dengan yang ini
-Future<bool> unsaveArticle(String articleId) async {
-  try {
-    isUpdating(true);
-    bool success = await _articleService.unsaveArticle(articleId);
-    if (success) {
-      // PERBAIKAN 1: Update state pada selectedArticle
-      selectedArticle.update((article) {
-        article?.isSaved = false;
-      });
+  Future<bool> unsaveArticle(String articleId) async {
+    try {
+      isUpdating(true);
+      bool success = await _articleService.unsaveArticle(articleId);
+      if (success) {
+        var updatedArticle = selectedArticle.value;
+        updatedArticle.isSaved = false;
+        selectedArticle.value = updatedArticle;
+        selectedArticle.refresh();
 
-      // PERBAIKAN 2: Update state pada daftar artikel utama (jika ada)
-      int index = articles.indexWhere((article) => article.id == articleId);
-      if (index != -1) {
-        articles[index].isSaved = false;
-        articles.refresh();
+        int index = articles.indexWhere((article) => article.id == articleId);
+        if (index != -1) {
+          articles[index].isSaved = false;
+          articles.refresh();
+        }
       }
-
-      // PERBAIKAN 3 (PENTING): Hapus artikel dari daftar savedArticles
-      savedArticles.removeWhere((article) => article.id == articleId);
+      return success;
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to unsave article: $e');
+      return false;
+    } finally {
+      isUpdating(false);
     }
-    return success;
-  } catch (e) {
-    Get.snackbar('Error', 'Failed to unsave article: $e');
-    return false;
-  } finally {
-    isUpdating(false);
   }
-}
 
-// Ganti juga fungsi like dan unlike agar lebih konsisten
-Future<bool> likeArticle(String articleId, double rating) async {
-  try {
-    isUpdating(true);
-    bool success = await _articleService.likeArticle(articleId, rating);
-    if (success) {
-      // Update state pada selectedArticle
-      selectedArticle.update((article) {
-        article?.isLiked = true;
-      });
+  Future<bool> likeArticle(String articleId, double rating) async {
+    try {
+      isUpdating(true);
+      bool success = await _articleService.likeArticle(articleId, rating);
+      if (success) {
+        var updatedArticle = selectedArticle.value;
+        updatedArticle.isLiked = true;
+        selectedArticle.value = updatedArticle;
+        selectedArticle.refresh();
 
-      // Update state pada daftar artikel utama (jika ada)
-      int index = articles.indexWhere((article) => article.id == articleId);
-      if (index != -1) {
-        articles[index].isLiked = true;
-        articles.refresh();
+        int index = articles.indexWhere((article) => article.id == articleId);
+        if (index != -1) {
+          articles[index].isLiked = true;
+          articles.refresh();
+        }
       }
+      return success;
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to like article: $e');
+      return false;
+    } finally {
+      isUpdating(false);
     }
-    return success;
-  } catch (e) {
-    Get.snackbar('Error', 'Failed to like article: $e');
-    return false;
-  } finally {
-    isUpdating(false);
   }
-}
 
-Future<bool> unlikeArticle(String articleId) async {
-  try {
-    isUpdating(true);
-    final success = await _articleService.unlikeArticle(articleId);
-    if (success) {
-      // Update state pada selectedArticle
-      selectedArticle.update((article) {
-        article?.isLiked = false;
-      });
-
-      // Update state pada daftar artikel utama (jika ada)
-      int index = articles.indexWhere((article) => article.id == articleId);
-      if (index != -1) {
-        articles[index].isLiked = false;
-        articles.refresh();
+  Future<bool> unlikeArticle(String articleId) async {
+    try {
+      final success = await _articleService.unlikeArticle(articleId);
+      if (success) {
+        articles.firstWhere((a) => a.id == articleId).isLiked = false;
+        selectedArticle.update((article) {
+          article?.isLiked = false;
+        });
       }
+      return success;
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to unlike article: $e');
+      return false;
     }
-    return success;
-  } catch (e) {
-    Get.snackbar('Error', 'Failed to unlike article: $e');
-    return false;
-  } finally {
-    isUpdating(false);
   }
-}
 
   void setSelectedArticle(Article article) {
     getArticleById(article.id);
