@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kawan_tani/models/workshop_model.dart';
-import 'package:flutter_kawan_tani/presentation/widgets/navbar/navbar.dart';
+import 'package:flutter_kawan_tani/presentation/pages/dashboard/home_screen.dart';
 import 'package:flutter_kawan_tani/shared/theme.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -178,8 +178,7 @@ class WorkshopRegistrationSuccess extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  // Navigate to the main screen or dashboard
-                  Get.offAll(() => const Navbar());
+                  Get.offAll(() => HomeScreen());
                 },
                 child: Text(
                   'Kembali Ke Halaman Utama',
