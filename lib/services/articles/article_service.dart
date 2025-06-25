@@ -1,4 +1,3 @@
-// services/articles/article_service.dart
 import 'dart:convert';
 import 'package:flutter_kawan_tani/models/article_model.dart';
 import 'package:http/http.dart' as http;
@@ -110,7 +109,7 @@ class ArticleService {
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
         List<dynamic> data = jsonResponse['data'];
-        return data.map((json) => Article.fromJson(json)).toList();
+        return data.map((item) => Article.fromJson(item['artikel'])).toList();
       } else {
         throw Exception('Failed to load saved articles');
       }

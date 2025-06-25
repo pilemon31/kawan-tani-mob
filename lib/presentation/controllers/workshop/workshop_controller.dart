@@ -60,8 +60,21 @@ class WorkshopController extends GetxController {
   Future<void> fetchRegisteredWorkshop() async {
     try {
       isLoading(true);
-      final result = await workshopService.getRegisteredWorkshops();
-      activeWorkshops.assignAll(result);
+      final List<WorkshopRegistration> registrations =
+          await workshopService.getRegisteredWorkshops();
+      List<Workshop> fetchedWorkshops = []; //
+
+      for (var reg in registrations) {
+        //
+        try {
+          final workshopDetail =
+              await workshopService.getWorkshopById(reg.idWorkshop);
+          fetchedWorkshops.add(workshopDetail); //
+        } catch (e) {
+          print('Error fetching workshop detail for ${reg.idWorkshop}: $e');
+        }
+      }
+      activeWorkshops.assignAll(fetchedWorkshops); //
     } catch (e) {
       errorMessage(e.toString());
     } finally {

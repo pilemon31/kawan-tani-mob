@@ -44,7 +44,7 @@ class WorkshopService {
     }
   }
 
-  Future<List<Workshop>> getRegisteredWorkshops() async {
+  Future<List<WorkshopRegistration>> getRegisteredWorkshops() async {
     try {
       final token = await _getToken();
       final response = await http.get(
@@ -57,7 +57,7 @@ class WorkshopService {
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body)['data'];
-        return data.map((json) => Workshop.fromJson(json)).toList();
+        return data.map((json) => WorkshopRegistration.fromJson(json)).toList();
       } else {
         throw Exception('HTTP ${response.statusCode}: ${response.body}');
       }
