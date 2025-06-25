@@ -22,20 +22,6 @@ class ArticleController extends GetxController {
     status: '',
     isVerified: '',
   ).obs;
-  var selectedSavedArticle = Article(
-    id: '',
-    title: '',
-    description: '',
-    content: '',
-    imageUrl: '',
-    category: '',
-    author: '',
-    authorImage: '',
-    createdAt: DateTime.now(),
-    isActive: true,
-    status: '',
-    isVerified: '',
-  ).obs;
   var isLoading = false.obs;
   var isCreating = false.obs;
   var isUpdating = false.obs;
@@ -100,18 +86,6 @@ class ArticleController extends GetxController {
       isLoading(true);
       var result = await _articleService.getArticleById(id);
       selectedArticle.value = result;
-    } catch (e) {
-      Get.snackbar('Error', 'Failed to load article: $e');
-    } finally {
-      isLoading(false);
-    }
-  }
-
-  Future<void> getSavedArticleById(String id) async {
-    try {
-      isLoading(true);
-      var result = await _articleService.getArticleById(id);
-      selectedSavedArticle.value = result;
     } catch (e) {
       Get.snackbar('Error', 'Failed to load article: $e');
     } finally {
@@ -193,7 +167,11 @@ class ArticleController extends GetxController {
 
   Future<bool> toggleArticleStatus(String id) async {
     try {
-      return await _articleService.toggleArticleStatus(id);
+      final success = await _articleService.toggleArticleStatus(id);
+      if (success) {
+        await getArticleById(id);
+      }
+      return success;
     } catch (e) {
       Get.snackbar('Error', 'Failed to toggle article status: $e');
       return false;
@@ -202,7 +180,11 @@ class ArticleController extends GetxController {
 
   Future<bool> verifyArticle(String id) async {
     try {
-      return await _articleService.verifyArticle(id);
+      final success = await _articleService.verifyArticle(id);
+      if (success) {
+        await getArticleById(id);
+      }
+      return success;
     } catch (e) {
       Get.snackbar('Error', 'Failed to verify article: $e');
       return false;
@@ -225,20 +207,10 @@ class ArticleController extends GetxController {
   Future<bool> saveArticle(String articleId) async {
     try {
       isUpdating(true);
-      bool success = await _articleService.saveArticle(articleId);
-      if (success) {
-        var updatedArticle = selectedArticle.value;
-        updatedArticle.isSaved = true;
-        selectedArticle.value = updatedArticle;
-        selectedArticle.refresh();
-
-        int index = articles.indexWhere((article) => article.id == articleId);
-        if (index != -1) {
-          articles[index].isSaved = true;
-          articles.refresh();
-        }
-      }
-      return success;
+      final updatedArticle = await _articleService.saveArticle(articleId);
+      selectedArticle.value = updatedArticle;
+      await fetchSavedArticles(); // Update saved articles list
+      return true;
     } catch (e) {
       Get.snackbar('Error', 'Failed to save article: $e');
       return false;
@@ -250,20 +222,10 @@ class ArticleController extends GetxController {
   Future<bool> unsaveArticle(String articleId) async {
     try {
       isUpdating(true);
-      bool success = await _articleService.unsaveArticle(articleId);
-      if (success) {
-        var updatedArticle = selectedArticle.value;
-        updatedArticle.isSaved = false;
-        selectedArticle.value = updatedArticle;
-        selectedArticle.refresh();
-
-        int index = articles.indexWhere((article) => article.id == articleId);
-        if (index != -1) {
-          articles[index].isSaved = false;
-          articles.refresh();
-        }
-      }
-      return success;
+      final updatedArticle = await _articleService.unsaveArticle(articleId);
+      selectedArticle.value = updatedArticle;
+      await fetchSavedArticles(); // Update saved articles list
+      return true;
     } catch (e) {
       Get.snackbar('Error', 'Failed to unsave article: $e');
       return false;
@@ -272,23 +234,12 @@ class ArticleController extends GetxController {
     }
   }
 
-  Future<bool> likeArticle(String articleId, double rating) async {
+  Future<bool> likeArticle(String articleId) async {
     try {
       isUpdating(true);
-      bool success = await _articleService.likeArticle(articleId, rating);
-      if (success) {
-        var updatedArticle = selectedArticle.value;
-        updatedArticle.isLiked = true;
-        selectedArticle.value = updatedArticle;
-        selectedArticle.refresh();
-
-        int index = articles.indexWhere((article) => article.id == articleId);
-        if (index != -1) {
-          articles[index].isLiked = true;
-          articles.refresh();
-        }
-      }
-      return success;
+      final updatedArticle = await _articleService.likeArticle(articleId);
+      selectedArticle.value = updatedArticle;
+      return true;
     } catch (e) {
       Get.snackbar('Error', 'Failed to like article: $e');
       return false;
@@ -299,23 +250,21 @@ class ArticleController extends GetxController {
 
   Future<bool> unlikeArticle(String articleId) async {
     try {
-      final success = await _articleService.unlikeArticle(articleId);
-      if (success) {
-        articles.firstWhere((a) => a.id == articleId).isLiked = false;
-        selectedArticle.update((article) {
-          article?.isLiked = false;
-        });
-      }
-      return success;
+      isUpdating(true);
+      final updatedArticle = await _articleService.unlikeArticle(articleId);
+      selectedArticle.value = updatedArticle;
+      return true;
     } catch (e) {
       Get.snackbar('Error', 'Failed to unlike article: $e');
       return false;
+    } finally {
+      isUpdating(false);
     }
   }
 
   void setSelectedArticle(Article article) {
-    getArticleById(article.id);
     selectedArticle.value = article;
+    getArticleById(article.id); // Fetch latest data
   }
 
   void searchArticles(String query) {

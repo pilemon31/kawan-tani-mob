@@ -17,6 +17,8 @@ class _SavedArticleListState extends State<SavedArticleList> {
   final TextEditingController _searchController = TextEditingController();
   final ArticleController _articleController = Get.put(ArticleController());
 
+  String _searchQuery = '';
+
   @override
   void initState() {
     super.initState();
@@ -61,7 +63,11 @@ class _SavedArticleListState extends State<SavedArticleList> {
               TextFormField(
                 controller: _searchController,
                 keyboardType: TextInputType.name,
-                onChanged: (value) {},
+                onChanged: (value) {
+                  setState(() {
+                    _searchQuery = value.toLowerCase();
+                  });
+                },
                 decoration: InputDecoration(
                   hintText: "Cari artikel pertanian....",
                   hintStyle: GoogleFonts.poppins(
@@ -71,6 +77,22 @@ class _SavedArticleListState extends State<SavedArticleList> {
                     size: 19.0,
                     color: Color(0xff8594AC),
                   ),
+                  // Add clear button when searching
+                  suffixIcon: _searchQuery.isNotEmpty
+                      ? IconButton(
+                          onPressed: () {
+                            _searchController.clear();
+                            setState(() {
+                              _searchQuery = '';
+                            });
+                          },
+                          icon: const PhosphorIcon(
+                            PhosphorIconsRegular.x,
+                            size: 16,
+                            color: Color(0xff8594AC),
+                          ),
+                        )
+                      : null,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                     borderSide: const BorderSide(color: Color(0xffC3C6D4)),
@@ -101,6 +123,48 @@ class _SavedArticleListState extends State<SavedArticleList> {
                       child: Text(
                         'Tidak ada artikel tersedia',
                         style: GoogleFonts.poppins(),
+                      ),
+                    );
+                  }
+
+                  // Filter articles based on search query
+                  final filteredArticles =
+                      _articleController.savedArticles.where((article) {
+                    if (_searchQuery.isEmpty) return true;
+
+                    return article.title.toLowerCase().contains(_searchQuery) ||
+                        article.author.toLowerCase().contains(_searchQuery);
+                  }).toList();
+
+                  // Show message if no results found
+                  if (filteredArticles.isEmpty && _searchQuery.isNotEmpty) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          PhosphorIcon(
+                            PhosphorIconsRegular.magnifyingGlass,
+                            size: 64,
+                            color: Colors.grey[400],
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Tidak ada artikel ditemukan',
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Coba kata kunci lain',
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              color: Colors.grey[500],
+                            ),
+                          ),
+                        ],
                       ),
                     );
                   }
@@ -186,24 +250,6 @@ class _SavedArticleListState extends State<SavedArticleList> {
                                             fontWeight: FontWeight.w300,
                                             color: greyColor,
                                           ),
-                                        ),
-                                        Row(
-                                          children: [
-                                            const PhosphorIcon(
-                                              PhosphorIconsFill.star,
-                                              size: 17.0,
-                                              color: Colors.yellow,
-                                            ),
-                                            const SizedBox(width: 3),
-                                            Text(
-                                              "${article.rating.toStringAsFixed(1)}/5",
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w300,
-                                                color: greyColor,
-                                              ),
-                                            ),
-                                          ],
                                         ),
                                       ],
                                     ),

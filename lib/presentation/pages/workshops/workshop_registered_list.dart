@@ -17,6 +17,8 @@ class _WorkshopRegisteredListState extends State<WorkshopRegisteredList> {
   final TextEditingController _searchController = TextEditingController();
   final WorkshopController _workshopController = Get.put(WorkshopController());
 
+  String _searchQuery = '';
+
   @override
   void initState() {
     super.initState();
@@ -62,7 +64,10 @@ class _WorkshopRegisteredListState extends State<WorkshopRegisteredList> {
                 controller: _searchController,
                 keyboardType: TextInputType.name,
                 onChanged: (value) {
-                  // You can implement search functionality here
+                  // Update search query and rebuild UI
+                  setState(() {
+                    _searchQuery = value.toLowerCase();
+                  });
                 },
                 decoration: InputDecoration(
                   hintText: "Cari Workshop pertanian....",
@@ -73,6 +78,22 @@ class _WorkshopRegisteredListState extends State<WorkshopRegisteredList> {
                     size: 19.0,
                     color: Color(0xff8594AC),
                   ),
+                  // Add clear button when searching
+                  suffixIcon: _searchQuery.isNotEmpty
+                      ? IconButton(
+                          onPressed: () {
+                            _searchController.clear();
+                            setState(() {
+                              _searchQuery = '';
+                            });
+                          },
+                          icon: const PhosphorIcon(
+                            PhosphorIconsRegular.x,
+                            size: 16,
+                            color: Color(0xff8594AC),
+                          ),
+                        )
+                      : null,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                     borderSide: const BorderSide(color: Color(0xffC3C6D4)),
@@ -103,6 +124,52 @@ class _WorkshopRegisteredListState extends State<WorkshopRegisteredList> {
                       child: Text(
                         'Tidak ada workshop tersedia',
                         style: GoogleFonts.poppins(),
+                      ),
+                    );
+                  }
+
+                  // Filter workshops based on search query
+                  final filteredWorkshops =
+                      _workshopController.activeWorkshops.where((workshop) {
+                    if (_searchQuery.isEmpty) return true;
+
+                    return workshop.judulWorkshop
+                            .toLowerCase()
+                            .contains(_searchQuery) ||
+                        workshop.alamatLengkapWorkshop
+                            .toLowerCase()
+                            .contains(_searchQuery);
+                  }).toList();
+
+                  // Show message if no results found
+                  if (filteredWorkshops.isEmpty && _searchQuery.isNotEmpty) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          PhosphorIcon(
+                            PhosphorIconsRegular.magnifyingGlass,
+                            size: 64,
+                            color: Colors.grey[400],
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Tidak ada workshop ditemukan',
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Coba kata kunci lain',
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              color: Colors.grey[500],
+                            ),
+                          ),
+                        ],
                       ),
                     );
                   }

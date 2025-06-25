@@ -85,9 +85,7 @@ class UserPlantController extends GetxController {
         customName: customName,
       );
       userPlants.insert(0, result);
-      Get.snackbar('Success', 'Plant added successfully');
     } catch (e) {
-      Get.snackbar('Error', 'Failed to create user plant: $e');
     } finally {
       isCreating(false);
     }

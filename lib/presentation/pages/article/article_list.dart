@@ -256,24 +256,6 @@ class _ArticleListState extends State<ArticleList> {
                                             color: greyColor,
                                           ),
                                         ),
-                                        Row(
-                                          children: [
-                                            const PhosphorIcon(
-                                              PhosphorIconsFill.star,
-                                              size: 17.0,
-                                              color: Colors.yellow,
-                                            ),
-                                            const SizedBox(width: 3),
-                                            Text(
-                                              "${article.rating.toStringAsFixed(1)}/5",
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w300,
-                                                color: greyColor,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
                                       ],
                                     ),
                                   ],

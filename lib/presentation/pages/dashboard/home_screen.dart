@@ -534,7 +534,14 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 135,
               padding: const EdgeInsets.only(top: 30, left: 20, right: 20),
               decoration: const BoxDecoration(
-                color: Color(0xFF78D14D),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Color(0xFF78D14D),
+                    Color(0xFF349107),
+                  ],
+                ),
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(16),
                   bottomRight: Radius.circular(16),
@@ -573,7 +580,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Obx(
                     () => Text(
                       profileController.user['firstName']?.isNotEmpty == true
-                          ? '${profileController.user['firstName']} ${profileController.user['lastName']}👋'
+                          ? '${profileController.user['firstName']} ${profileController.user['lastName']} 👋'
                           : 'Pengguna 👋',
                       style: GoogleFonts.poppins(
                         color: Colors.white,

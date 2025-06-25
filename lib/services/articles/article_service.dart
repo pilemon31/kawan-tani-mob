@@ -3,7 +3,6 @@ import 'package:flutter_kawan_tani/models/article_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_kawan_tani/shared/constants.dart';
 import 'package:flutter_kawan_tani/shared/storage_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ArticleService {
   final String baseUrl = Constants.baseUrl;
@@ -12,14 +11,17 @@ class ArticleService {
   Future<List<Article>> getArticles() async {
     try {
       final response = await http.get(Uri.parse('$baseUrl/articles/active'));
+      print('Get Articles Response: ${response.statusCode} ${response.body}');
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
         List<dynamic> data = jsonResponse['data'];
         return data.map((json) => Article.fromJson(json)).toList();
       } else {
-        throw Exception('Failed to load articles');
+        throw Exception(
+            'Failed to load articles: ${response.statusCode} ${response.body}');
       }
     } catch (e) {
+      print('Get Articles Error: $e');
       throw Exception('Error: $e');
     }
   }
@@ -27,7 +29,6 @@ class ArticleService {
   Future<List<Article>> getAllArticles() async {
     try {
       final token = await storageService.getToken();
-
       if (token == null || token.isEmpty) {
         throw Exception('No authentication token found');
       }
@@ -35,39 +36,37 @@ class ArticleService {
         Uri.parse('$baseUrl/articles'),
         headers: {'Authorization': 'Bearer $token'},
       );
+      print(
+          'Get All Articles Response: ${response.statusCode} ${response.body}');
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
         List<dynamic> data = jsonResponse['data'];
         return data.map((json) => Article.fromJson(json)).toList();
       } else {
-        throw Exception('Failed to load all articles');
+        throw Exception(
+            'Failed to load all articles: ${response.statusCode} ${response.body}');
       }
     } catch (e) {
+      print('Get All Articles Error: $e');
       throw Exception('Error: $e');
     }
   }
 
   Future<Article> getArticleById(String id) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('token');
-
-      print('Token: $token');
-      print('URL: $baseUrl/articles/$id');
-
+      final token = await storageService.getToken();
       if (token == null || token.isEmpty) {
         throw Exception('No authentication token found');
       }
-
-      final response =
-          await http.get(Uri.parse('$baseUrl/articles/$id'), headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      });
-
-      print('Status Code: ${response.statusCode}');
-      print('Response Body: ${response.body}');
-
+      final response = await http.get(
+        Uri.parse('$baseUrl/articles/$id'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+      print(
+          'Get Article By ID Response: ${response.statusCode} ${response.body}');
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
         return Article.fromJson(jsonResponse['data']);
@@ -75,7 +74,7 @@ class ArticleService {
         throw Exception('HTTP ${response.statusCode}: ${response.body}');
       }
     } catch (e) {
-      print('Detailed error: $e');
+      print('Get Article By ID Error: $e');
       throw Exception('Error: $e');
     }
   }
@@ -83,18 +82,25 @@ class ArticleService {
   Future<List<Article>> getUserArticles() async {
     try {
       final token = await storageService.getToken();
+      if (token == null || token.isEmpty) {
+        throw Exception('No authentication token found');
+      }
       final response = await http.get(
         Uri.parse('$baseUrl/articles/own'),
         headers: {'Authorization': 'Bearer $token'},
       );
+      print(
+          'Get User Articles Response: ${response.statusCode} ${response.body}');
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
         List<dynamic> data = jsonResponse['data'];
         return data.map((json) => Article.fromJson(json)).toList();
       } else {
-        throw Exception('Failed to load user articles');
+        throw Exception(
+            'Failed to load user articles: ${response.statusCode} ${response.body}');
       }
     } catch (e) {
+      print('Get User Articles Error: $e');
       throw Exception('Error: $e');
     }
   }
@@ -102,18 +108,25 @@ class ArticleService {
   Future<List<Article>> getSavedArticles() async {
     try {
       final token = await storageService.getToken();
+      if (token == null || token.isEmpty) {
+        throw Exception('No authentication token found');
+      }
       final response = await http.get(
         Uri.parse('$baseUrl/articles/saved'),
         headers: {'Authorization': 'Bearer $token'},
       );
+      print(
+          'Get Saved Articles Response: ${response.statusCode} ${response.body}');
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
         List<dynamic> data = jsonResponse['data'];
         return data.map((item) => Article.fromJson(item['artikel'])).toList();
       } else {
-        throw Exception('Failed to load saved articles');
+        throw Exception(
+            'Failed to load saved articles: ${response.statusCode} ${response.body}');
       }
     } catch (e) {
+      print('Get Saved Articles Error: $e');
       throw Exception('Error: $e');
     }
   }
@@ -128,9 +141,12 @@ class ArticleService {
   }) async {
     try {
       final token = await storageService.getToken();
+      if (token == null || token.isEmpty) {
+        throw Exception('No authentication token found');
+      }
       var request = http.MultipartRequest(
         'POST',
-        Uri.parse('$baseUrl/articles'),
+        Uri.parse('$baseUrl/articles/create'),
       );
       request.headers['Authorization'] = 'Bearer $token';
       request.fields['title'] = title;
@@ -142,14 +158,16 @@ class ArticleService {
 
       final response = await request.send();
       final responseData = await response.stream.bytesToString();
-
+      print('Create Article Response: ${response.statusCode} $responseData');
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(responseData);
         return Article.fromJson(jsonResponse['data']);
       } else {
-        throw Exception('Failed to create article');
+        throw Exception(
+            'Failed to create article: ${response.statusCode} $responseData');
       }
     } catch (e) {
+      print('Create Article Error: $e');
       throw Exception('Error: $e');
     }
   }
@@ -164,8 +182,11 @@ class ArticleService {
   }) async {
     try {
       final token = await storageService.getToken();
+      if (token == null || token.isEmpty) {
+        throw Exception('No authentication token found');
+      }
       var request = http.MultipartRequest(
-        'PATCH',
+        'PUT',
         Uri.parse('$baseUrl/articles/$id'),
       );
       request.headers['Authorization'] = 'Bearer $token';
@@ -180,14 +201,16 @@ class ArticleService {
 
       final response = await request.send();
       final responseData = await response.stream.bytesToString();
-
+      print('Update Article Response: ${response.statusCode} $responseData');
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(responseData);
         return Article.fromJson(jsonResponse['data']);
       } else {
-        throw Exception('Failed to update article');
+        throw Exception(
+            'Failed to update article: ${response.statusCode} $responseData');
       }
     } catch (e) {
+      print('Update Article Error: $e');
       throw Exception('Error: $e');
     }
   }
@@ -195,12 +218,17 @@ class ArticleService {
   Future<bool> deleteArticle(String id) async {
     try {
       final token = await storageService.getToken();
+      if (token == null || token.isEmpty) {
+        throw Exception('No authentication token found');
+      }
       final response = await http.delete(
         Uri.parse('$baseUrl/articles/$id'),
         headers: {'Authorization': 'Bearer $token'},
       );
+      print('Delete Article Response: ${response.statusCode} ${response.body}');
       return response.statusCode == 200;
     } catch (e) {
+      print('Delete Article Error: $e');
       throw Exception('Error: $e');
     }
   }
@@ -208,12 +236,18 @@ class ArticleService {
   Future<bool> toggleArticleStatus(String id) async {
     try {
       final token = await storageService.getToken();
+      if (token == null || token.isEmpty) {
+        throw Exception('No authentication token found');
+      }
       final response = await http.patch(
         Uri.parse('$baseUrl/articles/$id/toggle'),
         headers: {'Authorization': 'Bearer $token'},
       );
+      print(
+          'Toggle Article Status Response: ${response.statusCode} ${response.body}');
       return response.statusCode == 200;
     } catch (e) {
+      print('Toggle Article Status Error: $e');
       throw Exception('Error: $e');
     }
   }
@@ -221,12 +255,17 @@ class ArticleService {
   Future<bool> verifyArticle(String id) async {
     try {
       final token = await storageService.getToken();
+      if (token == null || token.isEmpty) {
+        throw Exception('No authentication token found');
+      }
       final response = await http.patch(
-        Uri.parse('$baseUrl/articles/$id'),
+        Uri.parse('$baseUrl/articles/$id/verify'),
         headers: {'Authorization': 'Bearer $token'},
       );
+      print('Verify Article Response: ${response.statusCode} ${response.body}');
       return response.statusCode == 200;
     } catch (e) {
+      print('Verify Article Error: $e');
       throw Exception('Error: $e');
     }
   }
@@ -234,6 +273,9 @@ class ArticleService {
   Future<Comment> addComment(String articleId, String content) async {
     try {
       final token = await storageService.getToken();
+      if (token == null || token.isEmpty) {
+        throw Exception('No authentication token found');
+      }
       final response = await http.post(
         Uri.parse('$baseUrl/articles/$articleId/comments'),
         headers: {
@@ -242,85 +284,124 @@ class ArticleService {
         },
         body: jsonEncode({'content': content}),
       );
-
-      print('Add Comment Response Status: ${response.statusCode}');
-      print('Add Comment Response Body: ${response.body}');
-
+      print('Add Comment Response: ${response.statusCode} ${response.body}');
       if (response.statusCode == 200 || response.statusCode == 201) {
         final jsonResponse = jsonDecode(response.body);
-
-        final commentData = jsonResponse['data'];
-
-        return Comment(
-          id: commentData['id_komentar']?.toString() ?? '',
-          content: commentData['komentar'] ?? content,
-          author: 'Anda',
-          authorImage: '',
-          createdAt: commentData['tanggal_komentar'] != null
-              ? DateTime.parse(commentData['tanggal_komentar'])
-              : DateTime.now(),
-        );
+        return Comment.fromJson(jsonResponse['data']);
       } else {
-        throw Exception('Failed to add comment: ${response.statusCode}');
+        throw Exception(
+            'Failed to add comment: ${response.statusCode} ${response.body}');
       }
     } catch (e) {
-      print('Error adding comment: $e');
+      print('Add Comment Error: $e');
       throw Exception('Error: $e');
     }
   }
 
-  Future<bool> saveArticle(String articleId) async {
+  Future<Article> saveArticle(String articleId) async {
     try {
       final token = await storageService.getToken();
+      if (token == null || token.isEmpty) {
+        throw Exception('No authentication token found');
+      }
       final response = await http.post(
         Uri.parse('$baseUrl/articles/$articleId/save'),
-        headers: {'Authorization': 'Bearer $token'},
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
       );
-      return response.statusCode == 200;
+      print('Save Article Response: ${response.statusCode} ${response.body}');
+      if (response.statusCode == 200) {
+        // Fetch the updated article to get the latest isSaved state
+        return await getArticleById(articleId);
+      } else {
+        throw Exception(
+            'Failed to save article: ${response.statusCode} ${response.body}');
+      }
     } catch (e) {
+      print('Save Article Error: $e');
       throw Exception('Error: $e');
     }
   }
 
-  Future<bool> unsaveArticle(String articleId) async {
+  Future<Article> unsaveArticle(String articleId) async {
     try {
       final token = await storageService.getToken();
+      if (token == null || token.isEmpty) {
+        throw Exception('No authentication token found');
+      }
       final response = await http.delete(
-        Uri.parse('$baseUrl/articles/$articleId/unsave'),
-        headers: {'Authorization': 'Bearer $token'},
+        Uri.parse('$baseUrl/articles/$articleId/save'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
       );
-      return response.statusCode == 200;
+      print('Unsave Article Response: ${response.statusCode} ${response.body}');
+      if (response.statusCode == 200) {
+        // Fetch the updated article to get the latest isSaved state
+        return await getArticleById(articleId);
+      } else {
+        throw Exception(
+            'Failed to unsave article: ${response.statusCode} ${response.body}');
+      }
     } catch (e) {
+      print('Unsave Article Error: $e');
       throw Exception('Error: $e');
     }
   }
 
-  Future<bool> likeArticle(String articleId, double rating) async {
+  Future<Article> likeArticle(String articleId) async {
     try {
       final token = await storageService.getToken();
+      if (token == null || token.isEmpty) {
+        throw Exception('No authentication token found');
+      }
       final response = await http.post(
         Uri.parse('$baseUrl/articles/$articleId/like'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
         },
-        body: jsonEncode({'rating': rating}),
       );
-      return response.statusCode == 200;
+      print('Like Article Response: ${response.statusCode} ${response.body}');
+      if (response.statusCode == 200) {
+        // Fetch the updated article to get the latest isLiked state
+        return await getArticleById(articleId);
+      } else {
+        throw Exception(
+            'Failed to like article: ${response.statusCode} ${response.body}');
+      }
     } catch (e) {
+      print('Like Article Error: $e');
       throw Exception('Error: $e');
     }
   }
 
-  Future<bool> unlikeArticle(String articleId) async {
+  Future<Article> unlikeArticle(String articleId) async {
     try {
       final token = await storageService.getToken();
+      if (token == null || token.isEmpty) {
+        throw Exception('No authentication token found');
+      }
       final response = await http.delete(
         Uri.parse('$baseUrl/articles/$articleId/like'),
-        headers: {'Authorization': 'Bearer $token'},
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
       );
-      return response.statusCode == 200;
+      print('Unlike Article Response: ${response.statusCode} ${response.body}');
+      if (response.statusCode == 200) {
+        // Fetch the updated article to get the latest isLiked state
+        return await getArticleById(articleId);
+      } else {
+        throw Exception(
+            'Failed to unlike article: ${response.statusCode} ${response.body}');
+      }
     } catch (e) {
+      print('Unlike Article Error: $e');
       throw Exception('Error: $e');
     }
   }
