@@ -392,7 +392,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Berita Terkini",
+                              "Artikel Terkini",
                               style: GoogleFonts.poppins(
                                   fontSize: 18, fontWeight: FontWeight.bold),
                             ),
